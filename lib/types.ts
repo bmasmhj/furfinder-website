@@ -90,3 +90,14 @@ export interface SafetyTip {
   icon: string;
   category: 'lost' | 'found' | 'prevention' | 'general';
 }
+
+export interface PetNotification {
+  id: string;
+  type: 'lost_nearby' | 'found_nearby' | 'match_found' | 'status_update';
+  title: string;
+  message: string;
+  reportId?: string;
+  profileId?: string;
+  read: boolean;
+  createdAt: string;
+}

@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, useMemo, ReactNode, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-import { PetReport, PetStatus, PetProfile, Comment, TimelineEvent } from './types';
+import { PetReport, PetStatus, PetProfile, Comment, TimelineEvent, PetNotification } from './types';
 
 const REPORTS_KEY = '@pet_reports';
 const PROFILES_KEY = '@pet_profiles';
+const NOTIFICATIONS_KEY = '@pet_notifications';
 
 const SAMPLE_REPORTS: PetReport[] = [
   {
@@ -130,6 +131,16 @@ function migrateReport(r: any): PetReport {
   };
 }
 
+function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+const NEARBY_RADIUS_KM = 10;
+
 interface PetContextValue {
   reports: PetReport[];
   myReports: PetReport[];
@@ -145,6 +156,11 @@ interface PetContextValue {
   updateProfile: (id: string, updates: Partial<PetProfile>) => Promise<void>;
   deleteProfile: (id: string) => Promise<void>;
   getProfile: (id: string) => PetProfile | undefined;
+  notifications: PetNotification[];
+  unreadCount: number;
+  markNotificationRead: (id: string) => Promise<void>;
+  markAllNotificationsRead: () => Promise<void>;
+  clearNotifications: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -153,6 +169,7 @@ const PetContext = createContext<PetContextValue | null>(null);
 export function PetProvider({ children }: { children: ReactNode }) {
   const [reports, setReports] = useState<PetReport[]>([]);
   const [profiles, setProfiles] = useState<PetProfile[]>([]);
+  const [notifications, setNotifications] = useState<PetNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -161,9 +178,10 @@ export function PetProvider({ children }: { children: ReactNode }) {
 
   const loadData = async () => {
     try {
-      const [storedReports, storedProfiles] = await Promise.all([
+      const [storedReports, storedProfiles, storedNotifications] = await Promise.all([
         AsyncStorage.getItem(REPORTS_KEY),
         AsyncStorage.getItem(PROFILES_KEY),
+        AsyncStorage.getItem(NOTIFICATIONS_KEY),
       ]);
 
       if (storedReports) {
@@ -176,6 +194,10 @@ export function PetProvider({ children }: { children: ReactNode }) {
 
       if (storedProfiles) {
         setProfiles(JSON.parse(storedProfiles));
+      }
+
+      if (storedNotifications) {
+        setNotifications(JSON.parse(storedNotifications));
       }
     } catch (e) {
       console.error('Failed to load data', e);
@@ -201,6 +223,95 @@ export function PetProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const saveNotifications = async (updated: PetNotification[]) => {
+    try {
+      await AsyncStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.error('Failed to save notifications', e);
+    }
+  };
+
+  const generateNearbyAlerts = useCallback((newReport: PetReport, currentProfiles: PetProfile[], currentReports: PetReport[]) => {
+    const newNotifications: PetNotification[] = [];
+    const now = new Date().toISOString();
+
+    if (newReport.status === 'lost') {
+      currentProfiles.forEach(profile => {
+        const locationName = newReport.locationName.toLowerCase();
+        const suburb = profile.suburb.toLowerCase();
+        const sameArea = suburb && locationName && (
+          locationName.includes(suburb) ||
+          suburb.includes(locationName) ||
+          locationName.split(',').some(part => suburb.includes(part.trim())) ||
+          suburb.split(',').some(part => locationName.includes(part.trim()))
+        );
+
+        if (sameArea || profile.petType === newReport.petType) {
+          newNotifications.push({
+            id: Crypto.randomUUID(),
+            type: 'lost_nearby',
+            title: `Lost ${newReport.petType} near ${newReport.locationName}`,
+            message: `A ${newReport.color} ${newReport.breed} named "${newReport.petName}" has been reported lost near ${newReport.locationName}. Keep an eye out for this pet!`,
+            reportId: newReport.id,
+            profileId: profile.id,
+            read: false,
+            createdAt: now,
+          });
+        }
+      });
+
+      currentReports.forEach(report => {
+        if (report.id === newReport.id) return;
+        if (report.status !== 'found') return;
+        if (report.petType !== newReport.petType) return;
+
+        const distance = getDistanceKm(
+          newReport.latitude, newReport.longitude,
+          report.latitude, report.longitude
+        );
+
+        if (distance <= NEARBY_RADIUS_KM) {
+          newNotifications.push({
+            id: Crypto.randomUUID(),
+            type: 'match_found',
+            title: `Possible match found!`,
+            message: `A found ${report.breed} (${report.color}) was reported ${distance.toFixed(1)}km from where "${newReport.petName}" went missing. Could this be a match?`,
+            reportId: newReport.id,
+            read: false,
+            createdAt: now,
+          });
+        }
+      });
+    }
+
+    if (newReport.status === 'found') {
+      currentReports.forEach(report => {
+        if (report.id === newReport.id) return;
+        if (report.status !== 'lost') return;
+        if (report.petType !== newReport.petType) return;
+
+        const distance = getDistanceKm(
+          newReport.latitude, newReport.longitude,
+          report.latitude, report.longitude
+        );
+
+        if (distance <= NEARBY_RADIUS_KM) {
+          newNotifications.push({
+            id: Crypto.randomUUID(),
+            type: 'found_nearby',
+            title: `Found ${newReport.petType} near a lost report`,
+            message: `A ${newReport.color} ${newReport.breed} was found near ${newReport.locationName}, ${distance.toFixed(1)}km from where "${report.petName}" was reported lost.`,
+            reportId: report.id,
+            read: false,
+            createdAt: now,
+          });
+        }
+      });
+    }
+
+    return newNotifications;
+  }, []);
+
   const addReport = useCallback(async (report: Omit<PetReport, 'id' | 'createdAt' | 'comments' | 'timeline' | 'rewardPool'>) => {
     const id = Crypto.randomUUID();
     const now = new Date().toISOString();
@@ -215,7 +326,14 @@ export function PetProvider({ children }: { children: ReactNode }) {
     const updated = [newReport, ...reports];
     setReports(updated);
     await saveReports(updated);
-  }, [reports]);
+
+    const alerts = generateNearbyAlerts(newReport, profiles, reports);
+    if (alerts.length > 0) {
+      const updatedNotifications = [...alerts, ...notifications];
+      setNotifications(updatedNotifications);
+      await saveNotifications(updatedNotifications);
+    }
+  }, [reports, profiles, notifications, generateNearbyAlerts]);
 
   const updateReport = useCallback(async (id: string, updates: Partial<PetReport>) => {
     const updated = reports.map(r => r.id === id ? { ...r, ...updates } : r);
@@ -321,6 +439,25 @@ export function PetProvider({ children }: { children: ReactNode }) {
     return profiles.find(p => p.id === id);
   }, [profiles]);
 
+  const markNotificationRead = useCallback(async (notifId: string) => {
+    const updated = notifications.map(n => n.id === notifId ? { ...n, read: true } : n);
+    setNotifications(updated);
+    await saveNotifications(updated);
+  }, [notifications]);
+
+  const markAllNotificationsRead = useCallback(async () => {
+    const updated = notifications.map(n => ({ ...n, read: true }));
+    setNotifications(updated);
+    await saveNotifications(updated);
+  }, [notifications]);
+
+  const clearNotifications = useCallback(async () => {
+    setNotifications([]);
+    await saveNotifications([]);
+  }, []);
+
+  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
+
   const myReports = useMemo(() => reports.filter(r => r.isOwner), [reports]);
 
   const value = useMemo(() => ({
@@ -338,8 +475,13 @@ export function PetProvider({ children }: { children: ReactNode }) {
     updateProfile,
     deleteProfile,
     getProfile,
+    notifications,
+    unreadCount,
+    markNotificationRead,
+    markAllNotificationsRead,
+    clearNotifications,
     isLoading,
-  }), [reports, myReports, addReport, updateReport, updateReportStatus, deleteReport, getReport, addComment, addRewardContribution, profiles, addProfile, updateProfile, deleteProfile, getProfile, isLoading]);
+  }), [reports, myReports, addReport, updateReport, updateReportStatus, deleteReport, getReport, addComment, addRewardContribution, profiles, addProfile, updateProfile, deleteProfile, getProfile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead, clearNotifications, isLoading]);
 
   return (
     <PetContext.Provider value={value}>
