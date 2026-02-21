@@ -1,0 +1,67 @@
+App Name (Working Title):
+Lost & Found Pets – AI Pet Reunite App
+App Concept:
+A mobile application designed to help reunite lost pets with their owners using community reporting, location tracking, and AI-powered photo matching technology. Pet owners can register their pets, upload photos and details, and instantly receive alerts if a similar pet is found nearby.
+Target Users:
+Pet owners, animal lovers, veterinarians, shelters, councils, and community members.
+Primary Goal:
+Create a trusted community platform where lost pets can be quickly identified and returned safely to their owners through automated matching and real-time notifications.
+Core Features (MVP – Phase 1):
+User Accounts:
+Secure registration and login
+Profile management
+Pet Profiles:
+Upload multiple pet photos
+Pet name, breed, size, colour, markings
+Microchip number (optional)
+Medical notes (optional)
+Owner contact details
+Lost Pet Reporting:
+Mark pet as LOST
+Last seen location
+Date and time
+Reward option (optional)
+Found Pet Reporting:
+Upload photo of found pet
+Automatic GPS/location tagging
+Description notes
+Search and Discovery:
+Browse lost and found pets nearby
+Filter by suburb or radius
+Map-based viewing
+Notifications:
+Alerts when a similar pet is reported nearby
+Status updates for listings
+Communication:
+Secure in-app messaging or contact system between finder and owner
+Admin Panel:
+Content moderation
+User management
+Reporting and abuse prevention
+Phase 2 Features (Advanced):
+AI Image Matching:
+Compare uploaded photos of found pets with lost pet database
+Identify breed, colour patterns, and physical features
+Provide match confidence score
+Smart Alerts:
+Automatic owner notification when high-probability matches occur
+Community Integration:
+Animal shelters and veterinary clinic accounts
+Council and rescue organisation participation
+Safety and Privacy:
+Data privacy controls
+Verified accounts
+Photo moderation system
+Technology Requirements:
+Cross-platform mobile app (iOS and Android)
+Cloud database and secure photo storage
+GPS location services
+Push notifications
+Scalable backend system
+Future Expansion:
+Nationwide launch in Australia followed by global expansion
+Multi-language support
+Reward/donation system
+Social sharing features
+Desired Outcome:
+A simple, reliable, and widely adopted platform that increases the chances of safely reuniting lost pets with their families quickly and efficiently.
