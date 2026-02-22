@@ -208,7 +208,7 @@ export default function SettingsScreen() {
         <View style={styles.footerNote}>
           <Ionicons name="information-circle-outline" size={16} color={Colors.textLight} />
           <Text style={styles.footerNoteText}>
-            Under the Australian Privacy Act, you have the right to access, correct, and delete your personal information at any time. For complaints, contact the OAIC at oaic.gov.au or call 1300 363 992.
+            Under the Australian Privacy Act, you have the right to access, correct, and delete your personal information at any time.
           </Text>
         </View>
       </ScrollView>
