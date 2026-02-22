@@ -92,3 +92,10 @@ A comprehensive lost and found pets mobile app built with Expo + React Native (f
 - 2026-02-21: Added paywall screen with plan comparison, feature list, purchase/restore flow
 - 2026-02-21: Added feature gating for AI matching, scan post, multi-photo, unlimited reports/profiles
 - 2026-02-21: Added upgrade entry points on home screen, My Pets tab, and premium-locked features
+- 2026-02-22: Added Privacy Policy screen (Australian Privacy Act compliant, 11 sections)
+- 2026-02-22: Added Terms of Use screen (14 sections, Australian Consumer Law compliant)
+- 2026-02-22: Added first-launch consent screen with 3 checkboxes (privacy, terms, AI disclosure)
+- 2026-02-22: Added consent context (lib/consent-context.tsx) with AsyncStorage persistence
+- 2026-02-22: Added Settings screen with data management, consent info, delete all data, revoke consent
+- 2026-02-22: Added AI disclaimer notices on matches screen and scan post screen
+- 2026-02-22: Added settings gear icon to home screen header

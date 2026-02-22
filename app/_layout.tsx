@@ -8,6 +8,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { queryClient } from "@/lib/query-client";
 import { PetProvider } from "@/lib/pet-context";
 import { SubscriptionProvider } from "@/lib/subscription-context";
+import { ConsentProvider } from "@/lib/consent-context";
 import {
   useFonts,
   Poppins_400Regular,
@@ -22,6 +23,10 @@ function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerBackTitle: "Back" }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="consent"
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
       <Stack.Screen
         name="pet/[id]"
         options={{ headerShown: false }}
@@ -58,6 +63,18 @@ function RootLayoutNav() {
         name="paywall"
         options={{ headerShown: false, presentation: 'modal' }}
       />
+      <Stack.Screen
+        name="privacy-policy"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="terms-of-use"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
@@ -81,15 +98,17 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <SubscriptionProvider>
-          <PetProvider>
-            <GestureHandlerRootView>
-              <KeyboardProvider>
-                <RootLayoutNav />
-              </KeyboardProvider>
-            </GestureHandlerRootView>
-          </PetProvider>
-        </SubscriptionProvider>
+        <ConsentProvider>
+          <SubscriptionProvider>
+            <PetProvider>
+              <GestureHandlerRootView>
+                <KeyboardProvider>
+                  <RootLayoutNav />
+                </KeyboardProvider>
+              </GestureHandlerRootView>
+            </PetProvider>
+          </SubscriptionProvider>
+        </ConsentProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

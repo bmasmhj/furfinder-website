@@ -48,17 +48,25 @@ export default function HomeScreen() {
               <Text style={styles.greeting}>PetReunite</Text>
               <Text style={styles.subtitle}>Help pets find their way home</Text>
             </View>
-            <Pressable
-              style={styles.bellBtn}
-              onPress={() => router.push('/notifications')}
-            >
-              <Ionicons name="notifications-outline" size={22} color="#fff" />
-              {unreadCount > 0 && (
-                <View style={styles.bellBadge}>
-                  <Text style={styles.bellBadgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
-                </View>
-              )}
-            </Pressable>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Pressable
+                style={styles.bellBtn}
+                onPress={() => router.push('/settings')}
+              >
+                <Ionicons name="settings-outline" size={20} color="#fff" />
+              </Pressable>
+              <Pressable
+                style={styles.bellBtn}
+                onPress={() => router.push('/notifications')}
+              >
+                <Ionicons name="notifications-outline" size={22} color="#fff" />
+                {unreadCount > 0 && (
+                  <View style={styles.bellBadge}>
+                    <Text style={styles.bellBadgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+                  </View>
+                )}
+              </Pressable>
+            </View>
           </View>
           <View style={styles.statsRow}>
             <View style={styles.statBubble}>

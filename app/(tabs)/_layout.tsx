@@ -1,12 +1,14 @@
+import { useEffect } from "react";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
-import { Platform, StyleSheet, useColorScheme, View } from "react-native";
+import { Platform, StyleSheet, useColorScheme, View, ActivityIndicator } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React from "react";
 import Colors from "@/constants/colors";
+import { useConsent } from "@/lib/consent-context";
 
 function NativeTabLayout() {
   return (
@@ -108,6 +110,26 @@ function ClassicTabLayout() {
 }
 
 export default function TabLayout() {
+  const { hasConsented, isLoading } = useConsent();
+
+  useEffect(() => {
+    if (!isLoading && !hasConsented) {
+      router.replace('/consent');
+    }
+  }, [isLoading, hasConsented]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (!hasConsented) {
+    return null;
+  }
+
   if (isLiquidGlassAvailable()) {
     return <NativeTabLayout />;
   }
