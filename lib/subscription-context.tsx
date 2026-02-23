@@ -3,8 +3,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SUBSCRIPTION_KEY = '@subscription_state';
-const REVENUECAT_API_KEY_IOS = 'appl_REPLACE_WITH_YOUR_KEY';
-const REVENUECAT_API_KEY_ANDROID = 'goog_REPLACE_WITH_YOUR_KEY';
+const REVENUECAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || '';
 
 const FREE_LIMITS = {
   maxReports: 1,
@@ -74,8 +73,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         try {
           rc.setLogLevel(rc.LOG_LEVEL?.DEBUG ?? 4);
         } catch (_e) {}
-        const apiKey = Platform.OS === 'ios' ? REVENUECAT_API_KEY_IOS : REVENUECAT_API_KEY_ANDROID;
-        await rc.configure({ apiKey });
+        await rc.configure({ apiKey: REVENUECAT_API_KEY });
         setIsConfigured(true);
 
         const customerInfo = await rc.getCustomerInfo();
