@@ -40,6 +40,10 @@ export interface PetReport {
   isOwner: boolean;
   comments: Comment[];
   timeline: TimelineEvent[];
+  reunionMessage?: string;
+  reunionDate?: string;
+  likes?: number;
+  likedByMe?: boolean;
 }
 
 export interface PetProfile {

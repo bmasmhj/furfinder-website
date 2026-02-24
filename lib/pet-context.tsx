@@ -145,9 +145,12 @@ const DEFAULT_SEARCH_RADIUS_KM = 10;
 interface PetContextValue {
   reports: PetReport[];
   myReports: PetReport[];
+  reunitedReports: PetReport[];
   addReport: (report: Omit<PetReport, 'id' | 'createdAt' | 'comments' | 'timeline' | 'rewardPool'>) => Promise<void>;
   updateReport: (id: string, updates: Partial<PetReport>) => Promise<void>;
   updateReportStatus: (id: string, status: PetStatus) => Promise<void>;
+  markReunited: (id: string, message: string) => Promise<void>;
+  toggleLike: (id: string) => Promise<void>;
   deleteReport: (id: string) => Promise<void>;
   getReport: (id: string) => PetReport | undefined;
   addComment: (reportId: string, author: string, text: string) => Promise<void>;
@@ -409,6 +412,44 @@ export function PetProvider({ children }: { children: ReactNode }) {
     await saveReports(updated);
   }, [reports]);
 
+  const markReunited = useCallback(async (id: string, message: string) => {
+    const now = new Date().toISOString();
+    const event: TimelineEvent = {
+      id: Crypto.randomUUID(),
+      type: 'status_change',
+      description: 'Pet reunited with owner!',
+      createdAt: now,
+    };
+    const updated = reports.map(r => {
+      if (r.id !== id) return r;
+      return {
+        ...r,
+        status: 'reunited' as PetStatus,
+        reunionMessage: message,
+        reunionDate: now,
+        likes: r.likes || 0,
+        likedByMe: false,
+        timeline: [...(r.timeline || []), event],
+      };
+    });
+    setReports(updated);
+    await saveReports(updated);
+  }, [reports]);
+
+  const toggleLike = useCallback(async (id: string) => {
+    const updated = reports.map(r => {
+      if (r.id !== id) return r;
+      const isLiked = r.likedByMe || false;
+      return {
+        ...r,
+        likedByMe: !isLiked,
+        likes: (r.likes || 0) + (isLiked ? -1 : 1),
+      };
+    });
+    setReports(updated);
+    await saveReports(updated);
+  }, [reports]);
+
   const addRewardContribution = useCallback(async (reportId: string, amount: number) => {
     const now = new Date().toISOString();
     const timelineEvent: TimelineEvent = {
@@ -481,13 +522,20 @@ export function PetProvider({ children }: { children: ReactNode }) {
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
   const myReports = useMemo(() => reports.filter(r => r.isOwner), [reports]);
+  const reunitedReports = useMemo(() =>
+    reports.filter(r => r.status === 'reunited').sort((a, b) =>
+      new Date(b.reunionDate || b.createdAt).getTime() - new Date(a.reunionDate || a.createdAt).getTime()
+    ), [reports]);
 
   const value = useMemo(() => ({
     reports,
     myReports,
+    reunitedReports,
     addReport,
     updateReport,
     updateReportStatus,
+    markReunited,
+    toggleLike,
     deleteReport,
     getReport,
     addComment,
@@ -505,7 +553,7 @@ export function PetProvider({ children }: { children: ReactNode }) {
     searchRadiusKm,
     setSearchRadiusKm,
     isLoading,
-  }), [reports, myReports, addReport, updateReport, updateReportStatus, deleteReport, getReport, addComment, addRewardContribution, profiles, addProfile, updateProfile, deleteProfile, getProfile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead, clearNotifications, searchRadiusKm, setSearchRadiusKm, isLoading]);
+  }), [reports, myReports, reunitedReports, addReport, updateReport, updateReportStatus, markReunited, toggleLike, deleteReport, getReport, addComment, addRewardContribution, profiles, addProfile, updateProfile, deleteProfile, getProfile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead, clearNotifications, searchRadiusKm, setSearchRadiusKm, isLoading]);
 
   return (
     <PetContext.Provider value={value}>
