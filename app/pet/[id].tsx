@@ -29,7 +29,7 @@ function getTimelineColor(type: TimelineEvent['type']): string {
 export default function PetDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { getReport, updateReportStatus, addComment, addRewardContribution } = usePets();
+  const { getReport, updateReportStatus, markReunited, addComment, addRewardContribution } = usePets();
   const { canUseAIMatching } = useSubscription();
   const report = getReport(id);
   const webTopPadding = Platform.OS === 'web' ? 67 : 0;
@@ -39,6 +39,8 @@ export default function PetDetailScreen() {
   const [authorName, setAuthorName] = useState('');
   const [contributionAmount, setContributionAmount] = useState('');
   const [showContributeInput, setShowContributeInput] = useState(false);
+  const [showReunionInput, setShowReunionInput] = useState(false);
+  const [reunionMessage, setReunionMessage] = useState('');
 
   if (!report) {
     return (
@@ -78,20 +80,15 @@ export default function PetDetailScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
-    Alert.alert(
-      'Mark as Reunited?',
-      'This will mark the pet as safely returned home.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Yes!',
-          onPress: () => {
-            updateReportStatus(report.id, 'reunited');
-            router.back();
-          },
-        },
-      ]
-    );
+    setShowReunionInput(true);
+  };
+
+  const handleSubmitReunion = async () => {
+    const msg = reunionMessage.trim() || `${report.petName} has been reunited with their owner!`;
+    await markReunited(report.id, msg);
+    setShowReunionInput(false);
+    setReunionMessage('');
+    router.back();
   };
 
   const handleShare = async () => {
@@ -410,7 +407,7 @@ export default function PetDetailScreen() {
             </Pressable>
           )}
 
-          {report.isOwner && report.status !== 'reunited' && (
+          {report.isOwner && report.status !== 'reunited' && !showReunionInput && (
             <Pressable
               onPress={handleReunited}
               style={({ pressed }) => [styles.reunitedBtn, pressed && { opacity: 0.9 }]}
@@ -418,6 +415,43 @@ export default function PetDetailScreen() {
               <Ionicons name="heart" size={20} color="#fff" />
               <Text style={styles.reunitedBtnText}>Mark as Reunited</Text>
             </Pressable>
+          )}
+
+          {showReunionInput && (
+            <Animated.View entering={FadeInUp.duration(300)} style={styles.reunionInputCard}>
+              <View style={styles.reunionInputHeader}>
+                <Ionicons name="heart-circle" size={28} color={Colors.reunited} />
+                <Text style={styles.reunionInputTitle}>Share Your Reunion Story</Text>
+              </View>
+              <Text style={styles.reunionInputHint}>
+                Tell the community how {report.petName} was found! This will appear in Happy Tails.
+              </Text>
+              <TextInput
+                style={styles.reunionTextInput}
+                placeholder={`How was ${report.petName} reunited? Share your story...`}
+                placeholderTextColor={Colors.textLight}
+                value={reunionMessage}
+                onChangeText={setReunionMessage}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+              <View style={styles.reunionBtnRow}>
+                <Pressable
+                  onPress={() => { setShowReunionInput(false); setReunionMessage(''); }}
+                  style={styles.reunionCancelBtn}
+                >
+                  <Text style={styles.reunionCancelText}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  onPress={handleSubmitReunion}
+                  style={({ pressed }) => [styles.reunionSubmitBtn, pressed && { opacity: 0.9 }]}
+                >
+                  <Ionicons name="heart" size={18} color="#fff" />
+                  <Text style={styles.reunionSubmitText}>Reunited!</Text>
+                </Pressable>
+              </View>
+            </Animated.View>
           )}
         </Animated.View>
       </ScrollView>
@@ -908,5 +942,71 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FEF3C7',
     letterSpacing: 0.5,
+  },
+  reunionInputCard: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 16,
+    padding: 18,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+  },
+  reunionInputHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  reunionInputTitle: {
+    fontSize: 17,
+    fontFamily: 'Poppins_700Bold',
+    color: '#166534',
+  },
+  reunionInputHint: {
+    fontSize: 13,
+    fontFamily: 'Poppins_400Regular',
+    color: '#4ADE80',
+    lineHeight: 19,
+  },
+  reunionTextInput: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 14,
+    fontFamily: 'Poppins_400Regular',
+    color: Colors.text,
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    minHeight: 100,
+  },
+  reunionBtnRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  reunionCancelBtn: {
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: '#E5E7EB',
+  },
+  reunionCancelText: {
+    fontSize: 14,
+    fontFamily: 'Poppins_600SemiBold',
+    color: Colors.textSecondary,
+  },
+  reunionSubmitBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: Colors.reunited,
+  },
+  reunionSubmitText: {
+    fontSize: 14,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#fff',
   },
 });
