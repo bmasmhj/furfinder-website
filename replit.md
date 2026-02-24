@@ -117,3 +117,9 @@ A comprehensive lost and found pets mobile app built with Expo + React Native (f
 - 2026-02-24: Updated AI matching prompts (match + scan-post + new quick-snap endpoint) to prioritize biometric features
 - 2026-02-24: Biometric photos included in candidate matching — nose print patterns, iris details, facial structure
 - 2026-02-24: New endpoint POST /api/quick-snap-match for photo-based pet identification
+- 2026-02-24: Added Happy Tails reunion stories feed — green gradient theme (#22C55E), story cards with REUNITED badges, like/share/comment engagement
+- 2026-02-24: Updated "Mark as Reunited" flow to capture reunion story message via dedicated input card
+- 2026-02-24: Added Happy Tails tab to tab bar with heart-circle icon (5 tabs total: Home, Map, Report, Happy Tails, My Pets)
+- 2026-02-24: Added Happy Tail story detail screen with photo gallery, pet details grid, reunion message card, community messages
+- 2026-02-24: Added social sharing buttons: Facebook (deep link), Instagram, TikTok, and "Share to Any App" via native Share API
+- 2026-02-24: Extended PetReport with reunionMessage, reunionDate, likes, likedByMe fields; added markReunited() and toggleLike() to pet-context
