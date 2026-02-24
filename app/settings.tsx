@@ -163,6 +163,40 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Resources</Text>
+        </View>
+
+        <Pressable style={styles.menuItem} onPress={() => router.push('/how-it-works')}>
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#FEF2F2' }]}>
+              <Ionicons name="help-buoy" size={18} color={Colors.primary} />
+            </View>
+            <Text style={styles.menuItemText}>How It Works</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </Pressable>
+
+        <Pressable style={styles.menuItem} onPress={() => router.push('/faq')}>
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#F0FDFA' }]}>
+              <Ionicons name="help-circle" size={18} color={Colors.secondary} />
+            </View>
+            <Text style={styles.menuItemText}>FAQ</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </Pressable>
+
+        <Pressable style={styles.menuItem} onPress={() => router.push('/safety-tips')}>
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#FEF3C7' }]}>
+              <Ionicons name="shield" size={18} color="#D97706" />
+            </View>
+            <Text style={styles.menuItemText}>Safety Tips</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </Pressable>
+
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionHeaderText}>Legal</Text>
         </View>
 

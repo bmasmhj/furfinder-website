@@ -407,6 +407,16 @@ export default function PetDetailScreen() {
             </Pressable>
           )}
 
+          {report.status !== 'reunited' && (
+            <Pressable
+              onPress={() => router.push(`/flyer?id=${report.id}`)}
+              style={({ pressed }) => [styles.flyerBtn, pressed && { opacity: 0.9 }]}
+            >
+              <Ionicons name="document-text-outline" size={20} color={Colors.primary} />
+              <Text style={styles.flyerBtnText}>Generate Flyer</Text>
+            </Pressable>
+          )}
+
           {report.isOwner && report.status !== 'reunited' && !showReunionInput && (
             <Pressable
               onPress={handleReunited}
@@ -911,6 +921,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Poppins_600SemiBold',
     color: '#fff',
+  },
+  flyerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.surface,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    marginTop: 8,
+  },
+  flyerBtnText: {
+    fontSize: 15,
+    fontFamily: 'Poppins_600SemiBold',
+    color: Colors.primary,
   },
   reunitedBtn: {
     flexDirection: 'row',
