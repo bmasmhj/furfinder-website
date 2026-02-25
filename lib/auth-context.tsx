@@ -32,6 +32,7 @@ interface RegisterData {
   consentTerms: boolean;
   consentAi: boolean;
   consentDataStorage: boolean;
+  referralCode?: string;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);

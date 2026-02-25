@@ -60,7 +60,7 @@ function generateToken(user: AuthUser): string {
 }
 
 export async function registerUser(req: Request, res: Response) {
-  const { email, password, displayName, phone, consentPrivacy, consentTerms, consentAi, consentDataStorage } = req.body;
+  const { email, password, displayName, phone, consentPrivacy, consentTerms, consentAi, consentDataStorage, referralCode } = req.body;
 
   if (!email || !password || !displayName) {
     return res.status(400).json({ message: 'Email, password, and display name are required' });
@@ -80,12 +80,21 @@ export async function registerUser(req: Request, res: Response) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
 
+    let referrerId: string | null = null;
+    if (referralCode) {
+      const referrer = await pool.query('SELECT id FROM users WHERE referral_code = $1', [referralCode.toUpperCase()]);
+      if (referrer.rows.length > 0) {
+        referrerId = referrer.rows[0].id;
+      }
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
+    const newCode = generateReferralCode();
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, display_name, phone, consent_privacy, consent_terms, consent_ai, consent_data_storage, consent_date)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
-       RETURNING id, email, display_name, phone`,
-      [email.toLowerCase(), passwordHash, displayName, phone || '', consentPrivacy, consentTerms, consentAi, consentDataStorage]
+      `INSERT INTO users (email, password_hash, display_name, phone, consent_privacy, consent_terms, consent_ai, consent_data_storage, consent_date, referral_code, referred_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10)
+       RETURNING id, email, display_name, phone, referral_code`,
+      [email.toLowerCase(), passwordHash, displayName, phone || '', consentPrivacy, consentTerms, consentAi, consentDataStorage, newCode, referrerId]
     );
 
     const user: AuthUser = {
@@ -94,6 +103,26 @@ export async function registerUser(req: Request, res: Response) {
       displayName: result.rows[0].display_name,
       phone: result.rows[0].phone,
     };
+
+    if (referrerId) {
+      const referralCount = await pool.query(
+        'SELECT COUNT(*)::int AS count FROM users WHERE referred_by = $1',
+        [referrerId]
+      );
+      const count = referralCount.rows[0].count;
+
+      if (count === 3) {
+        await awardPremiumDays(referrerId, 7, 'referral', 'Referred 3 friends - earned 1 free week');
+      }
+      if (count === 5) {
+        await awardPremiumDays(referrerId, 30, 'referral', 'Referred 5 friends - earned 1 free month');
+      }
+      if (count === 10) {
+        await awardPremiumDays(referrerId, 30, 'referral', 'Referred 10 friends - earned another free month');
+      }
+
+      await awardPremiumDays(user.id, 3, 'referral_bonus', 'Welcome bonus - joined via referral code');
+    }
 
     const token = generateToken(user);
     return res.status(201).json({ user, token });
@@ -139,6 +168,29 @@ export async function loginUser(req: Request, res: Response) {
     console.error('Login error:', err);
     return res.status(500).json({ message: 'Failed to login' });
   }
+}
+
+function generateReferralCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+export async function awardPremiumDays(userId: string, days: number, type: string, reason: string) {
+  const current = await pool.query('SELECT premium_until FROM users WHERE id = $1', [userId]);
+  const now = new Date();
+  const currentPremium = current.rows[0]?.premium_until;
+  const baseDate = (currentPremium && new Date(currentPremium) > now) ? new Date(currentPremium) : now;
+  const newExpiry = new Date(baseDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+  await pool.query('UPDATE users SET premium_until = $1 WHERE id = $2', [newExpiry.toISOString(), userId]);
+  await pool.query(
+    'INSERT INTO referral_rewards (user_id, type, days_awarded, reason) VALUES ($1, $2, $3, $4)',
+    [userId, type, days, reason]
+  );
 }
 
 export async function getMe(req: Request, res: Response) {

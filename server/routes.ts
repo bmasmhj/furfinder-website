@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "node:http";
 import OpenAI from "openai";
 import pool from "./db";
-import { authMiddleware, optionalAuth, registerUser, loginUser, getMe } from "./auth";
+import { authMiddleware, optionalAuth, registerUser, loginUser, getMe, awardPremiumDays } from "./auth";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
@@ -1213,6 +1213,103 @@ Return ONLY valid JSON, no markdown.`;
     } catch (err) {
       console.error("Clear notifications error:", err);
       return res.status(500).json({ message: "Failed to clear notifications" });
+    }
+  });
+
+  // ===== REFERRAL & AMBASSADOR ROUTES =====
+  app.get("/api/referral", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userResult = await pool.query(
+        'SELECT referral_code, premium_until FROM users WHERE id = $1',
+        [req.user!.id]
+      );
+      const referralCode = userResult.rows[0]?.referral_code || '';
+      const premiumUntil = userResult.rows[0]?.premium_until;
+
+      const referralCount = await pool.query(
+        'SELECT COUNT(*)::int AS count FROM users WHERE referred_by = $1',
+        [req.user!.id]
+      );
+
+      const rewardsResult = await pool.query(
+        'SELECT type, days_awarded, reason, created_at FROM referral_rewards WHERE user_id = $1 ORDER BY created_at DESC',
+        [req.user!.id]
+      );
+
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const sharesResult = await pool.query(
+        'SELECT platform, shared_date FROM social_shares WHERE user_id = $1 AND shared_date >= $2 ORDER BY shared_date DESC',
+        [req.user!.id, startOfMonth.toISOString()]
+      );
+
+      const totalSharesThisMonth = sharesResult.rows.length;
+
+      return res.json({
+        referralCode,
+        referralCount: referralCount.rows[0].count,
+        premiumUntil: premiumUntil ? new Date(premiumUntil).toISOString() : null,
+        rewards: rewardsResult.rows.map((r: any) => ({
+          type: r.type,
+          daysAwarded: r.days_awarded,
+          reason: r.reason,
+          createdAt: r.created_at.toISOString(),
+        })),
+        sharesThisMonth: totalSharesThisMonth,
+        shares: sharesResult.rows.map((s: any) => ({
+          platform: s.platform,
+          date: s.shared_date,
+        })),
+      });
+    } catch (err) {
+      console.error("Get referral info error:", err);
+      return res.status(500).json({ message: "Failed to fetch referral info" });
+    }
+  });
+
+  app.post("/api/referral/log-share", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const { platform } = req.body;
+      if (!platform) return res.status(400).json({ message: "Platform is required" });
+
+      const validPlatforms = ['instagram', 'facebook', 'tiktok'];
+      if (!validPlatforms.includes(platform)) {
+        return res.status(400).json({ message: "Invalid platform" });
+      }
+
+      try {
+        await pool.query(
+          'INSERT INTO social_shares (user_id, platform) VALUES ($1, $2)',
+          [req.user!.id, platform]
+        );
+      } catch (e: any) {
+        if (e.code === '23505') {
+          return res.status(409).json({ message: "You already logged a share on this platform today" });
+        }
+        throw e;
+      }
+
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const countResult = await pool.query(
+        'SELECT COUNT(*)::int AS count FROM social_shares WHERE user_id = $1 AND shared_date >= $2',
+        [req.user!.id, startOfMonth.toISOString()]
+      );
+
+      const totalShares = countResult.rows[0].count;
+
+      if (totalShares === 20) {
+        await awardPremiumDays(req.user!.id, 7, 'ambassador', 'Social ambassador - 20 shares this month - earned 1 free week');
+      }
+
+      return res.json({
+        message: "Share logged",
+        sharesThisMonth: totalShares,
+        rewardEarned: totalShares === 20,
+      });
+    } catch (err) {
+      console.error("Log share error:", err);
+      return res.status(500).json({ message: "Failed to log share" });
     }
   });
 

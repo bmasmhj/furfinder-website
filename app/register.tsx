@@ -27,6 +27,7 @@ export default function RegisterScreen() {
   const [termsChecked, setTermsChecked] = useState(false);
   const [aiChecked, setAiChecked] = useState(false);
   const [dataStorageChecked, setDataStorageChecked] = useState(false);
+  const [referralCode, setReferralCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const webTopPadding = Platform.OS === 'web' ? 67 : 0;
@@ -49,6 +50,7 @@ export default function RegisterScreen() {
         consentTerms: true,
         consentAi: true,
         consentDataStorage: true,
+        referralCode: referralCode.trim() || undefined,
       });
       router.replace('/(tabs)');
     } catch (e: any) {
@@ -148,6 +150,25 @@ export default function RegisterScreen() {
                 <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={20} color={Colors.textLight} />
               </Pressable>
             </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Referral Code (optional)</Text>
+            <View style={styles.inputWrapper}>
+              <Ionicons name="gift-outline" size={18} color={Colors.textLight} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={referralCode}
+                onChangeText={(text) => setReferralCode(text.toUpperCase())}
+                placeholder="Enter a friend's code"
+                placeholderTextColor={Colors.textLight}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                maxLength={6}
+                testID="register-referral"
+              />
+            </View>
+            <Text style={styles.referralHint}>Have a friend on PetReunite? Enter their code to get 3 free days of Premium!</Text>
           </View>
 
           <View style={styles.consentSection}>
@@ -383,5 +404,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins_600SemiBold',
     color: Colors.secondary,
+  },
+  referralHint: {
+    fontSize: 12,
+    fontFamily: 'Poppins_400Regular',
+    color: Colors.textLight,
+    marginTop: 4,
+    paddingLeft: 2,
   },
 });

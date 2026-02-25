@@ -109,6 +109,10 @@ function RootLayoutNav() {
         name="happy-tail/[id]"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="referral"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

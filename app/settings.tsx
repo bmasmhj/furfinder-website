@@ -163,6 +163,20 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Rewards</Text>
+        </View>
+
+        <Pressable style={styles.menuItem} onPress={() => router.push('/referral')}>
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#FEF3C7' }]}>
+              <Ionicons name="gift" size={18} color="#D97706" />
+            </View>
+            <Text style={styles.menuItemText}>Earn Free Premium</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </Pressable>
+
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionHeaderText}>Resources</Text>
         </View>
 
