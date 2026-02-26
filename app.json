@@ -56,6 +56,15 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": "https://replit.com/"
+      },
+      "eas": {
+        "projectId": "21469ea0-393c-4eb2-b173-11f9621e8f04"
+      }
+    },
+    "owner": "jessicabhullar"
   }
 }
