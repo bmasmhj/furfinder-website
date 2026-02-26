@@ -12,15 +12,7 @@
     "production": {
       "android": {
         "buildType": "app-bundle",
-        "credentialsSource": "remote"
-      }
-    }
-  },
-  "submit": {
-    "production": {
-      "android": {
-        "serviceAccountKeyPath": "./play-store-key.json",
-        "track": "internal"
+        "credentialsSource": "local"
       }
     }
   }

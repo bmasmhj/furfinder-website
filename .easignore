@@ -1,8 +1,9 @@
-node_modules/
-.git/
-assets/store/
-attached_assets/
-static-build/
+.git
+assets/store
+attached_assets
+static-build
 *.log
 *.jks
-.local/
+.local
+credentials.json
+petreunite.jks
