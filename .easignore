@@ -3,8 +3,6 @@ node_modules/
 assets/store/
 attached_assets/
 static-build/
-server/
-.local/
-/tmp/
 *.log
 *.jks
+.local/
