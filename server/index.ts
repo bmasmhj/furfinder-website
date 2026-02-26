@@ -200,6 +200,8 @@ function configureExpoAndLanding(app: express.Application) {
     res.status(200).send(deleteAccountHtml);
   });
 
+  app.use("/store-assets", express.static(path.resolve(process.cwd(), "assets", "store")));
+
   app.use((req: Request, res: Response, next: NextFunction) => {
     if (req.path.startsWith("/api")) {
       return next();
