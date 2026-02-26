@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetReunite - Store Listing Info</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 16px; padding-bottom: 60px; }
+    h1 { font-size: 22px; color: #FF6B4A; margin-bottom: 16px; text-align: center; }
+    .field { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .field-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .field-label { font-size: 13px; font-weight: 700; color: #FF6B4A; text-transform: uppercase; letter-spacing: 0.5px; }
+    .copy-btn { background: #2CBCB6; color: #fff; border: none; border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .copy-btn.copied { background: #4CAF50; }
+    .field-value { font-size: 15px; line-height: 1.5; color: #333; white-space: pre-wrap; word-break: break-word; }
+    .field-value.small { font-size: 13px; color: #555; }
+    .links { margin-top: 16px; }
+    .links a { display: block; background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 8px; text-decoration: none; color: #2CBCB6; font-weight: 600; font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .char-count { font-size: 11px; color: #999; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>PetReunite Store Listing</h1>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">App Name</span>
+      <button class="copy-btn" onclick="copyText(this, 'appName')">Copy</button>
+    </div>
+    <div class="field-value" id="appName">PetReunite - Lost & Found Pets</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Short Description</span>
+      <button class="copy-btn" onclick="copyText(this, 'shortDesc')">Copy</button>
+    </div>
+    <div class="field-value" id="shortDesc">AI-powered lost & found pet app for Australia. Find pets faster.</div>
+    <div class="char-count" id="shortDescCount"></div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Full Description</span>
+      <button class="copy-btn" onclick="copyText(this, 'fullDesc')">Copy</button>
+    </div>
+    <div class="field-value small" id="fullDesc">PetReunite is Australia's dedicated lost and found pet platform, designed to reunite lost pets with their families faster than ever before.
+
+HOW IT WORKS
+1. Report a lost or found pet with photos, location, and details
+2. Our AI instantly scans and matches reports across the community
+3. Get real-time area alerts when pets are reported near you
+4. Connect with the pet's owner and bring them home
+
+KEY FEATURES
+
+AI-Powered Matching
+Our advanced AI compares photos, breeds, colours, markings, and location to find potential matches between lost and found reports. Simply upload a photo and let our technology do the work.
+
+Biometric ID Scanning
+Register close-up photos of your pet's nose, eyes, and face for enhanced identification. Use Quick Snap to match a spotted pet against registered biometric scans.
+
+Interactive Map
+View lost and found pets on an Australia-wide map. Find nearby vets, shelters, and rescue organisations from our directory of 89+ listings across every state and territory.
+
+Pet Profile Registration
+Register your pets before they go missing. Store photos, microchip numbers, medical notes, and biometric scans so you're prepared if the worst happens. Quickly report a registered pet as lost with one tap.
+
+Area Alerts
+Get notified instantly when a pet is reported lost or found within your chosen radius. Never miss a sighting in your neighbourhood.
+
+Community Tips
+Leave comments and tips on reports to help reunite pets. Share sightings, suggest locations, and support fellow pet owners.
+
+Printable Flyers
+Generate professional lost pet flyers directly from your report. Download and print to post in your local area.
+
+Happy Tails
+Read heartwarming reunion stories from pets that have been successfully reunited with their families through PetReunite.
+
+Reward Pool
+Create a community reward pool for lost pets to incentivise finders and increase the chances of a safe return.
+
+Boost Reports
+Increase the visibility of your report to reach more people in your area when time is critical.
+
+PREMIUM FEATURES ($4.99/month or $49.99/year)
+- Unlimited pet reports and profiles
+- AI-powered photo matching
+- Scan online posts from social media
+- Multi-photo uploads (up to 5 photos)
+- Biometric ID scanning
+- Priority area alerts
+
+PRIVACY & SAFETY
+- Compliant with the Australian Privacy Act 1988
+- Comment moderation with profanity and spam filtering
+- Block and report users
+- Full account deletion available
+- Your data stored securely on Australian-compliant servers
+
+PetReunite is built for the Australian community. Whether you've lost a pet, found a stray, or want to be prepared, PetReunite gives you the tools and community to help bring pets home.
+
+Download now and join thousands of Australians helping reunite pets with their families.</div>
+    <div class="char-count" id="fullDescCount"></div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Category</span>
+      <button class="copy-btn" onclick="copyText(this, 'category')">Copy</button>
+    </div>
+    <div class="field-value" id="category">Lifestyle</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Tags / Keywords</span>
+      <button class="copy-btn" onclick="copyText(this, 'tags')">Copy</button>
+    </div>
+    <div class="field-value small" id="tags">lost pets, found pets, missing pets, pet finder, lost dog, lost cat, pet tracker, AI pet matching, Australia pets, pet reunite, animal rescue, pet community</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Contact Email</span>
+      <button class="copy-btn" onclick="copyText(this, 'email')">Copy</button>
+    </div>
+    <div class="field-value" id="email">support@petreunite.com</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Privacy Policy URL</span>
+      <button class="copy-btn" onclick="copyText(this, 'privacy')">Copy</button>
+    </div>
+    <div class="field-value small" id="privacy">https://pet-reunite-ai.replit.app/privacy-policy</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Terms of Use URL</span>
+      <button class="copy-btn" onclick="copyText(this, 'terms')">Copy</button>
+    </div>
+    <div class="field-value small" id="terms">https://pet-reunite-ai.replit.app/terms-of-use</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Account Deletion URL</span>
+      <button class="copy-btn" onclick="copyText(this, 'deletion')">Copy</button>
+    </div>
+    <div class="field-value small" id="deletion">https://pet-reunite-ai.replit.app/delete-account</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Test Account Email</span>
+      <button class="copy-btn" onclick="copyText(this, 'testEmail')">Copy</button>
+    </div>
+    <div class="field-value" id="testEmail">googlereview@petreunite.com</div>
+  </div>
+
+  <div class="field">
+    <div class="field-header">
+      <span class="field-label">Test Account Password</span>
+      <button class="copy-btn" onclick="copyText(this, 'testPass')">Copy</button>
+    </div>
+    <div class="field-value" id="testPass">PetReunite2026Review!</div>
+  </div>
+
+  <h1 style="margin-top: 20px;">Downloadable Assets</h1>
+
+  <div class="links">
+    <a href="/store-assets/app-icon-store.png" download>App Icon (1024x1024)</a>
+    <a href="/store-assets/feature-graphic.png" download>Feature Graphic (1024x500)</a>
+    <a href="/store-assets/screenshot-1.png" download>Screenshot 1 - Home Feed</a>
+    <a href="/store-assets/screenshot-2.png" download>Screenshot 2 - Map</a>
+    <a href="/store-assets/screenshot-3.png" download>Screenshot 3 - AI Matching</a>
+    <a href="/store-assets/screenshot-4.png" download>Screenshot 4 - Pet Detail</a>
+    <a href="/store-assets/screenshot-5.png" download>Screenshot 5 - Registration</a>
+    <a href="/store-assets/screenshot-6.png" download>Screenshot 6 - Happy Tails</a>
+  </div>
+
+  <script>
+    function copyText(btn, id) {
+      var text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+    document.getElementById('shortDescCount').textContent = document.getElementById('shortDesc').innerText.length + ' / 80 characters';
+    document.getElementById('fullDescCount').textContent = document.getElementById('fullDesc').innerText.length + ' / 4000 characters';
+  </script>
+</body>
+</html>
