@@ -78,3 +78,4 @@ ensurePreviewReachable = "/status"
 
 [userenv.shared]
 EXPO_PUBLIC_REVENUECAT_API_KEY = "test_rCnkeFevFnFQRGZTONkysMTdFzY"
+EXPO_TOKEN = "DmKx3eQVQUYwgaprOxw2XOO_W1D9t0epK9M4CESN"

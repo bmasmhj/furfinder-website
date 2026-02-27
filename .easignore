@@ -1,4 +1,5 @@
 .git
+node_modules
 assets/store
 attached_assets
 static-build
@@ -7,3 +8,6 @@ static-build
 .local
 credentials.json
 petreunite.jks
+server/templates
+references
+*.md
