@@ -178,7 +178,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     <h2>Feature Graphic - RECOMMENDED</h2>
     <p>Long-press and save this image:</p>
     <img src="/store-assets/feature-graphic-final2.png" alt="Feature Graphic Final"/>
-    <h2>Feature Graphic - Split Reunion (BEST)</h2>
+    <h2>Feature Graphic - FINAL (The Fur Finder)</h2>
+    <p>Long-press and save this image:</p>
+    <img src="/store-assets/feature-graphic-split5.png" alt="Feature Graphic Final"/>
+    <h2>Feature Graphic - Without Brand Name</h2>
     <p>Long-press and save this image:</p>
     <img src="/store-assets/feature-graphic-split4.png" alt="Feature Graphic Split Clean"/>
     <h2>Feature Graphic - Split Reunion (no text)</h2>
