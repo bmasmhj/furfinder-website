@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS pet_reports (
   reward_pool DOUBLE PRECISION NOT NULL DEFAULT 0,
   contact_name VARCHAR(255) NOT NULL DEFAULT '',
   contact_phone VARCHAR(100) NOT NULL DEFAULT '',
+  show_contact_public BOOLEAN NOT NULL DEFAULT TRUE,
   reunion_message TEXT,
   reunion_date TIMESTAMPTZ,
   is_boosted BOOLEAN NOT NULL DEFAULT FALSE,
