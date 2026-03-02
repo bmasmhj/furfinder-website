@@ -165,6 +165,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const express = require("express");
   app.use("/store-assets", express.static(path.join(__dirname, "..", "assets", "store")));
   app.use("/app-assets", express.static(path.join(__dirname, "..", "assets")));
+
+  app.get("/download-assets", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "text/html");
+    res.send(`<!DOCTYPE html><html><head><title>Download Assets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{font-family:sans-serif;padding:20px;text-align:center}img{max-width:100%;margin:10px 0;border:2px solid #ccc;border-radius:8px}h2{color:#FF6B4A}p{color:#666;font-size:14px}</style>
+    </head><body>
+    <h2>App Icon</h2>
+    <p>Long-press and save this image:</p>
+    <img src="/app-assets/icon-option5.png" alt="App Icon"/>
+    <h2>Feature Graphic - Detective Dog</h2>
+    <p>Long-press and save this image:</p>
+    <img src="/store-assets/feature-graphic-v5.png" alt="Feature Graphic"/>
+    <h2>Feature Graphic - Your Dogs</h2>
+    <p>Long-press and save this image:</p>
+    <img src="/store-assets/feature-graphic-dogs.png" alt="Feature Graphic Dogs"/>
+    </body></html>`);
+  });
+
   app.post("/api/match", async (req: Request, res: Response) => {
     try {
       const { report, reports, profiles, radiusKm } = req.body as {
