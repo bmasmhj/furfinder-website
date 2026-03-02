@@ -217,6 +217,23 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Messages</Text>
+        </View>
+
+        <Pressable style={styles.menuItem} onPress={() => router.push('/conversations')} testID="messages-link">
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#E0F2FE' }]}>
+              <Ionicons name="chatbubbles" size={18} color="#0284C7" />
+            </View>
+            <View>
+              <Text style={styles.menuItemText}>My Messages</Text>
+              <Text style={styles.menuItemSubtext}>View your conversations</Text>
+            </View>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </Pressable>
+
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionHeaderText}>Rewards</Text>
         </View>
 

@@ -34,7 +34,7 @@ export default function PetDetailScreen() {
   const insets = useSafeAreaInsets();
   const { getReport, updateReportStatus, markReunited, addComment, addRewardContribution, boostReport } = usePets();
   const { canUseAIMatching } = useSubscription();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const cachedReport = getReport(id);
   const webTopPadding = Platform.OS === 'web' ? 67 : 0;
 
@@ -110,6 +110,34 @@ export default function PetDetailScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     Linking.openURL(`sms:${report.contactPhone}`);
+  };
+
+  const handleInAppMessage = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    if (!token || !user) {
+      Alert.alert('Login Required', 'Please log in to send messages.');
+      return;
+    }
+    const reportOwnerId = (report as any).userId;
+    if (!reportOwnerId || reportOwnerId === user.id) return;
+    try {
+      const baseUrl = getApiUrl();
+      const res = await fetch(new URL('/api/conversations', baseUrl).toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ reportId: report.id, recipientId: reportOwnerId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        router.push(`/chat/${data.conversationId}`);
+      } else {
+        Alert.alert('Error', 'Could not start conversation');
+      }
+    } catch {
+      Alert.alert('Error', 'Could not connect to server');
+    }
   };
 
   const isActiveBoosted = !!(report.isBoosted && report.boostExpiresAt && new Date(report.boostExpiresAt).getTime() > Date.now());
@@ -440,6 +468,12 @@ export default function PetDetailScreen() {
                   <Text style={styles.contactBtnText}>Text</Text>
                 </Pressable>
               </View>
+              {!report.isOwner && token && (
+                <Pressable onPress={handleInAppMessage} style={[styles.contactBtn, { backgroundColor: '#0284C7', marginTop: 10, alignSelf: 'stretch' }]}>
+                  <Ionicons name="chatbubbles" size={20} color="#fff" />
+                  <Text style={styles.contactBtnText}>Message in App</Text>
+                </Pressable>
+              )}
             </View>
           </View>
 

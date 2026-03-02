@@ -94,6 +94,7 @@ function buildImageContent(photoUri: string, detail: "high" | "low" = "high"): O
 function mapReportRow(row: any, isOwner: boolean, likedByMe: boolean): any {
   return {
     id: row.id,
+    userId: row.user_id,
     status: row.status,
     petType: row.pet_type,
     petName: row.pet_name,
@@ -1987,6 +1988,179 @@ Return ONLY valid JSON, no markdown.`;
     } catch (err) {
       console.error("Reject org error:", err);
       return res.status(500).json({ message: "Failed to reject" });
+    }
+  });
+
+  // ===== MESSAGING =====
+
+  app.get("/api/conversations", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const result = await pool.query(
+        `SELECT c.*,
+          u1.display_name AS participant1_name,
+          u2.display_name AS participant2_name,
+          pr.pet_name AS report_pet_name,
+          pr.status AS report_status,
+          pr.photo_uri AS report_photo,
+          (SELECT COUNT(*)::int FROM messages m WHERE m.conversation_id = c.id AND m.sender_id != $1 AND m.read_at IS NULL) AS unread_count
+         FROM conversations c
+         JOIN users u1 ON u1.id = c.participant1_id
+         JOIN users u2 ON u2.id = c.participant2_id
+         LEFT JOIN pet_reports pr ON pr.id = c.report_id
+         WHERE c.participant1_id = $1 OR c.participant2_id = $1
+         ORDER BY c.last_message_at DESC`,
+        [userId]
+      );
+      return res.json(result.rows.map((r: any) => ({
+        id: r.id,
+        reportId: r.report_id,
+        reportPetName: r.report_pet_name || null,
+        reportStatus: r.report_status || null,
+        reportPhoto: r.report_photo || null,
+        otherUserId: r.participant1_id === userId ? r.participant2_id : r.participant1_id,
+        otherUserName: r.participant1_id === userId ? r.participant2_name : r.participant1_name,
+        lastMessageText: r.last_message_text,
+        lastMessageAt: r.last_message_at instanceof Date ? r.last_message_at.toISOString() : r.last_message_at,
+        unreadCount: r.unread_count,
+        createdAt: r.created_at instanceof Date ? r.created_at.toISOString() : r.created_at,
+      })));
+    } catch (err) {
+      console.error("Get conversations error:", err);
+      return res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
+  app.get("/api/conversations/unread-count", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const result = await pool.query(
+        `SELECT COUNT(*)::int AS count FROM messages m
+         JOIN conversations c ON c.id = m.conversation_id
+         WHERE (c.participant1_id = $1 OR c.participant2_id = $1)
+         AND m.sender_id != $1 AND m.read_at IS NULL`,
+        [userId]
+      );
+      return res.json({ count: result.rows[0]?.count || 0 });
+    } catch (err) {
+      console.error("Unread count error:", err);
+      return res.status(500).json({ message: "Failed to get unread count" });
+    }
+  });
+
+  app.post("/api/conversations", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const { reportId, recipientId } = req.body;
+      if (!recipientId) return res.status(400).json({ message: "recipientId is required" });
+      if (recipientId === userId) return res.status(400).json({ message: "Cannot message yourself" });
+
+      const p1 = userId < recipientId ? userId : recipientId;
+      const p2 = userId < recipientId ? recipientId : userId;
+
+      const existing = await pool.query(
+        reportId
+          ? `SELECT id FROM conversations WHERE report_id = $1 AND participant1_id = $2 AND participant2_id = $3`
+          : `SELECT id FROM conversations WHERE report_id IS NULL AND participant1_id = $1 AND participant2_id = $2`,
+        reportId ? [reportId, p1, p2] : [p1, p2]
+      );
+
+      if (existing.rows.length > 0) {
+        return res.json({ conversationId: existing.rows[0].id, existing: true });
+      }
+
+      const result = await pool.query(
+        `INSERT INTO conversations (report_id, participant1_id, participant2_id) VALUES ($1, $2, $3) RETURNING id`,
+        [reportId || null, p1, p2]
+      );
+      return res.status(201).json({ conversationId: result.rows[0].id, existing: false });
+    } catch (err) {
+      console.error("Create conversation error:", err);
+      return res.status(500).json({ message: "Failed to create conversation" });
+    }
+  });
+
+  app.get("/api/conversations/:id/messages", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const { id } = req.params;
+
+      const conv = await pool.query(
+        `SELECT * FROM conversations WHERE id = $1 AND (participant1_id = $2 OR participant2_id = $2)`,
+        [id, userId]
+      );
+      if (conv.rows.length === 0) return res.status(404).json({ message: "Conversation not found" });
+
+      await pool.query(
+        `UPDATE messages SET read_at = NOW() WHERE conversation_id = $1 AND sender_id != $2 AND read_at IS NULL`,
+        [id, userId]
+      );
+
+      const result = await pool.query(
+        `SELECT m.*, u.display_name AS sender_name FROM messages m
+         JOIN users u ON u.id = m.sender_id
+         WHERE m.conversation_id = $1
+         ORDER BY m.created_at ASC`,
+        [id]
+      );
+      return res.json(result.rows.map((r: any) => ({
+        id: r.id,
+        senderId: r.sender_id,
+        senderName: r.sender_name,
+        text: r.text,
+        isMe: r.sender_id === userId,
+        readAt: r.read_at ? (r.read_at instanceof Date ? r.read_at.toISOString() : r.read_at) : null,
+        createdAt: r.created_at instanceof Date ? r.created_at.toISOString() : r.created_at,
+      })));
+    } catch (err) {
+      console.error("Get messages error:", err);
+      return res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post("/api/conversations/:id/messages", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user!.id;
+      const { id } = req.params;
+      const { text } = req.body;
+      if (!text || !text.trim()) return res.status(400).json({ message: "Message text is required" });
+
+      const conv = await pool.query(
+        `SELECT * FROM conversations WHERE id = $1 AND (participant1_id = $2 OR participant2_id = $2)`,
+        [id, userId]
+      );
+      if (conv.rows.length === 0) return res.status(404).json({ message: "Conversation not found" });
+
+      const result = await pool.query(
+        `INSERT INTO messages (conversation_id, sender_id, text) VALUES ($1, $2, $3) RETURNING *`,
+        [id, userId, text.trim()]
+      );
+
+      await pool.query(
+        `UPDATE conversations SET last_message_text = $1, last_message_at = NOW() WHERE id = $2`,
+        [text.trim().substring(0, 200), id]
+      );
+
+      const otherId = conv.rows[0].participant1_id === userId ? conv.rows[0].participant2_id : conv.rows[0].participant1_id;
+      const senderName = req.user!.displayName;
+      await pool.query(
+        `INSERT INTO notifications (user_id, type, title, message) VALUES ($1, 'message', $2, $3)`,
+        [otherId, `New message from ${senderName}`, text.trim().substring(0, 100)]
+      );
+
+      const msg = result.rows[0];
+      return res.status(201).json({
+        id: msg.id,
+        senderId: msg.sender_id,
+        senderName,
+        text: msg.text,
+        isMe: true,
+        readAt: null,
+        createdAt: msg.created_at instanceof Date ? msg.created_at.toISOString() : msg.created_at,
+      });
+    } catch (err) {
+      console.error("Send message error:", err);
+      return res.status(500).json({ message: "Failed to send message" });
     }
   });
 

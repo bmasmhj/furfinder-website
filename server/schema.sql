@@ -199,6 +199,30 @@ CREATE TABLE IF NOT EXISTS organisation_animals (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  report_id UUID REFERENCES pet_reports(id) ON DELETE SET NULL,
+  participant1_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  participant2_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  last_message_text TEXT NOT NULL DEFAULT '',
+  last_message_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(report_id, participant1_id, participant2_id)
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+  sender_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  text TEXT NOT NULL,
+  read_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_conversations_participant1 ON conversations(participant1_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_participant2 ON conversations(participant2_id);
+
 CREATE INDEX IF NOT EXISTS idx_organisations_user_id ON organisations(user_id);
 CREATE INDEX IF NOT EXISTS idx_organisations_status ON organisations(status);
 CREATE INDEX IF NOT EXISTS idx_org_animals_org_id ON organisation_animals(org_id);
