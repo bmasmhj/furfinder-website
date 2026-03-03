@@ -160,6 +160,30 @@ function RootLayoutNav() {
         name="suburb-directory"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="register-org"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="org-dashboard"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="org-animal-form"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="partners"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="partner/[id]"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="admin"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
