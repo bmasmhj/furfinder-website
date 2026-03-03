@@ -4,119 +4,12 @@ import OpenAI from "openai";
 import pool from "./db";
 import { authMiddleware, optionalAuth, requireRole, registerUser, loginUser, getMe, awardPremiumDays } from "./auth";
 import { moderateContent } from "./moderation";
+import { sendPushNotification } from "./push";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
-
-const PUSH_MAX_ATTEMPTS = 3;
-const PUSH_RECEIPT_DELAY_MS = 30_000;
-const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
-const EXPO_RECEIPT_URL = 'https://exp.host/--/api/v2/push/getReceipts';
-
-async function clearPushToken(userId: string, pushToken: string): Promise<void> {
-  try {
-    await pool.query(
-      'UPDATE users SET push_token = NULL WHERE id = $1 AND push_token = $2',
-      [userId, pushToken]
-    );
-    console.log(`[Push] Cleared stale token for user ${userId}`);
-  } catch (err) {
-    console.error('[Push] Failed to clear stale token:', err);
-  }
-}
-
-async function checkPushReceipt(ticketId: string, userId: string, pushToken: string): Promise<void> {
-  try {
-    const res = await fetch(EXPO_RECEIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ ids: [ticketId] }),
-    });
-    if (!res.ok) return;
-    const json = await res.json() as any;
-    const receipt = json?.data?.[ticketId];
-    if (receipt?.status === 'error') {
-      const errorType = receipt?.details?.error;
-      console.error(`[Push] Receipt error for ticket ${ticketId}: ${receipt.message} (${errorType})`);
-      if (errorType === 'DeviceNotRegistered' || errorType === 'InvalidCredentials') {
-        await clearPushToken(userId, pushToken);
-      }
-    }
-  } catch (err) {
-    console.error('[Push] Receipt check error:', err);
-  }
-}
-
-async function sendPushNotification(
-  pushToken: string | null,
-  userId: string,
-  title: string,
-  body: string,
-  data?: object
-): Promise<void> {
-  if (!pushToken || !pushToken.startsWith('ExponentPushToken[')) return;
-
-  let ticketId: string | null = null;
-
-  for (let attempt = 1; attempt <= PUSH_MAX_ATTEMPTS; attempt++) {
-    try {
-      const res = await fetch(EXPO_PUSH_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Accept-Encoding': 'gzip, deflate',
-        },
-        body: JSON.stringify({
-          to: pushToken,
-          title,
-          body,
-          data: data || {},
-          sound: 'default',
-          priority: 'high',
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Expo push API HTTP ${res.status}`);
-      }
-
-      const json = await res.json() as any;
-      const tickets = Array.isArray(json?.data) ? json.data : [json?.data];
-      const ticket = tickets[0];
-
-      if (ticket?.status === 'error') {
-        const errorType = ticket?.details?.error;
-        console.error(`[Push] Send error for user ${userId}: ${ticket.message} (${errorType})`);
-        if (errorType === 'DeviceNotRegistered' || errorType === 'InvalidCredentials') {
-          await clearPushToken(userId, pushToken);
-        }
-        return;
-      }
-
-      if (ticket?.status === 'ok' && ticket?.id) {
-        ticketId = ticket.id;
-        console.log(`[Push] Sent to user ${userId}, ticket ${ticketId}`);
-      }
-
-      break;
-    } catch (err) {
-      console.error(`[Push] Attempt ${attempt}/${PUSH_MAX_ATTEMPTS} failed for user ${userId}:`, err);
-      if (attempt < PUSH_MAX_ATTEMPTS) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-      }
-    }
-  }
-
-  if (ticketId) {
-    const capturedTicketId = ticketId;
-    setTimeout(() => {
-      checkPushReceipt(capturedTicketId, userId, pushToken).catch(() => {});
-    }, PUSH_RECEIPT_DELAY_MS);
-  }
-}
 
 interface PetReport {
   id: string;
