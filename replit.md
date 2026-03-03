@@ -60,6 +60,14 @@ These are confirmed features to build after the iOS App Store submission is comp
 1. **Dark Mode** — Full dark theme across all 30+ screens. Requires a complete colour system refactor using `useColorScheme()`. Estimated 3-4 hours.
 2. **Analytics Tracking** — In-app event logging for report submissions, match success rate, referral conversions, and feature usage. Must comply with Australian Privacy Act. Estimated 2 hours.
 
+## Debugging Rules (Non-Negotiable)
+
+When a screen shows empty data or a fetch appears to do nothing:
+1. **Read the source code first.** Trace the full data path: how the URL is built → how the fetch is called → what the server receives. Do not rely on logs alone.
+2. **Check URL construction.** `getApiUrl()` returns a trailing slash (`https://domain/`). String concatenation like `${getApiUrl()}/api/route` creates a double-slash (`https://domain//api/route`) that browsers silently drop. Always use `new URL('/api/route', getApiUrl()).toString()` instead.
+3. **Use `expo/fetch` not the global `fetch`.** Import `fetch` from `'expo/fetch'` in all screens that make API calls. The global fetch behaves differently across platforms.
+4. **Never conclude "the API is broken" without first verifying the request actually reached the server.** If the backend log has no record of the request, the bug is in the frontend URL or fetch call, not the server.
+
 ## External Dependencies
 -   **Database:** PostgreSQL (cloud) with `pg` driver.
 -   **AI Services:** OpenAI (via Replit AI Integrations) for AI matching, post scanning, and biometric analysis.
