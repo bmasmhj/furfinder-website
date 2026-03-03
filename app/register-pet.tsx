@@ -178,7 +178,7 @@ export default function RegisterPetScreen() {
           ownerPhone: ownerPhone.trim(),
         });
       }
-      router.back();
+      router.canGoBack() ? router.back() : router.replace('/(tabs)/my-reports');
     } catch (e) {
       Alert.alert('Error', 'Failed to save. Please try again.');
     } finally {
@@ -189,7 +189,7 @@ export default function RegisterPetScreen() {
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + webTopPadding + 12 }]}>
-        <Pressable onPress={() => router.back()}>
+        <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)/my-reports')}>
           <Ionicons name="close" size={28} color={Colors.text} />
         </Pressable>
         <Text style={styles.headerTitle}>

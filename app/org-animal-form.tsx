@@ -214,7 +214,7 @@ export default function OrgAnimalFormScreen() {
     >
       <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]} testID="org-animal-form-screen">
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn} testID="back-button">
+          <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/org-dashboard')} style={styles.backBtn} testID="back-button">
             <Ionicons name="arrow-back" size={24} color={Colors.text} />
           </Pressable>
           <Text style={styles.headerTitle}>{isEdit ? 'Edit Animal' : 'Add Animal'}</Text>

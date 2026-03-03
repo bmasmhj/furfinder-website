@@ -271,7 +271,7 @@ export default function ReportFormScreen() {
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + webTopPadding + 12 }]}>
-        <Pressable onPress={() => router.back()}>
+        <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}>
           <Ionicons name="close" size={28} color={Colors.text} />
         </Pressable>
         <Text style={styles.headerTitle}>
@@ -514,7 +514,7 @@ export default function ReportFormScreen() {
             </Text>
             <Pressable
               style={styles.successBtn}
-              onPress={() => router.back()}
+              onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
             >
               <Text style={styles.successBtnText}>Done</Text>
             </Pressable>

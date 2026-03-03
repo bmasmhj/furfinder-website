@@ -169,7 +169,7 @@ export default function ChatScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]}>
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
+          <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/conversations')} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={24} color={Colors.text} />
           </Pressable>
           <Text style={styles.headerTitle}>Chat</Text>
@@ -189,7 +189,7 @@ export default function ChatScreen() {
       keyboardVerticalOffset={0}
     >
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn}>
+        <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/conversations')} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </Pressable>
         <View style={styles.headerInfo}>

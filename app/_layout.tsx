@@ -184,12 +184,20 @@ function RootLayoutNav() {
         name="admin"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="conversations"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="chat/[id]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
@@ -197,12 +205,12 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
+    if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded && !fontError) return null;
 
   return (
     <ErrorBoundary>

@@ -53,7 +53,7 @@ export default function PaywallScreen() {
     setIsProcessing(false);
     if (success) {
       Alert.alert('Restored!', 'Your premium subscription has been restored.', [
-        { text: 'Great!', onPress: () => router.back() },
+        { text: 'Great!', onPress: () => router.canGoBack() ? router.back() : router.replace('/(tabs)') },
       ]);
     } else {
       Alert.alert('No Subscription Found', 'We could not find an active subscription to restore.');
@@ -64,7 +64,7 @@ export default function PaywallScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]}>
         <View style={styles.premiumActiveContainer}>
-          <Pressable onPress={() => router.back()} style={styles.closeBtn}>
+          <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={styles.closeBtn}>
             <Ionicons name="close" size={24} color={Colors.text} />
           </Pressable>
           <View style={styles.premiumActiveIcon}>
@@ -74,7 +74,7 @@ export default function PaywallScreen() {
           <Text style={styles.premiumActiveSubtitle}>
             You have access to all premium features. Thank you for supporting The Fur Finder!
           </Text>
-          <Pressable style={styles.premiumActiveBtn} onPress={() => router.back()}>
+          <Pressable style={styles.premiumActiveBtn} onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}>
             <Text style={styles.premiumActiveBtnText}>Continue</Text>
           </Pressable>
         </View>
@@ -85,7 +85,7 @@ export default function PaywallScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}>
-        <Pressable onPress={() => router.back()} style={styles.closeBtn}>
+        <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={styles.closeBtn}>
           <Ionicons name="close" size={24} color="#fff" />
         </Pressable>
 

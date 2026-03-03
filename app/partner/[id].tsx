@@ -82,7 +82,7 @@ export default function PartnerDetailScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]}>
         <View style={styles.header}>
-          <Pressable testID="partner-detail-back" onPress={() => router.back()} style={styles.backBtn}>
+          <Pressable testID="partner-detail-back" onPress={() => router.canGoBack() ? router.back() : router.replace('/partners')} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={24} color={Colors.text} />
           </Pressable>
           <Text style={styles.headerTitle}>Partner</Text>
@@ -100,7 +100,7 @@ export default function PartnerDetailScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + webTopPadding }]}>
       <View style={styles.header}>
-        <Pressable testID="partner-detail-back" onPress={() => router.back()} style={styles.backBtn}>
+        <Pressable testID="partner-detail-back" onPress={() => router.canGoBack() ? router.back() : router.replace('/partners')} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </Pressable>
         <Text style={styles.headerTitle} numberOfLines={1}>Partner Details</Text>

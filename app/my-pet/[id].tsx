@@ -52,7 +52,7 @@ export default function MyPetDetailScreen() {
           style: 'destructive',
           onPress: () => {
             deleteProfile(profile.id);
-            router.back();
+            router.canGoBack() ? router.back() : router.replace('/(tabs)/my-reports');
           },
         },
       ]

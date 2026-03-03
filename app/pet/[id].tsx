@@ -185,7 +185,7 @@ export default function PetDetailScreen() {
     await markReunited(report.id, msg);
     setShowReunionInput(false);
     setReunionMessage('');
-    router.back();
+    router.canGoBack() ? router.back() : router.replace('/(tabs)');
   };
 
   const handleShare = async () => {

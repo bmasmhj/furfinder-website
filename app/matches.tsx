@@ -188,7 +188,7 @@ export default function MatchesScreen() {
         <View style={styles.center}>
           <MaterialCommunityIcons name="alert-circle-outline" size={48} color={Colors.textLight} />
           <Text style={styles.errorText}>Report not found</Text>
-          <Pressable onPress={() => router.back()}>
+          <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}>
             <Text style={styles.backLink}>Go Back</Text>
           </Pressable>
         </View>
@@ -204,7 +204,7 @@ export default function MatchesScreen() {
         end={{ x: 1, y: 1 }}
         style={[styles.headerGradient, { paddingTop: insets.top + webTopPadding + 12 }]}
       >
-        <Pressable onPress={() => router.back()} style={styles.backBtn}>
+        <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={styles.backBtn}>
           <Ionicons name="chevron-back" size={24} color="#fff" />
         </Pressable>
         <View style={styles.headerContent}>
