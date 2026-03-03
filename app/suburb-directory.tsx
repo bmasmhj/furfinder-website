@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
-import { StyleSheet, Text, View, FlatList, Pressable, TextInput, Image, Platform, ActivityIndicator } from 'react-native';
+import { useState, useMemo, useCallback } from 'react';
+import { StyleSheet, Text, View, FlatList, Pressable, TextInput, Image, Platform, ActivityIndicator, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Colors from '@/constants/colors';
 import { getApiUrl } from '@/lib/query-client';
 import { useAuth } from '@/lib/auth-context';
@@ -39,8 +39,10 @@ interface SuburbProfile {
 export default function SuburbDirectoryScreen() {
   const insets = useSafeAreaInsets();
   const { token } = useAuth();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [selectedSuburb, setSelectedSuburb] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const webTopPadding = Platform.OS === 'web' ? 67 : 0;
 
   const { data: suburbs = [], isLoading: loadingSuburbs } = useQuery<SuburbInfo[]>({
@@ -52,6 +54,7 @@ export default function SuburbDirectoryScreen() {
       if (!res.ok) throw new Error('Failed to fetch suburbs');
       return res.json();
     },
+    staleTime: 0,
   });
 
   const { data: profiles = [], isLoading: loadingProfiles } = useQuery<SuburbProfile[]>({
@@ -65,7 +68,15 @@ export default function SuburbDirectoryScreen() {
       return res.json();
     },
     enabled: !!selectedSuburb,
+    staleTime: 0,
   });
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ['suburbs'] });
+    await queryClient.invalidateQueries({ queryKey: ['suburb-profiles'] });
+    setRefreshing(false);
+  }, [queryClient]);
 
   const filteredSuburbs = useMemo(() => {
     if (!search.trim()) return suburbs;
@@ -97,6 +108,9 @@ export default function SuburbDirectoryScreen() {
           <FlatList
             data={profiles}
             keyExtractor={(item) => item.id}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={Colors.primary} />
+            }
             renderItem={({ item }) => (
               <View style={styles.profileCard}>
                 <View style={styles.profilePhotoWrap}>
@@ -192,6 +206,9 @@ export default function SuburbDirectoryScreen() {
         <FlatList
           data={filteredSuburbs}
           keyExtractor={(item) => item.suburb}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={Colors.primary} />
+          }
           renderItem={({ item }) => (
             <Pressable style={styles.suburbCard} onPress={() => setSelectedSuburb(item.suburb)}>
               <View style={styles.suburbIcon}>
