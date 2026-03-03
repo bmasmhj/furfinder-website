@@ -68,6 +68,36 @@ When a screen shows empty data or a fetch appears to do nothing:
 3. **Use `expo/fetch` not the global `fetch`.** Import `fetch` from `'expo/fetch'` in all screens that make API calls. The global fetch behaves differently across platforms.
 4. **Never conclude "the API is broken" without first verifying the request actually reached the server.** If the backend log has no record of the request, the bug is in the frontend URL or fetch call, not the server.
 
+## Known Bugs & Patterns (Lessons Learned — Do Not Repeat)
+
+### Database
+- **Always verify column names against the real DB schema before using them in queries.** The `is_reunited` column does not exist — reunited status is tracked via `status = 'reunited'`. Never assume a column name; check `information_schema.columns` first.
+
+### Photos & Images
+- **Never store `file://` URIs in the database.** They are temporary local device paths that disappear when cache clears or on any other device. Always set `base64: true` in every `ImagePicker.launchCameraAsync()` and `launchImageLibraryAsync()` call, then store as `data:image/jpeg;base64,...`.
+- **Use `expo-image`'s `Image` component for all thumbnails and cards**, not `Animated.Image` from reanimated. `expo-image` handles `file://`, `data:`, `https://` and cached URIs consistently. `Animated.Image` does not.
+- **Filter `file://` URIs before rendering** in any list or directory screen. Use `.filter(u => !u.startsWith('file://'))` to avoid broken image placeholders from old data.
+
+### Navigation
+- **Always use `router.canGoBack() ? router.back() : router.replace(fallback)`** on every back button. `router.back()` silently does nothing if there is no navigation history (e.g. screen opened via direct URL in a browser). Every custom back button must have a fallback route.
+- Fallback destinations by screen type: Settings-linked screens → `/(tabs)/settings`, Pet detail/feed screens → `/(tabs)`, My Pet screens → `/(tabs)/my-reports`.
+
+### React Query / Data Fetching
+- **Screens that must show fresh data on every visit** (directories, lists that users add to) must set `staleTime: 0` on their queries. The default `staleTime: Infinity` means data never refreshes, so newly added items won't appear.
+- **Pull-to-refresh:** Add `RefreshControl` with `queryClient.invalidateQueries()` to any FlatList where the user might expect to see new data without navigating away.
+
+### Location Detection
+- **Always call `Location.hasServicesEnabledAsync()` first.** If location services are off at the OS level, all subsequent calls will hang or fail silently.
+- **Always check `canAskAgain`** after `requestForegroundPermissionsAsync()`. If `canAskAgain` is false, show the user the exact path to fix it in iPhone Settings — do not just show a generic "permission needed" message.
+- **Always set a timeout on `getCurrentPositionAsync`.** Without one it hangs forever indoors. Use `Promise.race()` with a 15-second timeout and `Accuracy.Lowest` (fastest, WiFi/cell-based). Try `getLastKnownPositionAsync({ maxAge: 300000 })` first as it's instant.
+
+### Paywalls & Subscriptions
+- **Do not gate `purchasePackage()` behind an `offerings.length > 0` check.** The subscription context already handles the case where RevenueCat isn't configured (preview/dev mode) — it grants premium directly. The paywall must always call `purchasePackage()` and let the context decide.
+- **Always add `insets.bottom` to ScrollView `contentContainerStyle` padding** on any screen with a CTA button at the bottom. Without it the button can be hidden behind the iPhone home indicator.
+
+### Backend API Changes
+- **Check the actual DB column list before writing any new SQL filter condition.** Run a quick `SELECT column_name FROM information_schema.columns WHERE table_name = '...'` before adding WHERE clauses with new column names.
+
 ## External Dependencies
 -   **Database:** PostgreSQL (cloud) with `pg` driver.
 -   **AI Services:** OpenAI (via Replit AI Integrations) for AI matching, post scanning, and biometric analysis.
