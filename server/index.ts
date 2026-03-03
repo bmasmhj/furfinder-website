@@ -209,6 +209,15 @@ function configureExpoAndLanding(app: express.Application) {
     res.status(200).send(appFeaturesHtml);
   });
 
+  const colourPreviewHtml = fs.readFileSync(
+    path.resolve(process.cwd(), "server", "templates", "colour-preview.html"),
+    "utf-8"
+  );
+  app.get("/colour-preview", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.status(200).send(colourPreviewHtml);
+  });
+
   app.use("/store-assets", express.static(path.resolve(process.cwd(), "assets", "store")));
 
   app.use((req: Request, res: Response, next: NextFunction) => {

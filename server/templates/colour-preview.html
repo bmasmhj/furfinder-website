@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Fur Finder — Colour Theme Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      padding: 40px 20px 60px;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      color: #888;
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 40px;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .theme-block {
+      width: 280px;
+      flex-shrink: 0;
+    }
+    .theme-label {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+    .theme-desc {
+      color: #888;
+      font-size: 11px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    /* Phone shell */
+    .phone {
+      width: 280px;
+      background: #1a1a1a;
+      border-radius: 40px;
+      padding: 14px 14px 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .notch {
+      width: 80px;
+      height: 22px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      margin: 0 auto 10px;
+    }
+    .screen {
+      border-radius: 28px;
+      overflow: hidden;
+      height: 520px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 14px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-title { font-size: 17px; font-weight: 700; }
+    .header-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+
+    /* FILTER PILLS */
+    .pills {
+      display: flex; gap: 6px;
+      padding: 0 16px 12px;
+      flex-shrink: 0;
+    }
+    .pill {
+      font-family: 'Poppins', sans-serif;
+      font-size: 11px; font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 12px;
+      border: none; cursor: pointer;
+    }
+
+    /* CARDS */
+    .cards { padding: 0 16px; flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
+    .card {
+      border-radius: 14px;
+      padding: 12px;
+      display: flex; gap: 10px;
+      align-items: flex-start;
+    }
+    .card-photo {
+      width: 56px; height: 56px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      font-size: 28px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-body { flex: 1; }
+    .card-badge {
+      font-size: 9px; font-weight: 700;
+      border-radius: 6px;
+      padding: 2px 7px;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .card-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .card-sub { font-size: 11px; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+    .card-loc { font-size: 10px; }
+    .card-like {
+      font-size: 10px; font-weight: 600;
+      border-radius: 8px;
+      padding: 3px 8px;
+    }
+
+    /* FAB */
+    .fab {
+      position: absolute; bottom: 16px; right: 16px;
+      width: 44px; height: 44px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 300;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    /* TAB BAR */
+    .tabbar {
+      display: flex;
+      padding: 8px 0 4px;
+      flex-shrink: 0;
+    }
+    .tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 2px;
+    }
+    .tab-icon { font-size: 18px; }
+    .tab-label { font-size: 9px; font-weight: 600; }
+    .tab.active .tab-icon { font-size: 20px; }
+
+    /* SWATCH ROW */
+    .swatches {
+      display: flex; gap: 6px; margin-top: 12px; padding: 0 2px;
+    }
+    .swatch {
+      flex: 1; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; letter-spacing: 0.3px;
+    }
+
+    /* ===== OPTION A: Clean Minimal ===== */
+    .a-screen { background: #FAFAFA; }
+    .a-header { background: #FAFAFA; border-bottom: 1px solid #E5E7EB; }
+    .a-header .header-title { color: #1A1A2E; }
+    .a-header .header-icon { background: #FFF0ED; color: #FF6B4A; }
+    .a-pill-active { background: #FF6B4A; color: #fff; }
+    .a-pill-inactive { background: #F3F4F6; color: #6B7280; }
+    .a-card { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .a-card-photo { background: #FEF2F2; }
+    .a-badge-lost { background: #FEF2F2; color: #EF4444; }
+    .a-badge-found { background: #F0FDFA; color: #2CBCB6; }
+    .a-card-name { color: #1A1A2E; }
+    .a-card-sub { color: #6B7280; }
+    .a-card-loc { color: #9CA3AF; }
+    .a-like { background: #FFF0ED; color: #FF6B4A; }
+    .a-fab { background: #FF6B4A; color: #fff; }
+    .a-tabbar { background: #fff; border-top: 1px solid #E5E7EB; }
+    .a-tab-active { color: #FF6B4A; }
+    .a-tab-inactive { color: #9CA3AF; }
+
+    /* ===== OPTION B: Warm Cream ===== */
+    .b-screen { background: #FFF8F4; }
+    .b-header { background: #FFF8F4; border-bottom: 1px solid #FFE8DF; }
+    .b-header .header-title { color: #1A1A2E; }
+    .b-header .header-icon { background: #FFE8DF; color: #FF6B4A; }
+    .b-pill-active { background: #FF6B4A; color: #fff; }
+    .b-pill-inactive { background: #FFE8DF; color: #C2583E; }
+    .b-card { background: #fff; box-shadow: 0 2px 10px rgba(255,107,74,0.08); }
+    .b-card-photo { background: #FEF2F2; }
+    .b-badge-lost { background: #FEF2F2; color: #EF4444; }
+    .b-badge-found { background: #F0FDFA; color: #2CBCB6; }
+    .b-card-name { color: #1A1A2E; }
+    .b-card-sub { color: #6B7280; }
+    .b-card-loc { color: #9CA3AF; }
+    .b-like { background: #FFE8DF; color: #FF6B4A; }
+    .b-fab { background: #FF6B4A; color: #fff; }
+    .b-tabbar { background: #fff; border-top: 1px solid #FFE8DF; }
+    .b-tab-active { color: #FF6B4A; }
+    .b-tab-inactive { color: #C2A99A; }
+
+    /* ===== OPTION C: Coral Header ===== */
+    .c-screen { background: #FAFAFA; }
+    .c-header { background: #FF6B4A; }
+    .c-header .header-title { color: #fff; }
+    .c-header .header-icon { background: rgba(255,255,255,0.2); color: #fff; }
+    .c-pill-active { background: #fff; color: #FF6B4A; }
+    .c-pill-inactive { background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+    .c-pills { padding-bottom: 14px; padding-left: 16px; display: flex; gap: 6px; background: #FF6B4A; flex-shrink: 0; }
+    .c-card { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .c-card-photo { background: #FEF2F2; }
+    .c-badge-lost { background: #FEF2F2; color: #EF4444; }
+    .c-badge-found { background: #F0FDFA; color: #2CBCB6; }
+    .c-card-name { color: #1A1A2E; }
+    .c-card-sub { color: #6B7280; }
+    .c-card-loc { color: #9CA3AF; }
+    .c-like { background: #FFF0ED; color: #FF6B4A; }
+    .c-fab { background: #FF6B4A; color: #fff; }
+    .c-tabbar { background: #fff; border-top: 1px solid #E5E7EB; }
+    .c-tab-active { color: #FF6B4A; }
+    .c-tab-inactive { color: #9CA3AF; }
+
+    /* ===== OPTION D: Teal Accent ===== */
+    .d-screen { background: #F6FFFE; }
+    .d-header { background: #F6FFFE; border-bottom: 1px solid #CFFAF8; }
+    .d-header .header-title { color: #1A1A2E; }
+    .d-header .header-icon { background: #CFFAF8; color: #2CBCB6; }
+    .d-pill-active { background: #2CBCB6; color: #fff; }
+    .d-pill-inactive { background: #E0F9F8; color: #2CBCB6; }
+    .d-card { background: #fff; box-shadow: 0 2px 8px rgba(44,188,182,0.07); }
+    .d-card-photo { background: #FEF2F2; }
+    .d-badge-lost { background: #FEF2F2; color: #EF4444; }
+    .d-badge-found { background: #F0FDFA; color: #2CBCB6; }
+    .d-card-name { color: #1A1A2E; }
+    .d-card-sub { color: #6B7280; }
+    .d-card-loc { color: #9CA3AF; }
+    .d-like { background: #FFF0ED; color: #FF6B4A; }
+    .d-fab { background: #2CBCB6; color: #fff; }
+    .d-tabbar { background: #fff; border-top: 1px solid #CFFAF8; }
+    .d-tab-active { color: #2CBCB6; }
+    .d-tab-inactive { color: #9CA3AF; }
+
+    /* ===== OPTION E: Deep Navy Header ===== */
+    .e-screen { background: #FAFAFA; }
+    .e-header { background: #1A1A2E; }
+    .e-header .header-title { color: #fff; }
+    .e-header .header-icon { background: rgba(255,255,255,0.12); color: #FF6B4A; }
+    .e-pill-active { background: #FF6B4A; color: #fff; }
+    .e-pill-inactive { background: #F3F4F6; color: #6B7280; }
+    .e-card { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .e-card-photo { background: #FEF2F2; }
+    .e-badge-lost { background: #FEF2F2; color: #EF4444; }
+    .e-badge-found { background: #F0FDFA; color: #2CBCB6; }
+    .e-card-name { color: #1A1A2E; }
+    .e-card-sub { color: #6B7280; }
+    .e-card-loc { color: #9CA3AF; }
+    .e-like { background: #FFF0ED; color: #FF6B4A; }
+    .e-fab { background: #FF6B4A; color: #fff; }
+    .e-tabbar { background: #1A1A2E; border-top: none; }
+    .e-tab-active { color: #FF6B4A; }
+    .e-tab-inactive { color: #6B7280; }
+  </style>
+</head>
+<body>
+  <h1>The Fur Finder — Colour Options</h1>
+  <p class="subtitle">Compare and pick your preferred theme. Scroll right on mobile to see all 5.</p>
+
+  <div class="grid">
+
+    <!-- OPTION A -->
+    <div class="theme-block">
+      <div class="theme-label">A — Clean Neutral</div>
+      <div class="theme-desc">Warm off-white everywhere. White cards lift off the page. Coral for all accents. Calm and professional.</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen a-screen">
+          <div class="header a-header">
+            <span class="header-title a-header">🐾 Fur Finder</span>
+            <div class="header-icon a-header-icon">🔔</div>
+          </div>
+          <div class="pills">
+            <button class="pill a-pill-active">All</button>
+            <button class="pill a-pill-inactive">Lost</button>
+            <button class="pill a-pill-inactive">Found</button>
+          </div>
+          <div class="cards">
+            <div class="card a-card">
+              <div class="card-photo a-card-photo">🐕</div>
+              <div class="card-body">
+                <span class="card-badge a-badge-lost">Lost</span>
+                <div class="card-name a-card-name">Max</div>
+                <div class="card-sub a-card-sub">Golden Retriever · Large</div>
+                <div class="card-footer">
+                  <span class="card-loc a-card-loc">📍 Bondi Beach, 0.8km</span>
+                  <span class="card-like a-like">♡ 12</span>
+                </div>
+              </div>
+            </div>
+            <div class="card a-card">
+              <div class="card-photo a-card-photo">🐈</div>
+              <div class="card-body">
+                <span class="card-badge a-badge-found">Found</span>
+                <div class="card-name a-card-name">Unknown Cat</div>
+                <div class="card-sub a-card-sub">Tabby · Small</div>
+                <div class="card-footer">
+                  <span class="card-loc a-card-loc">📍 Newtown, 1.4km</span>
+                  <span class="card-like a-like">♡ 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="card a-card">
+              <div class="card-photo a-card-photo">🐩</div>
+              <div class="card-body">
+                <span class="card-badge a-badge-lost">Lost</span>
+                <div class="card-name a-card-name">Bella</div>
+                <div class="card-sub a-card-sub">Poodle · Medium</div>
+                <div class="card-footer">
+                  <span class="card-loc a-card-loc">📍 Manly, 2.1km</span>
+                  <span class="card-like a-like">♡ 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab a-fab">+</div>
+          <div class="tabbar a-tabbar">
+            <div class="tab active a-tab-active"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></div>
+            <div class="tab a-tab-inactive"><span class="tab-icon">🗺️</span><span class="tab-label">Map</span></div>
+            <div class="tab a-tab-inactive"><span class="tab-icon">🐾</span><span class="tab-label">My Pets</span></div>
+            <div class="tab a-tab-inactive"><span class="tab-icon">⚙️</span><span class="tab-label">Settings</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="swatch" style="background:#FAFAFA;color:#666;border:1px solid #ddd;">BG</div>
+        <div class="swatch" style="background:#ffffff;color:#666;border:1px solid #ddd;">Card</div>
+        <div class="swatch" style="background:#FF6B4A;color:#fff;">Coral</div>
+        <div class="swatch" style="background:#2CBCB6;color:#fff;">Teal</div>
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Text</div>
+      </div>
+    </div>
+
+    <!-- OPTION B -->
+    <div class="theme-block">
+      <div class="theme-label">B — Warm Peach</div>
+      <div class="theme-desc">Soft peach-cream background. White cards. Coral accents glow warmer. Friendly, community feel.</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen b-screen">
+          <div class="header b-header">
+            <span class="header-title">🐾 Fur Finder</span>
+            <div class="header-icon" style="background:#FFE8DF;color:#FF6B4A;">🔔</div>
+          </div>
+          <div class="pills">
+            <button class="pill b-pill-active">All</button>
+            <button class="pill b-pill-inactive">Lost</button>
+            <button class="pill b-pill-inactive">Found</button>
+          </div>
+          <div class="cards">
+            <div class="card b-card">
+              <div class="card-photo b-card-photo">🐕</div>
+              <div class="card-body">
+                <span class="card-badge b-badge-lost">Lost</span>
+                <div class="card-name b-card-name">Max</div>
+                <div class="card-sub b-card-sub">Golden Retriever · Large</div>
+                <div class="card-footer">
+                  <span class="card-loc b-card-loc">📍 Bondi Beach, 0.8km</span>
+                  <span class="card-like b-like">♡ 12</span>
+                </div>
+              </div>
+            </div>
+            <div class="card b-card">
+              <div class="card-photo b-card-photo">🐈</div>
+              <div class="card-body">
+                <span class="card-badge b-badge-found">Found</span>
+                <div class="card-name b-card-name">Unknown Cat</div>
+                <div class="card-sub b-card-sub">Tabby · Small</div>
+                <div class="card-footer">
+                  <span class="card-loc b-card-loc">📍 Newtown, 1.4km</span>
+                  <span class="card-like b-like">♡ 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="card b-card">
+              <div class="card-photo b-card-photo">🐩</div>
+              <div class="card-body">
+                <span class="card-badge b-badge-lost">Lost</span>
+                <div class="card-name b-card-name">Bella</div>
+                <div class="card-sub b-card-sub">Poodle · Medium</div>
+                <div class="card-footer">
+                  <span class="card-loc b-card-loc">📍 Manly, 2.1km</span>
+                  <span class="card-like b-like">♡ 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab b-fab">+</div>
+          <div class="tabbar b-tabbar">
+            <div class="tab active b-tab-active"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></div>
+            <div class="tab b-tab-inactive"><span class="tab-icon">🗺️</span><span class="tab-label">Map</span></div>
+            <div class="tab b-tab-inactive"><span class="tab-icon">🐾</span><span class="tab-label">My Pets</span></div>
+            <div class="tab b-tab-inactive"><span class="tab-icon">⚙️</span><span class="tab-label">Settings</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="swatch" style="background:#FFF8F4;color:#666;border:1px solid #FFE8DF;">BG</div>
+        <div class="swatch" style="background:#ffffff;color:#666;border:1px solid #FFE8DF;">Card</div>
+        <div class="swatch" style="background:#FF6B4A;color:#fff;">Coral</div>
+        <div class="swatch" style="background:#2CBCB6;color:#fff;">Teal</div>
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Text</div>
+      </div>
+    </div>
+
+    <!-- OPTION C -->
+    <div class="theme-block">
+      <div class="theme-label">C — Coral Header</div>
+      <div class="theme-desc">Strong coral header makes every screen feel branded. Light body underneath. Bold, modern, recognisable.</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen c-screen">
+          <div class="header c-header">
+            <span class="header-title" style="color:#fff;">🐾 Fur Finder</span>
+            <div class="header-icon" style="background:rgba(255,255,255,0.2);color:#fff;">🔔</div>
+          </div>
+          <div class="c-pills">
+            <button class="pill c-pill-active">All</button>
+            <button class="pill c-pill-inactive">Lost</button>
+            <button class="pill c-pill-inactive">Found</button>
+          </div>
+          <div class="cards" style="padding-top:10px;">
+            <div class="card c-card">
+              <div class="card-photo c-card-photo">🐕</div>
+              <div class="card-body">
+                <span class="card-badge c-badge-lost">Lost</span>
+                <div class="card-name c-card-name">Max</div>
+                <div class="card-sub c-card-sub">Golden Retriever · Large</div>
+                <div class="card-footer">
+                  <span class="card-loc c-card-loc">📍 Bondi Beach, 0.8km</span>
+                  <span class="card-like c-like">♡ 12</span>
+                </div>
+              </div>
+            </div>
+            <div class="card c-card">
+              <div class="card-photo c-card-photo">🐈</div>
+              <div class="card-body">
+                <span class="card-badge c-badge-found">Found</span>
+                <div class="card-name c-card-name">Unknown Cat</div>
+                <div class="card-sub c-card-sub">Tabby · Small</div>
+                <div class="card-footer">
+                  <span class="card-loc c-card-loc">📍 Newtown, 1.4km</span>
+                  <span class="card-like c-like">♡ 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="card c-card">
+              <div class="card-photo c-card-photo">🐩</div>
+              <div class="card-body">
+                <span class="card-badge c-badge-lost">Lost</span>
+                <div class="card-name c-card-name">Bella</div>
+                <div class="card-sub c-card-sub">Poodle · Medium</div>
+                <div class="card-footer">
+                  <span class="card-loc c-card-loc">📍 Manly, 2.1km</span>
+                  <span class="card-like c-like">♡ 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab c-fab">+</div>
+          <div class="tabbar c-tabbar">
+            <div class="tab active c-tab-active"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></div>
+            <div class="tab c-tab-inactive"><span class="tab-icon">🗺️</span><span class="tab-label">Map</span></div>
+            <div class="tab c-tab-inactive"><span class="tab-icon">🐾</span><span class="tab-label">My Pets</span></div>
+            <div class="tab c-tab-inactive"><span class="tab-icon">⚙️</span><span class="tab-label">Settings</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="swatch" style="background:#FF6B4A;color:#fff;">Header</div>
+        <div class="swatch" style="background:#FAFAFA;color:#666;border:1px solid #ddd;">BG</div>
+        <div class="swatch" style="background:#ffffff;color:#666;border:1px solid #ddd;">Card</div>
+        <div class="swatch" style="background:#2CBCB6;color:#fff;">Teal</div>
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Text</div>
+      </div>
+    </div>
+
+    <!-- OPTION D -->
+    <div class="theme-block">
+      <div class="theme-label">D — Teal Accent</div>
+      <div class="theme-desc">Soft teal-tinted background. Teal-first accents. Coral used only for urgent states (lost, danger). Calm and clinical.</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen d-screen">
+          <div class="header d-header">
+            <span class="header-title" style="color:#1A1A2E;">🐾 Fur Finder</span>
+            <div class="header-icon" style="background:#CFFAF8;color:#2CBCB6;">🔔</div>
+          </div>
+          <div class="pills">
+            <button class="pill d-pill-active">All</button>
+            <button class="pill d-pill-inactive">Lost</button>
+            <button class="pill d-pill-inactive">Found</button>
+          </div>
+          <div class="cards">
+            <div class="card d-card">
+              <div class="card-photo d-card-photo">🐕</div>
+              <div class="card-body">
+                <span class="card-badge d-badge-lost">Lost</span>
+                <div class="card-name d-card-name">Max</div>
+                <div class="card-sub d-card-sub">Golden Retriever · Large</div>
+                <div class="card-footer">
+                  <span class="card-loc d-card-loc">📍 Bondi Beach, 0.8km</span>
+                  <span class="card-like d-like">♡ 12</span>
+                </div>
+              </div>
+            </div>
+            <div class="card d-card">
+              <div class="card-photo d-card-photo">🐈</div>
+              <div class="card-body">
+                <span class="card-badge d-badge-found">Found</span>
+                <div class="card-name d-card-name">Unknown Cat</div>
+                <div class="card-sub d-card-sub">Tabby · Small</div>
+                <div class="card-footer">
+                  <span class="card-loc d-card-loc">📍 Newtown, 1.4km</span>
+                  <span class="card-like d-like">♡ 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="card d-card">
+              <div class="card-photo d-card-photo">🐩</div>
+              <div class="card-body">
+                <span class="card-badge d-badge-lost">Lost</span>
+                <div class="card-name d-card-name">Bella</div>
+                <div class="card-sub d-card-sub">Poodle · Medium</div>
+                <div class="card-footer">
+                  <span class="card-loc d-card-loc">📍 Manly, 2.1km</span>
+                  <span class="card-like d-like">♡ 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab d-fab">+</div>
+          <div class="tabbar d-tabbar">
+            <div class="tab active d-tab-active"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></div>
+            <div class="tab d-tab-inactive"><span class="tab-icon">🗺️</span><span class="tab-label">Map</span></div>
+            <div class="tab d-tab-inactive"><span class="tab-icon">🐾</span><span class="tab-label">My Pets</span></div>
+            <div class="tab d-tab-inactive"><span class="tab-icon">⚙️</span><span class="tab-label">Settings</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="swatch" style="background:#F6FFFE;color:#666;border:1px solid #CFFAF8;">BG</div>
+        <div class="swatch" style="background:#ffffff;color:#666;border:1px solid #CFFAF8;">Card</div>
+        <div class="swatch" style="background:#2CBCB6;color:#fff;">Teal</div>
+        <div class="swatch" style="background:#FF6B4A;color:#fff;">Coral</div>
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Text</div>
+      </div>
+    </div>
+
+    <!-- OPTION E -->
+    <div class="theme-block">
+      <div class="theme-label">E — Dark Nav Bar</div>
+      <div class="theme-desc">Deep navy header and tab bar. Light body. Coral as the single hero accent. Premium, trust-signalling, app-like.</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen e-screen">
+          <div class="header e-header">
+            <span class="header-title" style="color:#fff;">🐾 Fur Finder</span>
+            <div class="header-icon" style="background:rgba(255,255,255,0.12);color:#FF6B4A;">🔔</div>
+          </div>
+          <div class="pills">
+            <button class="pill e-pill-active">All</button>
+            <button class="pill e-pill-inactive">Lost</button>
+            <button class="pill e-pill-inactive">Found</button>
+          </div>
+          <div class="cards">
+            <div class="card e-card">
+              <div class="card-photo e-card-photo">🐕</div>
+              <div class="card-body">
+                <span class="card-badge e-badge-lost">Lost</span>
+                <div class="card-name e-card-name">Max</div>
+                <div class="card-sub e-card-sub">Golden Retriever · Large</div>
+                <div class="card-footer">
+                  <span class="card-loc e-card-loc">📍 Bondi Beach, 0.8km</span>
+                  <span class="card-like e-like">♡ 12</span>
+                </div>
+              </div>
+            </div>
+            <div class="card e-card">
+              <div class="card-photo e-card-photo">🐈</div>
+              <div class="card-body">
+                <span class="card-badge e-badge-found">Found</span>
+                <div class="card-name e-card-name">Unknown Cat</div>
+                <div class="card-sub e-card-sub">Tabby · Small</div>
+                <div class="card-footer">
+                  <span class="card-loc e-card-loc">📍 Newtown, 1.4km</span>
+                  <span class="card-like e-like">♡ 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="card e-card">
+              <div class="card-photo e-card-photo">🐩</div>
+              <div class="card-body">
+                <span class="card-badge e-badge-lost">Lost</span>
+                <div class="card-name e-card-name">Bella</div>
+                <div class="card-sub e-card-sub">Poodle · Medium</div>
+                <div class="card-footer">
+                  <span class="card-loc e-card-loc">📍 Manly, 2.1km</span>
+                  <span class="card-like e-like">♡ 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab e-fab">+</div>
+          <div class="tabbar e-tabbar">
+            <div class="tab active e-tab-active"><span class="tab-icon">🏠</span><span class="tab-label" style="color:#FF6B4A;">Home</span></div>
+            <div class="tab e-tab-inactive"><span class="tab-icon">🗺️</span><span class="tab-label" style="color:#6B7280;">Map</span></div>
+            <div class="tab e-tab-inactive"><span class="tab-icon">🐾</span><span class="tab-label" style="color:#6B7280;">My Pets</span></div>
+            <div class="tab e-tab-inactive"><span class="tab-icon">⚙️</span><span class="tab-label" style="color:#6B7280;">Settings</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Header</div>
+        <div class="swatch" style="background:#FAFAFA;color:#666;border:1px solid #ddd;">BG</div>
+        <div class="swatch" style="background:#ffffff;color:#666;border:1px solid #ddd;">Card</div>
+        <div class="swatch" style="background:#FF6B4A;color:#fff;">Coral</div>
+        <div class="swatch" style="background:#1A1A2E;color:#fff;">Nav</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="text-align:center;color:#555;font-size:12px;margin-top:40px;font-family:'Poppins',sans-serif;">
+    All options keep the same coral/teal/amber accent system. Only the page background and header change.
+  </p>
+</body>
+</html>
