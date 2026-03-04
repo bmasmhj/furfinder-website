@@ -6,6 +6,7 @@ import pool from "./db";
 import { authMiddleware, optionalAuth, requireRole, registerUser, loginUser, getMe, awardPremiumDays } from "./auth";
 import { moderateContent } from "./moderation";
 import { sendPushNotification } from "./push";
+import { runBatchMatch, batchRunning, lastRunResult } from "./batch-match";
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -2595,6 +2596,191 @@ Return ONLY valid JSON, no markdown.`;
       console.error("Toggle ads error:", err);
       return res.status(500).json({ message: "Failed to toggle ads" });
     }
+  });
+
+  // ── Admin: Batch Match Queue ─────────────────────────────────────────────
+
+  app.get("/api/admin/match-queue", authMiddleware, requireRole('admin'), async (req: Request, res: Response) => {
+    try {
+      const status = (req.query.status as string) || 'pending';
+      const page = parseInt((req.query.page as string) || '1', 10);
+      const limit = 20;
+      const offset = (page - 1) * limit;
+
+      const result = await pool.query(
+        `SELECT
+           q.id, q.confidence, q.reason, q.status, q.created_at, q.reviewed_at,
+           l.id AS lost_id, l.pet_name AS lost_pet_name, l.pet_type AS lost_pet_type,
+           l.breed AS lost_breed, l.color AS lost_color, l.location_name AS lost_location,
+           l.last_seen_date AS lost_date, l.photo_uri AS lost_photo_uri, l.photo_uris AS lost_photo_uris,
+           lu.id AS lost_user_id, lu.username AS lost_username, lu.email AS lost_email, lu.push_token AS lost_push_token,
+           f.id AS found_id, f.pet_name AS found_pet_name, f.pet_type AS found_pet_type,
+           f.breed AS found_breed, f.color AS found_color, f.location_name AS found_location,
+           f.last_seen_date AS found_date, f.photo_uri AS found_photo_uri, f.photo_uris AS found_photo_uris,
+           fu.username AS found_username, fu.email AS found_email
+         FROM admin_match_queue q
+         JOIN pet_reports l ON l.id = q.lost_report_id
+         JOIN pet_reports f ON f.id = q.found_report_id
+         JOIN users lu ON lu.id = l.user_id
+         JOIN users fu ON fu.id = f.user_id
+         WHERE q.status = $1
+         ORDER BY q.confidence DESC, q.created_at DESC
+         LIMIT $2 OFFSET $3`,
+        [status, limit, offset]
+      );
+
+      const countResult = await pool.query(
+        `SELECT COUNT(*) FROM admin_match_queue WHERE status = $1`,
+        [status]
+      );
+
+      const rows = result.rows.map((r: any) => {
+        const lostUris = typeof r.lost_photo_uris === 'string' ? JSON.parse(r.lost_photo_uris || '[]') : (r.lost_photo_uris || []);
+        const foundUris = typeof r.found_photo_uris === 'string' ? JSON.parse(r.found_photo_uris || '[]') : (r.found_photo_uris || []);
+        const lostThumb = lostUris.find((u: string) => u.startsWith('data:') || u.startsWith('http')) || r.lost_photo_uri || null;
+        const foundThumb = foundUris.find((u: string) => u.startsWith('data:') || u.startsWith('http')) || r.found_photo_uri || null;
+        return {
+          id: r.id,
+          confidence: r.confidence,
+          reason: r.reason,
+          status: r.status,
+          createdAt: r.created_at,
+          reviewedAt: r.reviewed_at,
+          lostReport: {
+            id: r.lost_id,
+            petName: r.lost_pet_name,
+            petType: r.lost_pet_type,
+            breed: r.lost_breed,
+            color: r.lost_color,
+            location: r.lost_location,
+            date: r.lost_date,
+            thumbnail: lostThumb,
+            ownerName: r.lost_username,
+            ownerEmail: r.lost_email,
+            ownerPushToken: r.lost_push_token,
+            ownerId: r.lost_user_id,
+          },
+          foundReport: {
+            id: r.found_id,
+            petName: r.found_pet_name,
+            petType: r.found_pet_type,
+            breed: r.found_breed,
+            color: r.found_color,
+            location: r.found_location,
+            date: r.found_date,
+            thumbnail: foundThumb,
+            reporterName: r.found_username,
+            reporterEmail: r.found_email,
+          },
+        };
+      });
+
+      return res.json({
+        items: rows,
+        total: parseInt(countResult.rows[0].count, 10),
+        page,
+        limit,
+      });
+    } catch (err) {
+      console.error("Get match queue error:", err);
+      return res.status(500).json({ message: "Failed to fetch match queue" });
+    }
+  });
+
+  app.put("/api/admin/match-queue/:id/status", authMiddleware, requireRole('admin'), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body as { status: string };
+      if (!['reviewed', 'dismissed', 'actioned'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      await pool.query(
+        `UPDATE admin_match_queue SET status = $1, reviewed_at = NOW() WHERE id = $2`,
+        [status, id]
+      );
+      return res.json({ success: true });
+    } catch (err) {
+      console.error("Update match queue status error:", err);
+      return res.status(500).json({ message: "Failed to update status" });
+    }
+  });
+
+  app.post("/api/admin/match-queue/:id/notify-owner", authMiddleware, requireRole('admin'), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const queueRow = await pool.query(
+        `SELECT q.lost_report_id, q.found_report_id, q.confidence, q.reason,
+                l.pet_name, l.user_id AS owner_id,
+                u.push_token AS owner_push_token, u.username AS owner_name
+         FROM admin_match_queue q
+         JOIN pet_reports l ON l.id = q.lost_report_id
+         JOIN users u ON u.id = l.user_id
+         WHERE q.id = $1`,
+        [id]
+      );
+
+      if (queueRow.rows.length === 0) {
+        return res.status(404).json({ message: "Match not found" });
+      }
+
+      const match = queueRow.rows[0];
+      const title = `Possible match found for ${match.pet_name}!`;
+      const message = `Our team reviewed a potential match for your lost pet. Open The Fur Finder to see the details — it could be yours!`;
+
+      await pool.query(
+        `INSERT INTO notifications (user_id, type, title, message, report_id)
+         VALUES ($1, 'ai_match', $2, $3, $4)`,
+        [match.owner_id, title, message, match.lost_report_id]
+      );
+
+      sendPushNotification(match.owner_push_token, match.owner_id, title, message, {
+        type: 'ai_match',
+        reportId: match.lost_report_id,
+      }).catch((err: any) => console.error("Notify owner push error:", err));
+
+      await pool.query(
+        `UPDATE admin_match_queue SET status = 'actioned', reviewed_at = NOW() WHERE id = $1`,
+        [id]
+      );
+
+      return res.json({ success: true });
+    } catch (err) {
+      console.error("Notify owner error:", err);
+      return res.status(500).json({ message: "Failed to notify owner" });
+    }
+  });
+
+  app.get("/api/admin/batch-match/status", authMiddleware, requireRole('admin'), async (_req: Request, res: Response) => {
+    try {
+      const pendingCount = await pool.query(
+        `SELECT COUNT(*) FROM admin_match_queue WHERE status = 'pending'`
+      ).catch(() => ({ rows: [{ count: '0' }] }));
+
+      const totalCount = await pool.query(
+        `SELECT COUNT(*) FROM admin_match_queue`
+      ).catch(() => ({ rows: [{ count: '0' }] }));
+
+      return res.json({
+        running: batchRunning,
+        lastRun: lastRunResult,
+        pendingCount: parseInt(pendingCount.rows[0].count, 10),
+        totalCount: parseInt(totalCount.rows[0].count, 10),
+      });
+    } catch (err) {
+      console.error("Batch match status error:", err);
+      return res.status(500).json({ message: "Failed to get status" });
+    }
+  });
+
+  app.post("/api/admin/batch-match/run", authMiddleware, requireRole('admin'), async (_req: Request, res: Response) => {
+    if (batchRunning) {
+      return res.status(409).json({ message: "A scan is already running. Please wait." });
+    }
+    res.json({ success: true, message: "Batch scan started. Check back in a few minutes." });
+    runBatchMatch()
+      .then(r => console.log('[BatchMatch] Manual run complete:', r))
+      .catch(err => console.error('[BatchMatch] Manual run error:', err));
   });
 
   const httpServer = createServer(app);

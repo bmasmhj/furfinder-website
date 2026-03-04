@@ -51,6 +51,7 @@ The application is built with a React Native (Expo) frontend and an Express.js (
 -   **Scan Online Posts:** Extracts pet details from pasted text (e.g., social media posts) and matches them against app data.
 -   **Biometric ID Scanning:** Allows owners to register close-up photos (nose, eyes, face) for enhanced AI matching. A "Quick Snap" feature enables matching spotted pets against biometric scans.
 -   **Efficiency:** Pre-filters candidates by pet type, opposite status, and a 5km GPS radius before AI analysis.
+-   **Admin Batch Match:** `server/batch-match.ts` — scheduled daily at 3am AEST, scans all active lost/found reports in the DB using AI (regardless of user subscription), stores results in `admin_match_queue` table. Admin reviews matches in `app/admin-match-queue.tsx` — can notify the lost pet owner directly (push + in-app notification) or dismiss false positives. Manual "Run Now" trigger available. Deduplicates pairs to avoid re-processing.
 
 **Monetization:**
 -   **Subscription Model:** Free tier with limited features; Premium tier ($4.99/month or $49.99/year) unlocks unlimited reports/profiles, AI matching, scan posts, and multi-photo uploads.

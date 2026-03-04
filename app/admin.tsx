@@ -205,6 +205,20 @@ export default function AdminScreen() {
           </View>
 
           <Pressable
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 20, marginBottom: 12, backgroundColor: Colors.surface, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: Colors.borderLight }}
+            onPress={() => router.push('/admin-match-queue' as any)}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <MaterialCommunityIcons name="magnify-scan" size={22} color="#6366F1" />
+              <View>
+                <Text style={{ fontSize: 15, fontFamily: 'Poppins_600SemiBold', color: Colors.text }}>AI Match Queue</Text>
+                <Text style={{ fontSize: 12, fontFamily: 'Poppins_400Regular', color: Colors.textLight }}>Review AI-found pet matches</Text>
+              </View>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+          </Pressable>
+
+          <Pressable
             style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 20, marginBottom: 16, backgroundColor: Colors.surface, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: Colors.borderLight }}
             onPress={() => router.push('/admin-ads')}
           >

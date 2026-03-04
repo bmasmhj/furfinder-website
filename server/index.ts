@@ -284,6 +284,9 @@ function setupErrorHandler(app: express.Application) {
 
   setupErrorHandler(app);
 
+  const { scheduleBatchMatch } = await import("./batch-match");
+  scheduleBatchMatch();
+
   const port = parseInt(process.env.PORT || "5000", 10);
   server.listen(
     {

@@ -193,6 +193,10 @@ function RootLayoutNav() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="admin-match-queue"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="conversations"
         options={{ headerShown: false }}
       />
