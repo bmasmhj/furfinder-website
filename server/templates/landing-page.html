@@ -1,492 +1,359 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>The Fur Finder - Lost & Found Pets Australia</title>
+    <title>The Fur Finder — Australia's AI-Powered Lost & Found Pets App</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Australia's AI-powered lost and found pets app. Report lost or found pets, get instant photo-matching with AI, and connect with your community to bring pets home." />
+    <meta name="description" content="Report lost or found pets, get instant AI photo matching, and connect with your community to bring pets home. Available on iOS and Android." />
     <meta name="theme-color" content="#FF6B4A" />
+    <meta property="og:title" content="The Fur Finder — Reunite Lost Pets with AI" />
+    <meta property="og:description" content="Australia's first AI-powered lost and found pets app. Smart photo matching. Community-powered search. Faster reunions." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thefurfinder.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #FAFAFA;
-        color: #1A1A2E;
-        line-height: 1.6;
-        min-height: 100vh;
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Poppins',sans-serif;background:#FAFAFA;color:#1A1A2E;line-height:1.6;overflow-x:hidden}
+      a{text-decoration:none}
+      img{max-width:100%;display:block}
+
+      /* NAV */
+      .nav{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:18px 24px}
+      .nav-logo{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:#1A1A2E}
+      .nav-logo span{color:#FF6B4A}
+      .nav-links{display:flex;align-items:center;gap:24px}
+      .nav-links a{font-size:14px;font-weight:500;color:#6B7280;transition:color .2s}
+      .nav-links a:hover{color:#FF6B4A}
+      .nav-cta{background:#FF6B4A;color:#fff !important;padding:8px 18px;border-radius:24px;font-weight:600;font-size:13px;transition:background .2s}
+      .nav-cta:hover{background:#e5553a}
+
+      /* HERO */
+      .hero{padding:60px 24px 80px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#FFF5F3 50%,#F0FDFC 100%)}
+      .hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(255,107,74,.08) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%)}
+      .hero-inner{position:relative;max-width:720px;margin:0 auto}
+      .hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(44,188,182,.1);color:#2CBCB6;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:20px;border:1px solid rgba(44,188,182,.2)}
+      .hero h1{font-size:42px;font-weight:800;line-height:1.15;margin-bottom:16px;letter-spacing:-1px;color:#1A1A2E}
+      .hero h1 .accent{color:#FF6B4A}
+      .hero .sub{font-size:17px;color:#6B7280;max-width:540px;margin:0 auto 32px;line-height:1.7}
+      .hero-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+      .btn-primary{display:inline-flex;align-items:center;gap:8px;background:#FF6B4A;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;transition:all .2s;box-shadow:0 4px 14px rgba(255,107,74,.3)}
+      .btn-primary:hover{background:#e5553a;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,107,74,.35)}
+      .btn-secondary{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1A1A2E;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;border:1.5px solid #E5E7EB;transition:all .2s}
+      .btn-secondary:hover{border-color:#FF6B4A;color:#FF6B4A}
+      .btn-icon{width:20px;height:20px}
+      .hero-stats{display:flex;gap:32px;justify-content:center;margin-top:48px}
+      .hero-stat{text-align:center}
+      .hero-stat .num{font-size:28px;font-weight:700;color:#FF6B4A}
+      .hero-stat .label{font-size:12px;color:#9CA3AF;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+
+      /* FEATURES */
+      .section{max-width:1000px;margin:0 auto;padding:80px 24px}
+      .section-label{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,74,.08);color:#FF6B4A;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:14px}
+      .section-title{font-size:30px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+      .section-desc{font-size:15px;color:#6B7280;margin-bottom:40px;max-width:560px}
+      .section.centered{text-align:center}
+      .section.centered .section-desc{margin-left:auto;margin-right:auto}
+
+      .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+      .feature-card{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:28px 24px;transition:all .25s}
+      .feature-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.06);border-color:rgba(255,107,74,.2)}
+      .feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+      .feature-card h3{font-size:16px;font-weight:600;margin-bottom:6px;color:#1A1A2E}
+      .feature-card p{font-size:13px;color:#6B7280;line-height:1.6}
+      .fi-coral{background:rgba(255,107,74,.1)}
+      .fi-teal{background:rgba(44,188,182,.1)}
+      .fi-purple{background:rgba(99,102,241,.1)}
+
+      /* HOW IT WORKS */
+      .how-bg{background:#F9FAFB;border-top:1px solid #F3F4F6;border-bottom:1px solid #F3F4F6}
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:step}
+      .step-card{position:relative;background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:32px 24px;text-align:center}
+      .step-num{width:36px;height:36px;background:linear-gradient(135deg,#FF6B4A,#FF8A6E);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin:0 auto 16px}
+      .step-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+      .step-card p{font-size:13px;color:#6B7280;line-height:1.6}
+      .step-arrow{position:absolute;right:-18px;top:50%;transform:translateY(-50%);color:#D1D5DB;font-size:22px;font-weight:700}
+
+      /* PARTNER */
+      .partner-section{background:linear-gradient(135deg,#F0FDFC 0%,#FFF5F3 100%);border:1px solid rgba(44,188,182,.15);border-radius:24px;padding:48px 36px;display:flex;align-items:flex-start;gap:36px}
+      .partner-icon{flex-shrink:0;width:64px;height:64px;background:rgba(44,188,182,.1);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px}
+      .partner-section h3{font-size:20px;font-weight:700;margin-bottom:8px}
+      .partner-section p{font-size:14px;color:#6B7280;line-height:1.7;margin-bottom:14px}
+      .partner-features{display:flex;flex-wrap:wrap;gap:8px}
+      .partner-tag{font-size:12px;font-weight:500;padding:4px 12px;border-radius:16px;background:rgba(44,188,182,.1);color:#2CBCB6}
+
+      /* FOUNDER */
+      .founder{background:linear-gradient(135deg,#fff8f6 0%,#f0fdfb 100%);border:1px solid #FFD5CC;border-radius:24px;padding:44px 36px;position:relative;overflow:hidden}
+      .founder::before{content:'\201C';position:absolute;top:-10px;left:20px;font-size:120px;color:#FF6B4A;opacity:.1;font-family:Georgia,serif;line-height:1}
+      .founder-badge{display:inline-flex;align-items:center;gap:6px;background:#FF6B4A;color:#fff;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:16px}
+      .founder h2{font-size:22px;font-weight:700;margin-bottom:20px;line-height:1.3}
+      .founder-body p{font-size:14px;color:#374151;line-height:1.85;margin-bottom:16px}
+      .founder-body p:last-child{margin-bottom:0}
+      .founder-sig{margin-top:24px;padding-top:18px;border-top:1px solid #FFD5CC;font-size:14px;color:#FF6B4A;font-weight:600}
+
+      /* DOWNLOAD CTA */
+      .cta-section{text-align:center;padding:80px 24px 100px}
+      .cta-section h2{font-size:30px;font-weight:700;margin-bottom:10px;letter-spacing:-.5px}
+      .cta-section p{font-size:15px;color:#6B7280;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto}
+      .store-badges{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+      .store-badge{display:inline-flex;align-items:center;gap:10px;background:#1A1A2E;color:#fff;padding:12px 24px;border-radius:12px;transition:all .2s}
+      .store-badge:hover{background:#2d2d4a;transform:translateY(-1px)}
+      .store-badge .store-meta{text-align:left}
+      .store-badge .store-small{font-size:10px;opacity:.7;font-weight:400;display:block}
+      .store-badge .store-name{font-size:15px;font-weight:600;display:block;line-height:1.2}
+      .store-badge svg{width:24px;height:24px;fill:#fff}
+
+      /* FOOTER */
+      .footer{border-top:1px solid #E5E7EB;padding:36px 24px;text-align:center}
+      .footer-inner{max-width:1000px;margin:0 auto}
+      .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px}
+      .footer-links a{font-size:13px;color:#6B7280;font-weight:500;transition:color .2s}
+      .footer-links a:hover{color:#FF6B4A}
+      .footer-copy{font-size:12px;color:#9CA3AF}
+      .footer-copy a{color:#FF6B4A}
+
+      /* MOBILE */
+      @media(max-width:768px){
+        .nav-links .nav-link-text{display:none}
+        .hero{padding:40px 20px 60px}
+        .hero h1{font-size:30px}
+        .hero .sub{font-size:15px}
+        .hero-stats{gap:20px}
+        .hero-stat .num{font-size:22px}
+        .features-grid{grid-template-columns:1fr}
+        .steps{grid-template-columns:1fr}
+        .step-arrow{display:none}
+        .partner-section{flex-direction:column;padding:32px 24px}
+        .founder{padding:32px 24px}
+        .section{padding:60px 20px}
+        .cta-section{padding:60px 20px 80px}
+        .cta-section h2{font-size:24px}
+      }
+      @media(min-width:769px) and (max-width:1024px){
+        .features-grid{grid-template-columns:repeat(2,1fr)}
       }
 
-      .hero {
-        background: linear-gradient(135deg, #FF6B4A 0%, #FF8A6E 50%, #2CBCB6 100%);
-        padding: 60px 20px 50px;
-        text-align: center;
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-      }
-      .hero::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
-        animation: pulse 8s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 0.8; }
-      }
-      .hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-      .hero-icon { font-size: 48px; margin-bottom: 12px; }
-      .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-      .hero .tagline { font-size: 16px; opacity: 0.95; margin-bottom: 24px; font-weight: 400; }
-      .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-      .hero-badge {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
-      }
-
-      .main { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-
-      .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-        margin-bottom: 40px;
-      }
-      .feature {
-        background: #fff;
-        border: 1px solid #E5E7EB;
-        border-radius: 16px;
-        padding: 24px;
-        text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .feature:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-      .feature-icon { font-size: 32px; margin-bottom: 10px; }
-      .feature h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E; }
-      .feature p { font-size: 13px; color: #6B7280; line-height: 1.5; }
-
-      .download-section {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .download-section h2 {
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: #1A1A2E;
-      }
-      .download-section .desc {
-        font-size: 14px;
-        color: #6B7280;
-        margin-bottom: 24px;
-      }
-
-      .steps-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .step {
-        padding: 28px;
-        border: 1px solid #E5E7EB;
-        border-radius: 16px;
-        text-align: center;
-        background: #fff;
-      }
-      .step-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-      .step-number {
-        width: 28px; height: 28px;
-        background: #FF6B4A;
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 14px;
-        flex-shrink: 0;
-      }
-      .step-title { font-size: 18px; font-weight: 600; color: #1A1A2E; }
-      .step-description { font-size: 14px; margin-bottom: 16px; color: #6B7280; }
-
-      .store-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        justify-content: center;
-      }
-      .store-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px 20px;
-        font-size: 14px;
-        font-weight: 500;
-        font-family: 'Poppins', sans-serif;
-        border: 1px solid #E5E7EB;
-        border-radius: 10px;
-        text-decoration: none;
-        color: #1A1A2E;
-        background: #fff;
-        transition: all 0.2s;
-      }
-      .store-button:hover {
-        background: #F5F5F5;
-        border-color: #FF6B4A;
-        color: #FF6B4A;
-      }
-      .store-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 8px 0;
-        font-size: 13px;
-        font-weight: 400;
-        text-decoration: underline;
-        text-underline-offset: 2px;
-        color: #6B7280;
-        background: none;
-        border: none;
-        transition: color 0.15s;
-      }
-      .store-link:hover { color: #FF6B4A; }
-      .store-link .store-icon { width: 14px; height: 14px; }
-      .store-icon { width: 18px; height: 18px; }
-
-      .qr-section {
-        background: linear-gradient(135deg, #1A1A2E 0%, #2d2d4a 100%);
-        color: #fff;
-        border-color: transparent;
-      }
-      .qr-section .step-number { background: #2CBCB6; }
-      .qr-section .step-title { color: #fff; }
-      .qr-section .step-description { color: rgba(255,255,255,0.7); }
-      .qr-code {
-        width: 180px; height: 180px;
-        margin: 0 auto 16px;
-        background: #fff;
-        border-radius: 12px;
-        padding: 12px;
-      }
-      .qr-code canvas { width: 100%; height: 100%; }
-      .open-button {
-        display: inline-block;
-        padding: 12px 28px;
-        font-size: 14px;
-        font-weight: 600;
-        font-family: 'Poppins', sans-serif;
-        border: none;
-        border-radius: 10px;
-        text-decoration: none;
-        color: #1A1A2E;
-        background: linear-gradient(135deg, #FFB84D, #FF6B4A);
-        transition: opacity 0.2s;
-      }
-      .open-button:hover { opacity: 0.9; }
-
-      .founder-section {
-        background: linear-gradient(135deg, #fff8f6 0%, #f0fdfb 100%);
-        border: 1px solid #FFD5CC;
-        border-radius: 20px;
-        padding: 36px 32px;
-        margin-bottom: 40px;
-        position: relative;
-        overflow: hidden;
-      }
-      .founder-section::before {
-        content: '\201C';
-        position: absolute;
-        top: -10px;
-        left: 20px;
-        font-size: 120px;
-        color: #FF6B4A;
-        opacity: 0.12;
-        font-family: Georgia, serif;
-        line-height: 1;
-      }
-      .founder-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: #FF6B4A;
-        color: #fff;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        padding: 4px 12px;
-        border-radius: 20px;
-        margin-bottom: 16px;
-      }
-      .founder-section h2 {
-        font-size: 20px;
-        font-weight: 700;
-        color: #1A1A2E;
-        margin-bottom: 18px;
-        line-height: 1.3;
-      }
-      .founder-story p {
-        font-size: 14px;
-        color: #374151;
-        line-height: 1.8;
-        margin-bottom: 14px;
-      }
-      .founder-story p:last-child { margin-bottom: 0; }
-      .founder-sig {
-        margin-top: 20px;
-        padding-top: 16px;
-        border-top: 1px solid #FFD5CC;
-        font-size: 13px;
-        color: #FF6B4A;
-        font-weight: 600;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        .founder-section {
-          background: linear-gradient(135deg, #1e1410 0%, #101e1d 100%);
-          border-color: #4a2c24;
-        }
-        .founder-section h2 { color: #f0f0f0; }
-        .founder-story p { color: #b0b0b0; }
-        .founder-sig { color: #FF8A6E; }
-        .founder-section::before { color: #FF6B4A; }
-      }
-
-      .footer {
-        text-align: center;
-        padding: 30px 20px;
-        color: #9CA3AF;
-        font-size: 12px;
-        border-top: 1px solid #E5E7EB;
-      }
-      .footer a { color: #FF6B4A; text-decoration: none; }
-      .footer a:hover { text-decoration: underline; }
-
-      .loading { display: none; margin: 60px 0; text-align: center; }
-      .spinner {
-        border: 3px solid #E5E7EB;
-        border-top-color: #FF6B4A;
-        border-radius: 50%;
-        width: 36px; height: 36px;
-        animation: spin 0.8s linear infinite;
-        margin: 20px auto;
-      }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      .loading-text { font-size: 16px; color: #6B7280; }
-
-      @media (min-width: 768px) {
-        .hero { padding: 80px 32px 60px; }
-        .hero h1 { font-size: 40px; }
-        .hero .tagline { font-size: 18px; }
-        .main { padding: 50px 32px; }
-        .features { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .steps-container { flex-direction: row; gap: 20px; align-items: stretch; }
-        .step { flex: 1; display: flex; flex-direction: column; }
-        .step-description { flex-grow: 1; }
-        .qr-code { width: 200px; height: 200px; }
-      }
-
-      @media (prefers-color-scheme: dark) {
-        body { background: #0d0d0d; color: #e0e0e0; }
-        .feature { background: #1a1a1a; border-color: #333; }
-        .feature h3 { color: #f0f0f0; }
-        .feature p { color: #888; }
-        .step { background: #1a1a1a; border-color: #333; }
-        .step-title { color: #f0f0f0; }
-        .step-description { color: #888; }
-        .store-button { background: #222; border-color: #444; color: #e0e0e0; }
-        .store-button:hover { background: #2a2a2a; border-color: #FF6B4A; }
-        .store-link { color: #888; }
-        .store-link:hover { color: #FF6B4A; }
-        .download-section h2 { color: #f0f0f0; }
-        .download-section .desc { color: #888; }
-        .footer { border-top-color: #333; color: #666; }
-        .qr-section { background: linear-gradient(135deg, #111 0%, #1a1a2e 100%); }
-        .spinner { border-color: #444; border-top-color: #FF6B4A; }
-        .loading-text { color: #aaa; }
+      /* DARK MODE */
+      @media(prefers-color-scheme:dark){
+        body{background:#0d0d0d;color:#e0e0e0}
+        .nav-logo{color:#f0f0f0}
+        .hero{background:linear-gradient(180deg,#111 0%,#1a1210 50%,#101e1d 100%)}
+        .hero h1{color:#f0f0f0}
+        .hero .sub{color:#999}
+        .btn-secondary{background:#1a1a1a;color:#e0e0e0;border-color:#333}
+        .btn-secondary:hover{border-color:#FF6B4A;color:#FF6B4A}
+        .hero-stat .label{color:#777}
+        .section-title{color:#f0f0f0}
+        .section-desc{color:#888}
+        .feature-card{background:#1a1a1a;border-color:#2a2a2a}
+        .feature-card:hover{border-color:rgba(255,107,74,.3)}
+        .feature-card h3{color:#f0f0f0}
+        .feature-card p{color:#888}
+        .how-bg{background:#111;border-color:#222}
+        .step-card{background:#1a1a1a;border-color:#2a2a2a}
+        .step-card h3{color:#f0f0f0}
+        .step-card p{color:#888}
+        .step-arrow{color:#444}
+        .partner-section{background:linear-gradient(135deg,#101e1d 0%,#1a1210 100%);border-color:#2a3a38}
+        .partner-section h3{color:#f0f0f0}
+        .partner-section p{color:#999}
+        .partner-tag{background:rgba(44,188,182,.15)}
+        .founder{background:linear-gradient(135deg,#1e1410 0%,#101e1d 100%);border-color:#4a2c24}
+        .founder h2{color:#f0f0f0}
+        .founder-body p{color:#b0b0b0}
+        .founder-sig{color:#FF8A6E;border-top-color:#4a2c24}
+        .cta-section h2{color:#f0f0f0}
+        .cta-section p{color:#888}
+        .store-badge{background:#222}
+        .store-badge:hover{background:#333}
+        .footer{border-top-color:#222}
+        .footer-links a{color:#777}
+        .footer-copy{color:#555}
+        .nav-links a{color:#888}
       }
     </style>
   </head>
   <body>
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <div class="loading-text">Opening in Expo Go...</div>
-    </div>
 
-    <div id="content">
-      <section class="hero">
-        <div class="hero-content">
-          <div class="hero-icon">🐾</div>
-          <h1>The Fur Finder</h1>
-          <p class="tagline">Australia's first AI-powered lost & found pets app. Smart photo matching. Faster reunions.</p>
-          <div class="hero-badges">
-            <span class="hero-badge">AI Photo Matching</span>
-            <span class="hero-badge">5km GPS Radius</span>
-            <span class="hero-badge">Australia-wide</span>
-          </div>
+    <!-- NAV -->
+    <nav class="nav">
+      <div class="nav-logo"><span>&#x1F43E;</span> The Fur Finder</div>
+      <div class="nav-links">
+        <a href="#features" class="nav-link-text">Features</a>
+        <a href="#how-it-works" class="nav-link-text">How It Works</a>
+        <a href="#our-story" class="nav-link-text">Our Story</a>
+        <a href="#download" class="nav-cta">Download Free</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-pill">&#x1F1E6;&#x1F1FA; Australia's First AI-Powered Pet Recovery App</div>
+        <h1>Helping bring <span class="accent">lost pets</span> home, faster.</h1>
+        <p class="sub">Report a lost or found pet, let our AI scan photos for matches, and connect with your community — all in one app. Free for everyone.</p>
+        <div class="hero-buttons">
+          <a href="https://apps.apple.com/app/id6759967208" class="btn-primary" target="_blank">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.petreunite.app" class="btn-secondary" target="_blank">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/></svg>
+            Google Play
+          </a>
         </div>
-      </section>
-
-      <div class="main">
-        <div class="features">
-          <div class="feature">
-            <div class="feature-icon">📸</div>
-            <h3>AI Photo Matching</h3>
-            <p>Our AI compares pet photos using visual recognition to identify matches by markings, face shape, and coat patterns.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">AI</div>
+            <div class="label">Photo Matching</div>
           </div>
-          <div class="feature">
-            <div class="feature-icon">📍</div>
-            <h3>GPS Location Matching</h3>
-            <p>Reports are matched within a 5km radius using GPS coordinates, keeping results relevant and local.</p>
+          <div class="hero-stat">
+            <div class="num">89+</div>
+            <div class="label">Vet & Shelter Listings</div>
           </div>
-          <div class="feature">
-            <div class="feature-icon">🗺️</div>
-            <h3>Interactive Map</h3>
-            <p>View lost and found pets near you on an interactive map, plus find nearby vets, shelters, and rescue centres.</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">🔍</div>
-            <h3>Scan Online Posts</h3>
-            <p>Paste text from Facebook or community groups and our AI will match it against pets in the app.</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">🏥</div>
-            <h3>89+ Vet & Shelter Listings</h3>
-            <p>Find vets, shelters, and rescue organisations across all 8 Australian states and territories.</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">🔔</div>
-            <h3>Area Alerts</h3>
-            <p>Get notified when a lost or found pet is reported near your registered pet's location.</p>
-          </div>
-        </div>
-
-        <div class="founder-section">
-          <div class="founder-label">🐾 Founder's Story</div>
-          <h2>Why I Built The Fur Finder</h2>
-          <div class="founder-story">
-            <p>Last year, my own dog Lucky went missing for two days, and I was devastated. I felt completely broken, unable to eat, and overwhelmed with fear and anxiety. I visited every vet, shelter, pound, and local park. I walked the streets, knocked on doors, and scoured Facebook lost and found pages, as well as community pages across different suburbs. But everything was scattered, and there wasn't one centralised place to get all the information I needed.</p>
-            <p>Time was critical in locating Lucky. We live in an area with busy roads and reckless drivers, and I was terrified that he might be hurt. When I finally found him after two and a half days, he was traumatised, hungry, thirsty, and in pain. I was incredibly lucky to have found him, but not everyone is. There are elderly people and others who struggle to navigate multiple resources in the frantic moments after their pet goes missing.</p>
-            <p>Every minute counts when a pet is lost. Too often, these animals end up in far-away pounds, shelters, or even in the hands of people who have no intention of returning them. Many owners are unable to find their pets because their microchip information or contact details haven't been updated. Too many lost pets live in shelters, never reunited with their loving owners, and both the pets and their families suffer.</p>
-            <p>I see this situation every month when I come across lost animals, and I always try to help them reunite with their owners. Having gone through that heartbreak myself, I knew I had to do something to help in a more significant way. That's why I decided to create The Fur Finder — a platform that brings all the lost and found pet information into one place.</p>
-            <p>The running costs of the app are covered by paid subscriptions, ensuring that it remains accessible to everyone, especially those who need it most. It was my own painful experience that motivated me to build this app, and I hope it helps reunite as many pets with their families as possible.</p>
-          </div>
-          <div class="founder-sig">— Lucky &amp; Jaspreet, Founder of The Fur Finder 🐾</div>
-        </div>
-
-        <div class="download-section">
-          <h2>Try The Fur Finder — AI-Powered Pet Recovery</h2>
-          <p class="desc">Download Expo Go and scan the QR code to preview the app on your phone</p>
-
-          <div class="steps-container">
-            <div class="step">
-              <div class="step-header">
-                <div class="step-number">1</div>
-                <h2 class="step-title">Download Expo Go</h2>
-              </div>
-              <p class="step-description">Free app to preview mobile apps</p>
-              <div class="store-buttons" id="store-buttons">
-                <a id="app-store-btn" href="https://apps.apple.com/app/id982107779" class="store-button" target="_blank">
-                  <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                  </svg>
-                  App Store
-                </a>
-                <a id="play-store-btn" href="https://play.google.com/store/apps/details?id=host.exp.exponent" class="store-button" target="_blank">
-                  <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-                  </svg>
-                  Google Play
-                </a>
-              </div>
-            </div>
-
-            <div class="step qr-section">
-              <div class="step-header">
-                <div class="step-number">2</div>
-                <h2 class="step-title">Scan QR Code</h2>
-              </div>
-              <p class="step-description">Use your phone's camera or Expo Go</p>
-              <div class="qr-code" id="qr-code"></div>
-              <a href="exps://EXPS_URL_PLACEHOLDER" class="open-button">Open in Expo Go</a>
-            </div>
+          <div class="hero-stat">
+            <div class="num">Free</div>
+            <div class="label">To Report Pets</div>
           </div>
         </div>
       </div>
+    </section>
 
-      <footer class="footer">
-        <p>The Fur Finder &copy; 2026. Australia's first AI-powered pet recovery platform.</p>
-        <p style="margin-top:6px;">
-          <a href="#">Privacy Policy</a> &middot; <a href="#">Terms of Use</a>
-        </p>
-      </footer>
-    </div>
+    <!-- FEATURES -->
+    <section class="section centered" id="features">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need to find a lost pet</h2>
+      <p class="section-desc">Built specifically for Australian pet owners, with tools that actually make a difference when every minute counts.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon fi-coral">&#x1F4F8;</div>
+          <h3>AI Photo Matching</h3>
+          <p>Upload a photo of your lost pet and our AI compares it against all found pet reports — checking markings, coat patterns, face shape, and colour.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-teal">&#x1F4CD;</div>
+          <h3>GPS Location Matching</h3>
+          <p>Reports are automatically matched within a local radius. Found a pet 2km from a lost report? Our system connects the dots instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-purple">&#x1F5FA;&#xFE0F;</div>
+          <h3>Interactive Map</h3>
+          <p>See lost and found pets near you on a live map. Find nearby vets, shelters, and rescue organisations across all states.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-coral">&#x1F50D;</div>
+          <h3>Scan Online Posts</h3>
+          <p>Copy text from Facebook groups or community pages and our AI will instantly match it against pets reported in the app.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-teal">&#x1F3E5;</div>
+          <h3>Vet & Shelter Directory</h3>
+          <p>Browse 89+ verified vets, shelters, and rescue organisations across all 8 Australian states and territories.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-purple">&#x1F514;</div>
+          <h3>Area Alerts</h3>
+          <p>Get a push notification whenever a lost or found pet is reported near your area. The faster you know, the faster pets get home.</p>
+        </div>
+      </div>
+    </section>
 
-    <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
-    <script>
-      (function () {
-        const ua = navigator.userAgent;
-        const loadingEl = document.getElementById("loading");
-        const contentEl = document.getElementById("content");
-        const isAndroid = /Android/i.test(ua);
-        const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-        const deepLink = "exps://EXPS_URL_PLACEHOLDER";
+    <!-- HOW IT WORKS -->
+    <section class="how-bg" id="how-it-works">
+      <div class="section centered">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Three steps. That's all it takes.</h2>
+        <p class="section-desc">Whether you've lost a pet or found one wandering, getting started is quick and simple.</p>
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <h3>Create a Report</h3>
+            <p>Upload photos, describe your pet, drop a pin on the map, and submit a lost or found report in under 2 minutes.</p>
+            <span class="step-arrow">&#x2192;</span>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <h3>AI Scans for Matches</h3>
+            <p>Our AI immediately checks your report against the database — comparing photos, breed, colour, markings, and location.</p>
+            <span class="step-arrow">&#x2192;</span>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <h3>Get Connected</h3>
+            <p>When a match is found, both parties are notified. Message each other directly in the app to arrange a safe reunion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        const appStoreBtn = document.getElementById("app-store-btn");
-        const playStoreBtn = document.getElementById("play-store-btn");
-        const storeButtonsContainer = document.getElementById("store-buttons");
+    <!-- PARTNER ORGS -->
+    <section class="section">
+      <div class="partner-section">
+        <div class="partner-icon">&#x1F3E5;</div>
+        <div>
+          <h3>For Vets, Shelters & Rescue Organisations</h3>
+          <p>Register your organisation as an official partner. List animals in your care and have them automatically included in our AI matching results — connecting lost pet owners with your shelter directly.</p>
+          <div class="partner-features">
+            <span class="partner-tag">Free Registration</span>
+            <span class="partner-tag">AI Match Integration</span>
+            <span class="partner-tag">Organisation Dashboard</span>
+            <span class="partner-tag">Public Directory Listing</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        if (isIOS) {
-          playStoreBtn.className = "store-link";
-          storeButtonsContainer.appendChild(playStoreBtn);
-        } else if (isAndroid) {
-          appStoreBtn.className = "store-link";
-          storeButtonsContainer.insertBefore(playStoreBtn, appStoreBtn);
-        }
+    <!-- FOUNDER -->
+    <section class="section" id="our-story">
+      <div class="founder">
+        <div class="founder-badge">&#x1F43E; Founder's Story</div>
+        <h2>Why I Built The Fur Finder</h2>
+        <div class="founder-body">
+          <p>Last year, my own dog Lucky went missing for two days, and I was devastated. I felt completely broken, unable to eat, and overwhelmed with fear and anxiety. I visited every vet, shelter, pound, and local park. I walked the streets, knocked on doors, and scoured Facebook lost and found pages, as well as community pages across different suburbs. But everything was scattered, and there wasn't one centralised place to get all the information I needed.</p>
+          <p>Time was critical in locating Lucky. We live in an area with busy roads and reckless drivers, and I was terrified that he might be hurt. When I finally found him after two and a half days, he was traumatised, hungry, thirsty, and in pain. I was incredibly lucky to have found him, but not everyone is. There are elderly people and others who struggle to navigate multiple resources in the frantic moments after their pet goes missing.</p>
+          <p>Every minute counts when a pet is lost. Too often, these animals end up in far-away pounds, shelters, or even in the hands of people who have no intention of returning them. Many owners are unable to find their pets because their microchip information or contact details haven't been updated. Too many lost pets live in shelters, never reunited with their loving owners, and both the pets and their families suffer.</p>
+          <p>I see this situation every month when I come across lost animals, and I always try to help them reunite with their owners. Having gone through that heartbreak myself, I knew I had to do something to help in a more significant way. That's why I decided to create The Fur Finder — a platform that brings all the lost and found pet information into one place.</p>
+          <p>The running costs of the app are covered by paid subscriptions, ensuring that it remains accessible to everyone, especially those who need it most. It was my own painful experience that motivated me to build this app, and I hope it helps reunite as many pets with their families as possible.</p>
+        </div>
+        <div class="founder-sig">— Lucky &amp; Jaspreet, Founder of The Fur Finder &#x1F43E;</div>
+      </div>
+    </section>
 
-        const qrCode = new QRCodeStyling({
-          width: 400,
-          height: 400,
-          data: deepLink,
-          dotsOptions: { color: "#FF6B4A", type: "rounded" },
-          backgroundOptions: { color: "#ffffff" },
-          cornersSquareOptions: { type: "extra-rounded", color: "#1A1A2E" },
-          cornersDotOptions: { type: "dot", color: "#2CBCB6" },
-          qrOptions: { errorCorrectionLevel: "H" },
-        });
+    <!-- DOWNLOAD CTA -->
+    <section class="cta-section" id="download">
+      <h2>Download The Fur Finder — Free</h2>
+      <p>Every pet deserves the best chance of getting home. Get the app and join thousands of Australians helping reunite pets with their families.</p>
+      <div class="store-badges">
+        <a href="https://apps.apple.com/app/id6759967208" class="store-badge" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div class="store-meta">
+            <span class="store-small">Download on the</span>
+            <span class="store-name">App Store</span>
+          </div>
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.petreunite.app" class="store-badge" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/></svg>
+          <div class="store-meta">
+            <span class="store-small">Get it on</span>
+            <span class="store-name">Google Play</span>
+          </div>
+        </a>
+      </div>
+    </section>
 
-        qrCode.append(document.getElementById("qr-code"));
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms-of-use">Terms of Use</a>
+          <a href="/delete-account">Delete Account</a>
+          <a href="/app-features">App Features</a>
+        </div>
+        <p class="footer-copy">&#169; 2026 The Fur Finder. Australia's first AI-powered pet recovery platform. Made with &#10084;&#65039; in Australia.</p>
+      </div>
+    </footer>
 
-        if (isAndroid || isIOS) {
-          loadingEl.style.display = "block";
-          contentEl.style.display = "none";
-          window.location.href = deepLink;
-          setTimeout(function () {
-            loadingEl.style.display = "none";
-            contentEl.style.display = "block";
-          }, 500);
-        }
-      })();
-    </script>
   </body>
 </html>
