@@ -282,8 +282,10 @@ function setupErrorHandler(app: express.Application) {
       await pool.query(schemaSql);
       log("Database schema applied successfully");
     }
+    const { runProductionSeed } = await import("./production-seed");
+    await runProductionSeed();
   } catch (err) {
-    console.error("Schema init error (non-fatal):", err);
+    console.error("Schema/seed init error (non-fatal):", err);
   }
 
   setupCors(app);
