@@ -274,6 +274,18 @@ function setupErrorHandler(app: express.Application) {
 }
 
 (async () => {
+  try {
+    const schemaPath = path.join(__dirname, "schema.sql");
+    if (fs.existsSync(schemaPath)) {
+      const schemaSql = fs.readFileSync(schemaPath, "utf-8");
+      const pool = (await import("./db")).default;
+      await pool.query(schemaSql);
+      log("Database schema applied successfully");
+    }
+  } catch (err) {
+    console.error("Schema init error (non-fatal):", err);
+  }
+
   setupCors(app);
   setupBodyParsing(app);
   setupRequestLogging(app);
