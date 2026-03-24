@@ -3,8 +3,15 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
+const localDir = path.join(__dirname, ".local").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 config.resolver.blockList = [
-  new RegExp(path.join(__dirname, "\\.local").replace(/\\/g, "\\\\") + "[\\/\\\\].*"),
+  new RegExp(localDir + "[\\/\\\\].*"),
 ];
+
+config.watcher = {
+  ...config.watcher,
+  watchman: false,
+  additionalExts: config.watcher?.additionalExts || [],
+};
 
 module.exports = config;

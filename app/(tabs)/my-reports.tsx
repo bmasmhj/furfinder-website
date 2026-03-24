@@ -13,166 +13,11 @@ import { PetReport, PetProfile, PetStatus } from '@/lib/types';
 import { getStatusColor, getStatusBg, getStatusLabel, getPetTypeIcon, formatDate, getSizeLabel } from '@/lib/helpers';
 import EmptyState from '@/components/EmptyState';
 
-function PetProfileCard({ profile, index }: { profile: PetProfile; index: number }) {
-  const handlePress = () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-    router.push({ pathname: '/my-pet/[id]', params: { id: profile.id } });
-  };
-
-  return (
-    <Animated.View entering={FadeInRight.delay(index * 60).duration(300)}>
-      <Pressable
-        onPress={handlePress}
-        style={({ pressed }) => [styles.profileCard, pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] }]}
-      >
-        {profile.photoUris.length > 0 ? (
-          <View style={styles.profileImageContainer}>
-            <Image
-              source={{ uri: profile.photoUris[0] }}
-              style={styles.profileImage}
-              contentFit="cover"
-            />
-          </View>
-        ) : (
-          <View style={[styles.profileIconCircle]}>
-            <MaterialCommunityIcons
-              name={getPetTypeIcon(profile.petType) as any}
-              size={28}
-              color={Colors.secondary}
-            />
-          </View>
-        )}
-        <View style={styles.profileContent}>
-          <View style={styles.profileHeader}>
-            <Text style={styles.profileName} numberOfLines={1}>{profile.petName}</Text>
-            <View style={styles.registeredPill}>
-              <Ionicons name="shield-checkmark" size={10} color={Colors.secondary} />
-              <Text style={styles.registeredPillText}>Registered</Text>
-            </View>
-          </View>
-          <Text style={styles.profileMeta} numberOfLines={1}>
-            {profile.breed} · {getSizeLabel(profile.size)}
-          </Text>
-          <View style={styles.profileDetails}>
-            {!!profile.microchipNumber && (
-              <View style={styles.profileTag}>
-                <Ionicons name="hardware-chip-outline" size={12} color={Colors.secondary} />
-                <Text style={styles.profileTagText}>Chipped</Text>
-              </View>
-            )}
-            {!!profile.suburb && (
-              <View style={styles.profileTag}>
-                <Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
-                <Text style={styles.profileTagText}>{profile.suburb}</Text>
-              </View>
-            )}
-          </View>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
-      </Pressable>
-    </Animated.View>
-  );
-}
-
-function MyReportItem({ report, index }: { report: PetReport; index: number }) {
-  const { updateReportStatus, deleteReport } = usePets();
-  const statusColor = getStatusColor(report.status);
-
-  const handlePress = () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-    router.push({ pathname: '/pet/[id]', params: { id: report.id } });
-  };
-
-  const handleStatusChange = () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-    if (report.status === 'reunited') return;
-
-    Alert.alert(
-      'Mark as Reunited?',
-      'This will mark the pet as safely returned home.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Yes, Reunited!',
-          onPress: () => updateReportStatus(report.id, 'reunited'),
-        },
-      ]
-    );
-  };
-
-  const handleDelete = () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    }
-    Alert.alert(
-      'Delete Report?',
-      'This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => deleteReport(report.id),
-        },
-      ]
-    );
-  };
-
-  return (
-    <Animated.View entering={FadeInRight.delay(index * 60).duration(300)}>
-      <Pressable
-        onPress={handlePress}
-        style={({ pressed }) => [styles.reportItem, pressed && { opacity: 0.9 }]}
-      >
-        <View style={[styles.iconCircle, { backgroundColor: getStatusBg(report.status) }]}>
-          <MaterialCommunityIcons
-            name={getPetTypeIcon(report.petType) as any}
-            size={24}
-            color={statusColor}
-          />
-        </View>
-        <View style={styles.reportContent}>
-          <View style={styles.reportHeader}>
-            <Text style={styles.reportName} numberOfLines={1}>
-              {report.petName === 'Unknown' ? report.breed : report.petName}
-            </Text>
-            <View style={[styles.statusPill, { backgroundColor: getStatusBg(report.status) }]}>
-              <Text style={[styles.statusPillText, { color: statusColor }]}>
-                {getStatusLabel(report.status)}
-              </Text>
-            </View>
-          </View>
-          <Text style={styles.reportMeta}>
-            {report.locationName} · {formatDate(report.createdAt)}
-          </Text>
-          <View style={styles.reportActions}>
-            {report.status !== 'reunited' && (
-              <Pressable onPress={handleStatusChange} style={styles.actionBtn}>
-                <Ionicons name="heart" size={16} color={Colors.reunited} />
-                <Text style={[styles.actionText, { color: Colors.reunited }]}>Reunited</Text>
-              </Pressable>
-            )}
-            <Pressable onPress={handleDelete} style={styles.actionBtn}>
-              <Ionicons name="trash-outline" size={16} color={Colors.danger} />
-            </Pressable>
-          </View>
-        </View>
-      </Pressable>
-    </Animated.View>
-  );
-}
-
 export default function MyPetsScreen() {
   const Colors = useTheme();
   const styles = getStyles(Colors);
   const insets = useSafeAreaInsets();
-  const { myReports, profiles } = usePets();
+  const { myReports, profiles, updateReportStatus, deleteReport } = usePets();
   const { isPremium } = useSubscription();
   const webTopPadding = Platform.OS === 'web' ? 67 : 0;
   const [activeTab, setActiveTab] = useState<'pets' | 'reports'>('pets');
@@ -182,6 +27,160 @@ export default function MyPetsScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     router.push('/register-pet');
+  };
+
+  const renderProfileCard = (profile: PetProfile, index: number) => {
+    const handleProfilePress = () => {
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      router.push({ pathname: '/my-pet/[id]', params: { id: profile.id } });
+    };
+
+    return (
+      <Animated.View entering={FadeInRight.delay(index * 60).duration(300)}>
+        <Pressable
+          onPress={handleProfilePress}
+          style={({ pressed }) => [styles.profileCard, pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] }]}
+        >
+          {profile.photoUris.length > 0 ? (
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={{ uri: profile.photoUris[0] }}
+                style={styles.profileImage}
+                contentFit="cover"
+              />
+            </View>
+          ) : (
+            <View style={[styles.profileIconCircle]}>
+              <MaterialCommunityIcons
+                name={getPetTypeIcon(profile.petType) as any}
+                size={28}
+                color={Colors.secondary}
+              />
+            </View>
+          )}
+          <View style={styles.profileContent}>
+            <View style={styles.profileHeader}>
+              <Text style={styles.profileName} numberOfLines={1}>{profile.petName}</Text>
+              <View style={styles.registeredPill}>
+                <Ionicons name="shield-checkmark" size={10} color={Colors.secondary} />
+                <Text style={styles.registeredPillText}>Registered</Text>
+              </View>
+            </View>
+            <Text style={styles.profileMeta} numberOfLines={1}>
+              {profile.breed} · {getSizeLabel(profile.size)}
+            </Text>
+            <View style={styles.profileDetails}>
+              {!!profile.microchipNumber && (
+                <View style={styles.profileTag}>
+                  <Ionicons name="hardware-chip-outline" size={12} color={Colors.secondary} />
+                  <Text style={styles.profileTagText}>Chipped</Text>
+                </View>
+              )}
+              {!!profile.suburb && (
+                <View style={styles.profileTag}>
+                  <Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
+                  <Text style={styles.profileTagText}>{profile.suburb}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
+        </Pressable>
+      </Animated.View>
+    );
+  };
+
+  const renderReportItem = (report: PetReport, index: number) => {
+    const statusColor = getStatusColor(report.status);
+
+    const handleReportPress = () => {
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      router.push({ pathname: '/pet/[id]', params: { id: report.id } });
+    };
+
+    const handleStatusChange = () => {
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }
+      if (report.status === 'reunited') return;
+
+      Alert.alert(
+        'Mark as Reunited?',
+        'This will mark the pet as safely returned home.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Yes, Reunited!',
+            onPress: () => updateReportStatus(report.id, 'reunited'),
+          },
+        ]
+      );
+    };
+
+    const handleDelete = () => {
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      }
+      Alert.alert(
+        'Delete Report?',
+        'This action cannot be undone.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => deleteReport(report.id),
+          },
+        ]
+      );
+    };
+
+    return (
+      <Animated.View entering={FadeInRight.delay(index * 60).duration(300)}>
+        <Pressable
+          onPress={handleReportPress}
+          style={({ pressed }) => [styles.reportItem, pressed && { opacity: 0.9 }]}
+        >
+          <View style={[styles.iconCircle, { backgroundColor: getStatusBg(report.status) }]}>
+            <MaterialCommunityIcons
+              name={getPetTypeIcon(report.petType) as any}
+              size={24}
+              color={statusColor}
+            />
+          </View>
+          <View style={styles.reportContent}>
+            <View style={styles.reportHeader}>
+              <Text style={styles.reportName} numberOfLines={1}>
+                {report.petName === 'Unknown' ? report.breed : report.petName}
+              </Text>
+              <View style={[styles.statusPill, { backgroundColor: getStatusBg(report.status) }]}>
+                <Text style={[styles.statusPillText, { color: statusColor }]}>
+                  {getStatusLabel(report.status)}
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.reportMeta}>
+              {report.locationName} · {formatDate(report.createdAt)}
+            </Text>
+            <View style={styles.reportActions}>
+              {report.status !== 'reunited' && (
+                <Pressable onPress={handleStatusChange} style={styles.actionBtn}>
+                  <Ionicons name="heart" size={16} color={Colors.reunited} />
+                  <Text style={[styles.actionText, { color: Colors.reunited }]}>Reunited</Text>
+                </Pressable>
+              )}
+              <Pressable onPress={handleDelete} style={styles.actionBtn}>
+                <Ionicons name="trash-outline" size={16} color={Colors.danger} />
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Animated.View>
+    );
   };
 
   return (
@@ -226,7 +225,7 @@ export default function MyPetsScreen() {
         <FlatList
           data={profiles}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => <PetProfileCard profile={item} index={index} />}
+          renderItem={({ item, index }) => renderProfileCard(item, index)}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <View style={styles.emptyIconContainer}>
@@ -256,7 +255,7 @@ export default function MyPetsScreen() {
         <FlatList
           data={myReports}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => <MyReportItem report={item} index={index} />}
+          renderItem={({ item, index }) => renderReportItem(item, index)}
           ListEmptyComponent={
             <EmptyState
               icon="clipboard-text-outline"
