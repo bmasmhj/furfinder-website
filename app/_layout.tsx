@@ -22,6 +22,34 @@ import {
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
 
+function reportErrorToBackend(error: unknown, source: string) {
+  try {
+    const err = error instanceof Error ? error : new Error(String(error));
+    const baseUrl = getApiUrl();
+    const url = new URL("/api/errors/report", baseUrl).toString();
+    globalThis.fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: err.message,
+        stack: err.stack || "",
+        source,
+      }),
+    }).catch(() => {});
+  } catch {}
+}
+
+const ErrorUtils = (globalThis as any).ErrorUtils;
+if (ErrorUtils && typeof ErrorUtils.setGlobalHandler === "function") {
+  const originalHandler = ErrorUtils.getGlobalHandler?.();
+  ErrorUtils.setGlobalHandler((error: any, isFatal?: boolean) => {
+    reportErrorToBackend(error, isFatal ? "frontend-fatal" : "frontend-js-error");
+    if (originalHandler) {
+      originalHandler(error, isFatal);
+    }
+  });
+}
+
 try {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({

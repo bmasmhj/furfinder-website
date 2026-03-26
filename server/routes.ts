@@ -8,6 +8,7 @@ import { authMiddleware, optionalAuth, requireRole, registerUser, loginUser, get
 import { moderateContent } from "./moderation";
 import { sendPushNotification } from "./push";
 import { runBatchMatch, batchRunning, lastRunResult } from "./batch-match";
+import { sendErrorToDiscord } from "./discord-errors";
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -190,7 +191,28 @@ async function getOrgAnimalCandidates(petType: string, excludeOrgId?: string) {
   return result.rows;
 }
 
+const errorReportLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { message: "Too many error reports. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export async function registerRoutes(app: Express): Promise<void> {
+  app.post("/api/errors/report", errorReportLimiter, (req: Request, res: Response) => {
+    const { message, stack, source, screen } = req.body as {
+      message?: string;
+      stack?: string;
+      source?: string;
+      screen?: string;
+    };
+    const err = new Error(message || "Unknown frontend error");
+    err.stack = stack || err.stack;
+    sendErrorToDiscord(err, { source: source || "frontend", screen });
+    res.status(200).json({ ok: true });
+  });
+
   app.use("/store-assets", express.static(path.resolve(process.cwd(), "assets", "store")));
   app.use("/app-assets", express.static(path.resolve(process.cwd(), "assets")));
 

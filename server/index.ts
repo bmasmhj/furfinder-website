@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import { createServer } from "node:http";
 import { registerRoutes } from "./routes";
+import { sendErrorToDiscord } from "./discord-errors";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -265,6 +266,7 @@ function setupErrorHandler(app: express.Application) {
     const message = error.message || "Internal Server Error";
 
     console.error("Internal Server Error:", err);
+    sendErrorToDiscord(err, { source: 'backend', method: _req.method, path: _req.path });
 
     if (res.headersSent) {
       return next(err);
@@ -355,3 +357,13 @@ httpServer.listen(
     })();
   },
 );
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  sendErrorToDiscord(err, { source: "backend-uncaughtException" });
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+  sendErrorToDiscord(reason, { source: "backend-unhandledRejection" });
+});
