@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default function TermsOfUsePage() {
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
-      <Header />
       <LegalPageLayout
         tone="teal"
         title="The Fur Finder Terms of Use"
@@ -24,7 +23,6 @@ export default function TermsOfUsePage() {
         ))}
         <LegalSection title="6. Contact" body={`For questions about these terms, contact us at:\n\nEmail: ${supportEmail}`} />
       </LegalPageLayout>
-      <Footer />
     </div>
   )
 }

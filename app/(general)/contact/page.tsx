@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a2e]">
-      <Header />
       <main>
         <section className="bg-[linear-gradient(180deg,#fff_0%,#f0fdfc_100%)] px-6 py-20 text-center md:px-8">
           <span className="inline-flex rounded-full bg-[#e8f8f7] px-4 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#2cbcb6]">
@@ -67,7 +66,6 @@ export default function ContactPage() {
           </MarketingSection>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

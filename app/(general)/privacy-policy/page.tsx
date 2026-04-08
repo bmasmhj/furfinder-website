@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
-      <Header />
       <LegalPageLayout
         title="The Fur Finder Privacy Policy"
         subtitle="Your privacy matters to us"
@@ -32,7 +31,6 @@ export default function PrivacyPolicyPage() {
           body={`If you have questions about this policy or want to exercise your privacy rights, contact us at:\n\nEmail: ${supportEmail}`}
         />
       </LegalPageLayout>
-      <Footer />
     </div>
   )
 }

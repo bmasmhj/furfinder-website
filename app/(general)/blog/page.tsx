@@ -35,7 +35,6 @@ const posts = [
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a2e]">
-      <Header />
       <main>
         <section className="bg-[linear-gradient(180deg,#fff_0%,#fff5f3_100%)] px-6 py-20 text-center md:px-8">
           <span className="inline-flex rounded-full bg-[#fff1ed] px-4 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#ff6b4a]">
@@ -62,7 +61,6 @@ export default function BlogPage() {
           </div>
         </MarketingSection>
       </main>
-      <Footer />
     </div>
   )
 }

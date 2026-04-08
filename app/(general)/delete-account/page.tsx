@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 export default function DeleteAccountPage() {
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e]">
-      <Header />
       <main>
         <section className="bg-[linear-gradient(135deg,#ff6b4a_0%,#ff8a6e_100%)] px-6 py-12 text-center md:px-8">
           <h1 className="text-3xl font-bold text-white">The Fur Finder Account &amp; Data Deletion</h1>
@@ -42,7 +41,6 @@ export default function DeleteAccountPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }
