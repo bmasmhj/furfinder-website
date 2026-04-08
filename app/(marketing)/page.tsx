@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
 import Link from 'next/link';
+import Header from '@/components/marketing/Header';
+import Footer from '@//components/marketing/Footer';
 
 export const metadata: Metadata = {
   title: 'Pet Reunite AI - Reunite Lost Pets with AI-Powered Matching',

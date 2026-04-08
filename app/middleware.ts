@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from './lib/auth';
+import { verifyToken } from '../lib/auth';
 
 const protectedRoutes = ['/dashboard', '/reports', '/matches', '/messages', '/profile'];
 const publicRoutes = ['/', '/features', '/about', '/blog', '/contact', '/login', '/signup'];

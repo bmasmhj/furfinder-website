@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { generateMetadata } from './lib/metadata'
-import './styles/globals.css'
+import { generateMetadata } from '../lib/metadata'
 
 export const metadata: Metadata = generateMetadata({
   manifest: '/manifest.json',
