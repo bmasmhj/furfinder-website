@@ -14,7 +14,8 @@ export const users = pgTable("users", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
-});
+}) as any;
+
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -36,7 +37,8 @@ export const blogs = pgTable("blogs", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertBlogSchema = createInsertSchema(blogs);
+export const insertBlogSchema = createInsertSchema(blogs) as any;
+
 export type InsertBlog = z.infer<typeof insertBlogSchema>;
 export type Blog = typeof blogs.$inferSelect;
 
@@ -56,7 +58,8 @@ export const reunitedStories = pgTable("reunited_stories", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertReunitedStorySchema = createInsertSchema(reunitedStories);
+export const insertReunitedStorySchema = createInsertSchema(reunitedStories) as any;
+
 export type InsertReunitedStory = z.infer<typeof insertReunitedStorySchema>;
 export type ReunitedStory = typeof reunitedStories.$inferSelect;
 
@@ -74,7 +77,8 @@ export const faqs = pgTable("faqs", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertFaqSchema = createInsertSchema(faqs);
+export const insertFaqSchema = createInsertSchema(faqs) as any;
+
 export type InsertFaq = z.infer<typeof insertFaqSchema>;
 export type Faq = typeof faqs.$inferSelect;
 
@@ -92,7 +96,8 @@ export const features = pgTable("features", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertFeatureSchema = createInsertSchema(features);
+export const insertFeatureSchema = createInsertSchema(features) as any;
+
 export type InsertFeature = z.infer<typeof insertFeatureSchema>;
 export type Feature = typeof features.$inferSelect;
 
@@ -113,7 +118,8 @@ export const pricing = pgTable("pricing", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertPricingSchema = createInsertSchema(pricing);
+export const insertPricingSchema = createInsertSchema(pricing) as any;
+
 export type InsertPricing = z.infer<typeof insertPricingSchema>;
 export type Pricing = typeof pricing.$inferSelect;
 
@@ -132,7 +138,8 @@ export const howItWorks = pgTable("how_it_works", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertHowItWorksSchema = createInsertSchema(howItWorks);
+export const insertHowItWorksSchema = createInsertSchema(howItWorks) as any;
+
 export type InsertHowItWorks = z.infer<typeof insertHowItWorksSchema>;
 export type HowItWorks = typeof howItWorks.$inferSelect;
 
@@ -150,6 +157,7 @@ export const whoItsFor = pgTable("who_its_for", {
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
-export const insertWhoItsForSchema = createInsertSchema(whoItsFor);
+export const insertWhoItsForSchema = createInsertSchema(whoItsFor) as any;
+
 export type InsertWhoItsFor = z.infer<typeof insertWhoItsForSchema>;
 export type WhoItsFor = typeof whoItsFor.$inferSelect;

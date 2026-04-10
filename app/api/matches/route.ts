@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
        JOIN reports r2 ON m.report2_id = r2.id
        WHERE r1.user_id = $1 OR r2.user_id = $1
        ORDER BY m.created_at DESC`,
-      [decoded.userId]
+      [decoded.id]
     );
 
     return NextResponse.json({ matches: result.rows }, { status: 200 });

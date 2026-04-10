@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       `INSERT INTO messages (conversation_id, sender_id, content, created_at)
        VALUES ($1, $2, $3, NOW())
        RETURNING *`,
-      [conversation_id, decoded.userId, content]
+      [conversation_id, decoded.id, content]
     );
 
     return NextResponse.json({ message: result.rows[0] }, { status: 201 });
