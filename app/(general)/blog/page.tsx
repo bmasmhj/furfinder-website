@@ -13,7 +13,7 @@ import { db } from "@/lib/db";
 async function getBlogPosts() {
   try {
     const blogs = await db.queryMany(
-      'SELECT * FROM blogs WHERE is_published = true ORDER BY created_at DESC LIMIT 20'
+      'SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs WHERE is_published = true ORDER BY created_at DESC LIMIT 20'
     );
     return blogs || [];
   } catch (error) {
@@ -21,6 +21,7 @@ async function getBlogPosts() {
     return [];
   }
 }
+
 
 
 export default async function BlogPage() {

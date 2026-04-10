@@ -9,9 +9,10 @@ export async function GET(
     const { slug } = await params;
 
     const blog = await db.queryOne(
-      'SELECT * FROM blogs WHERE slug = $1 AND is_published = true',
+      'SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs WHERE slug = $1 AND is_published = true',
       [slug]
     );
+
 
     if (!blog) {
       return NextResponse.json(
@@ -22,12 +23,13 @@ export async function GET(
 
     // Get related blogs (same category, exclude current)
     const relatedBlogs = await db.queryMany(
-      `SELECT * FROM blogs 
+      `SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs 
        WHERE category = $1 AND id != $2 AND is_published = true
        ORDER BY created_at DESC
        LIMIT 3`,
       [blog.category, blog.id]
     );
+
 
     return NextResponse.json({
       data: blog,

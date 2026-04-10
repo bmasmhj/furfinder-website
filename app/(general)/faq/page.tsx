@@ -11,7 +11,7 @@ import { db } from "@/lib/db";
 async function getFaqs() {
   try {
     const faqs = await db.queryMany(
-      'SELECT * FROM faqs WHERE is_published = true ORDER BY order_index ASC'
+      'SELECT * FROM faqs WHERE is_active = true ORDER BY display_order ASC'
     );
     return faqs || [];
   } catch (error) {

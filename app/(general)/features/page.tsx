@@ -12,7 +12,7 @@ import { db } from "@/lib/db";
 async function getFeatures() {
   try {
     const features = await db.queryMany(
-      'SELECT * FROM features WHERE is_published = true ORDER BY order_index ASC'
+      'SELECT *, icon_name AS icon FROM features WHERE is_active = true ORDER BY display_order ASC'
     );
     return features || [];
   } catch (error) {
@@ -20,6 +20,7 @@ async function getFeatures() {
     return [];
   }
 }
+
 
 
 export default async function FeaturesPage() {

@@ -12,7 +12,7 @@ import { db } from "@/lib/db";
 async function getHowItWorksSteps() {
   try {
     const steps = await db.queryMany(
-      'SELECT * FROM how_it_works WHERE is_published = true ORDER BY step_number ASC'
+      'SELECT * FROM how_it_works_steps WHERE is_active = true ORDER BY step_number ASC'
     );
     return steps || [];
   } catch (error) {

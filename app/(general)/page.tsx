@@ -19,7 +19,7 @@ import { db } from "@/lib/db";
 async function getFaqs() {
   try {
     const faqs = await db.queryMany(
-      'SELECT * FROM faqs WHERE is_published = true ORDER BY order_index ASC LIMIT 4'
+      'SELECT * FROM faqs WHERE is_active = true ORDER BY display_order ASC LIMIT 4'
     );
     return faqs || [];
   } catch (error) {
@@ -28,10 +28,11 @@ async function getFaqs() {
   }
 }
 
+
 async function getFeaturedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT * FROM reunited_stories WHERE is_featured = true ORDER BY created_at DESC LIMIT 3'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
     );
     return stories || [];
   } catch (error) {
@@ -39,6 +40,8 @@ async function getFeaturedStories() {
     return [];
   }
 }
+
+
 
 
 export default async function HomePage() {

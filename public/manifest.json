@@ -1,0 +1,35 @@
+{
+  "name": "The Fur Finder",
+  "short_name": "FurFinder",
+  "description": "Australia's AI-Powered Lost & Found Pets App. Report lost pets, get instant AI matching, and connect with your community.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FF6B4A",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Report Lost Pet",
+      "url": "/report/lost",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Report Found Pet",
+      "url": "/report/found",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    }
+  ]
+}

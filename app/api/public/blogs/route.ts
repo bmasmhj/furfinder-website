@@ -8,9 +8,10 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-    let query = 'SELECT * FROM blogs WHERE is_published = true';
+    let query = 'SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs WHERE is_published = true';
     const params: any[] = [];
     let countQuery = 'SELECT COUNT(*) as total FROM blogs WHERE is_published = true';
+
 
     if (category) {
       query += ' AND category = $1';

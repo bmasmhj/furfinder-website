@@ -11,18 +11,15 @@ import { db } from "@/lib/db";
 async function getPricingPlans() {
   try {
     const plans = await db.queryMany(
-      'SELECT * FROM pricing WHERE is_published = true ORDER BY order_index ASC'
+      'SELECT * FROM pricing_plans WHERE is_active = true ORDER BY display_order ASC'
     );
-    // map price to price_aud if needed by the component
-    return plans.map(p => ({
-      ...p,
-      price_aud: p.price
-    })) || [];
+    return plans || [];
   } catch (error) {
     console.error("Error fetching pricing:", error);
     return [];
   }
 }
+
 
 
 export default async function Pricing() {

@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 async function getBlogPost(slug: string) {
   try {
     const blog = await db.queryOne(
-      'SELECT * FROM blogs WHERE slug = $1 AND is_published = true',
+      'SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs WHERE slug = $1 AND is_published = true',
       [slug]
     );
     return blog;
@@ -20,7 +20,7 @@ async function getBlogPost(slug: string) {
 async function getTrendingBlogs() {
   try {
     const blogs = await db.queryMany(
-      'SELECT * FROM blogs WHERE is_published = true ORDER BY created_at DESC LIMIT 3'
+      'SELECT *, featured_image_url AS image_url, author_name AS author FROM blogs WHERE is_published = true ORDER BY created_at DESC LIMIT 3'
     );
     return blogs || [];
   } catch (error) {
@@ -28,6 +28,7 @@ async function getTrendingBlogs() {
     return [];
   }
 }
+
 
 
 export async function generateMetadata({

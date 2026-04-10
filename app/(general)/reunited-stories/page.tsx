@@ -13,7 +13,7 @@ import { db } from "@/lib/db";
 async function getReunitedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT * FROM reunited_stories ORDER BY created_at DESC LIMIT 12'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true ORDER BY created_at DESC LIMIT 12'
     );
     return { data: stories, pagination: {} };
   } catch (error) {
@@ -25,7 +25,7 @@ async function getReunitedStories() {
 async function getFeaturedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT * FROM reunited_stories WHERE is_featured = true ORDER BY created_at DESC LIMIT 3'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
     );
     return { data: stories };
   } catch (error) {
@@ -33,6 +33,8 @@ async function getFeaturedStories() {
     return { data: [] };
   }
 }
+
+
 
 
 export default async function ReunitedStoriesPage() {
