@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '../lib/auth';
+import { verifyToken } from './lib/auth';
 
 const protectedRoutes = ['/dashboard', '/reports', '/matches', '/messages', '/profile'];
 
@@ -24,8 +24,9 @@ export function middleware(request: NextRequest) {
         status: 204,
         headers: {
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
           'Access-Control-Max-Age': '86400',
+          'Access-Control-Allow-Credentials': 'true',
         },
       });
       if (isAllowedOrigin) {
@@ -40,7 +41,9 @@ export function middleware(request: NextRequest) {
       response.headers.set('Access-Control-Allow-Origin', origin);
     }
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    response.headers.set('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+    response.headers.set('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
     return response;
   }
 
