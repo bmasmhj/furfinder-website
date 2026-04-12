@@ -114,7 +114,7 @@
 
 .nav-links {
   display: flex;
-  align-items: center;
+  align-items: center;  
   gap: 28px
 }
 
@@ -128,11 +128,11 @@
 }
 
 .nav-link:hover {
-  color: #ff6b4a;
+  color: #fffefe;
 }
 
 .nav-link--active {
-  color: #ff6b4a !important;
+  color: #ffffff !important;
   font-weight: 700;
 }
 
@@ -148,7 +148,7 @@
 }
 .nav-cta {
   background: #FF6B4A;
-  color: #fff !important;
+  color: #fff!important;
   padding: 8px 20px;
   border-radius: 24px;
   font-weight: 600;
@@ -321,6 +321,7 @@
 
 .btn-primary:hover {
   background: #e5553a;
+  color: #fff!important;
   transform: translateY(-1px);
   box-shadow: 0 8px 24px rgba(255, 107, 74, .35)
 }
@@ -1573,7 +1574,6 @@ details[open] .faq-icon {
 @media(prefers-color-scheme:dark) {
   /* Global catch-alls for text hierarchy */
   h1, h2, h3, h4, h5, h6 { color: #f3f4f6 !important; }
-  p, li, span:not(.accent):not(.paw) { color: #9ca3af !important; }
   
   /* Layout backgrounds */
   .bg-white, .bg-[#fafafa], .bg-[#f9fafb], .bg-[#f8f9fa] { 

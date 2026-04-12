@@ -116,6 +116,8 @@ export async function GET(request: NextRequest) {
       LIMIT $${limitIdx} OFFSET $${offsetIdx}
     `;
 
+    console.log('Executing query:', mainQuery, 'with params:', params);
+
     const result = await db.query(mainQuery, params);
 
     const reports = result.rows.map((row: any) => {

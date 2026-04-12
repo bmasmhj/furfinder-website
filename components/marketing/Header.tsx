@@ -57,8 +57,8 @@ export default function Header() {
                 {label}
               </Link>
             ))}
-            <Link href="#download" className="nav-cta !px-3 hidden md:inline-flex">
-              Download Free
+            <Link href="https://app.thefurfinder.com" className="nav-cta !px-3 hidden md:inline-flex hover:!text-white ">
+              Try on Web 
             </Link>
           </div>
 
