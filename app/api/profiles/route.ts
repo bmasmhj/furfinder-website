@@ -4,26 +4,7 @@ import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { handleApiError } from '@/lib/api-errors';
 
-function mapProfileRow(row: any): any {
-  return {
-    id: row.id,
-    petType: row.pet_type,
-    petName: row.pet_name,
-    breed: row.breed,
-    size: row.size,
-    color: row.color,
-    markings: row.markings,
-    photoUris: typeof row.photo_uris === 'string' ? JSON.parse(row.photo_uris) : (row.photo_uris || []),
-    biometricPhotoUris: typeof row.biometric_photo_uris === 'string' ? JSON.parse(row.biometric_photo_uris) : (row.biometric_photo_uris || []),
-    microchipNumber: row.microchip_number,
-    medicalNotes: row.medical_notes,
-    suburb: row.suburb,
-    ownerName: row.owner_name,
-    ownerPhone: row.owner_phone,
-    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
-    updatedAt: row.updated_at instanceof Date ? row.updated_at.toISOString() : row.updated_at,
-  };
-}
+import { mapProfileRow } from '@/lib/api-helpers';
 
 export async function GET(request: NextRequest) {
   try {

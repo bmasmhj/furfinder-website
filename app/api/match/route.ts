@@ -56,10 +56,14 @@ export async function POST(request: NextRequest) {
 
     const oppositeStatus = report.status === 'lost' ? 'found' : 'lost';
 
-    const matchingReports = (reports || []).filter((r: any) => {
-      if (r.id === report.id) return false;
-      if (r.status !== oppositeStatus) return false;
-      if (r.petType !== report.petType) return false;
+    // Fetch reports from DB
+    const reportsQuery = await db.query(
+      `SELECT * FROM pet_reports WHERE status = $1 AND pet_type = $2 AND id != $3`,
+      [oppositeStatus, report.petType, report.id]
+    );
+    const dbReports = reportsQuery.rows;
+
+    const matchingReports = dbReports.filter((r: any) => {
       if (r.latitude && r.longitude && report.latitude && report.longitude) {
         const dist = getDistance(report.latitude, report.longitude, r.latitude, r.longitude);
         if (dist > searchRadius) return false;
@@ -67,7 +71,11 @@ export async function POST(request: NextRequest) {
       return true;
     });
 
-    const matchingProfiles = (profiles || []).filter((p: any) => p.petType === report.petType);
+    const profilesQuery = await db.query(
+      `SELECT * FROM pet_profiles WHERE pet_type = $1`,
+      [report.petType]
+    );
+    const matchingProfiles = profilesQuery.rows;
 
     const candidates: any[] = [];
 

@@ -54,16 +54,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid photo format" }, { status: 400 });
     }
 
-    const lostReports = (reports || []).filter((r: any) => {
-      if (r.status !== 'lost') return false;
-      if (petType && r.petType !== petType) return false;
-      return true;
-    });
+    const lostReportsParams: any[] = ['lost'];
+    let lostReportsQuery = `SELECT * FROM pet_reports WHERE status = $1`;
+    if (petType) {
+      lostReportsParams.push(petType);
+      lostReportsQuery += ` AND pet_type = $2`;
+    }
+    const reportsRes = await db.query(lostReportsQuery, lostReportsParams);
+    const lostReports = reportsRes.rows;
 
-    const allProfiles = (profiles || []).filter((p: any) => {
-      if (petType && p.petType !== petType) return false;
-      return true;
-    });
+    const allProfilesParams: any[] = [];
+    let allProfilesQuery = `SELECT * FROM pet_profiles`;
+    if (petType) {
+      allProfilesParams.push(petType);
+      allProfilesQuery += ` WHERE pet_type = $1`;
+    }
+    const profilesRes = await db.query(allProfilesQuery, allProfilesParams);
+    const allProfiles = profilesRes.rows;
 
     const candidates: any[] = [];
 
@@ -71,8 +78,15 @@ export async function POST(request: NextRequest) {
       candidates.push({
         type: 'report',
         id: r.id,
-        summary: `[Lost Report] ${r.petType} named "${r.petName}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.locationName}, date: ${r.lastSeenDate}`,
-        photos: getReportPhotos(r),
+        summary: `[Lost Report] ${r.pet_type} named "${r.pet_name}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.location_name}, date: ${r.last_seen_date}`,
+        photos: getReportPhotos({ 
+          photoUris: r.photo_uris ? (typeof r.photo_uris === 'string' ? JSON.parse(r.photo_uris) : r.photo_uris) : [], 
+          photoUri: r.photo_uri 
+        }),
+        name: r.pet_name,
+        breed: r.breed,
+        petType: r.pet_type,
+        status: r.status
       });
     }
 
@@ -82,8 +96,12 @@ export async function POST(request: NextRequest) {
       candidates.push({
         type: 'profile',
         id: p.id,
-        summary: `[Registered Pet] ${p.petType} named "${p.petName}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, owner: ${p.ownerName}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s)` : ''}`,
+        summary: `[Registered Pet] ${p.pet_type} named "${p.pet_name}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, owner: ${p.owner_name}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s)` : ''}`,
         photos: [...profilePhotos, ...biometricPhotos],
+        name: p.pet_name,
+        breed: p.breed,
+        petType: p.pet_type,
+        status: 'registered'
       });
     }
 
@@ -96,17 +114,25 @@ export async function POST(request: NextRequest) {
         id: oa.id,
         summary: `[${orgLabel}: ${oa.org_name}] ${oa.pet_type} named "${oa.pet_name}", breed: ${oa.breed}, size: ${oa.size}, color: ${oa.color}, markings: "${oa.markings}", intake: ${oa.intake_type}, microchip: ${oa.microchip_number || 'none'}, description: "${oa.description}"`,
         photos: photos.slice(0, 3),
+        name: oa.pet_name,
+        breed: oa.breed,
+        petType: oa.pet_type,
+        status: 'org_animal'
       });
     }
 
-    // AI analysis is bypassed as per legacy status, returning gathered candidates.
     return NextResponse.json({ 
       matches: candidates.slice(0, MAX_VISION_CANDIDATES).map(c => ({
         id: c.id,
         type: c.type,
         confidence: 50,
         reason: "Visual candidate based on pet type and report category",
-        details: c.summary
+        details: c.summary,
+        name: c.name,
+        breed: c.breed,
+        photoUri: c.photos[0] || '',
+        petType: c.petType,
+        status: c.status
       }))
     });
   } catch (error) {

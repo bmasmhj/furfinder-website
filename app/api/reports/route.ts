@@ -4,42 +4,7 @@ import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { handleApiError } from '@/lib/api-errors';
 
-function mapReportRow(row: any, isOwner: boolean, likedByMe: boolean): any {
-  return {
-    id: row.id,
-    userId: row.user_id,
-    status: row.status,
-    petType: row.pet_type,
-    petName: row.pet_name,
-    breed: row.breed,
-    size: row.size,
-    color: row.color,
-    markings: row.markings,
-    photoUri: row.photo_uri,
-    photoUris: typeof row.photo_uris === 'string' ? JSON.parse(row.photo_uris) : (row.photo_uris || []),
-    description: row.description,
-    latitude: row.latitude,
-    longitude: row.longitude,
-    locationName: row.location_name,
-    lastSeenDate: row.last_seen_date,
-    reward: row.reward,
-    rewardPool: row.reward_pool || 0,
-    contactName: row.contact_name,
-    contactPhone: row.contact_phone,
-    showContactPublic: row.show_contact_public ?? true,
-    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
-    isOwner,
-    comments: [],
-    timeline: [],
-    reunionMessage: row.reunion_message || undefined,
-    reunionDate: row.reunion_date ? (row.reunion_date instanceof Date ? row.reunion_date.toISOString() : row.reunion_date) : undefined,
-    likes: row.likes || 0,
-    likedByMe,
-    isBoosted: row.is_boosted || false,
-    boostedAt: row.boosted_at ? (row.boosted_at instanceof Date ? row.boosted_at.toISOString() : row.boosted_at) : undefined,
-    boostExpiresAt: row.boost_expires_at ? (row.boost_expires_at instanceof Date ? row.boost_expires_at.toISOString() : row.boost_expires_at) : undefined,
-  };
-}
+import { mapReportRow } from '@/lib/api-helpers';
 
 export async function GET(request: NextRequest) {
   try {
@@ -51,7 +16,6 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '0');
     const offset = isPaginated ? page * limit : (parseInt(searchParams.get('offset') || '0'));
     const statusFilter = searchParams.get('status');
-    const userId = searchParams.get('userId');
     const suburbFilter = searchParams.get('suburb');
     const lat = parseFloat(searchParams.get('lat') || 'NaN');
     const lng = parseFloat(searchParams.get('lng') || 'NaN');
@@ -66,11 +30,6 @@ export async function GET(request: NextRequest) {
       innerConditions.push(`r.status = $${params.length}`);
     } else {
       innerConditions.push(`r.status != 'reunited'`);
-    }
-
-    if (userId) {
-      params.push(userId);
-      innerConditions.push(`r.user_id = $${params.length}`);
     }
 
     if (suburbFilter) {
@@ -139,17 +98,6 @@ export async function GET(request: NextRequest) {
     if (isPaginated) {
       const countParams = params.slice(0, params.length - 2);
       const countQuery = `
-        SELECT COUNT(*) FROM (
-          SELECT r.id, ${distanceExpr} AS distance
-          FROM pet_reports r
-          ${whereClause}
-        ) sub
-        ${outerWhere}
-        ${outerWhere ? `WHERE distance < ${radiusKm}` : ''}
-      `;
-      // Note: the countQuery above has a bug in the original routes (double WHERE if hasGeo).
-      // I'll fix it here for correctness while maintaining the interface.
-      const fixedCountQuery = `
         SELECT (SELECT COUNT(*) FROM (
           SELECT r.id, ${distanceExpr} AS distance
           FROM pet_reports r
@@ -157,7 +105,7 @@ export async function GET(request: NextRequest) {
         ) s ${outerWhere}) as count
       `;
       
-      const countResult = await db.query(fixedCountQuery, countParams);
+      const countResult = await db.query(countQuery, countParams);
       const total = parseInt(countResult.rows[0].count);
       return NextResponse.json({ reports, total, page, hasMore: (page + 1) * limit < total });
     }
