@@ -3,6 +3,7 @@ import Link from "next/link";
 import HeroSection from "@/components/marketing/Hero";
 import WhoisitFor from "@/components/marketing/WhoIsItFor";
 import { db } from "@/lib/db";
+import PetStory from "@/components/PetStory";
 
 export const metadata: Metadata = {
   title: "The Fur Finder — Australia's AI-Powered Lost & Found Pets App",
@@ -79,31 +80,7 @@ export default async function HomePage() {
 
             <div className="grid gap-6 md:grid-cols-3">
               {stories.map((story: any) => (
-                <div
-                  key={story.id}
-                  className="overflow-hidden rounded-2xl border border-border bg-card transition-all hover:shadow-lg"
-                >
-                  {story.image_url && (
-                    <div className="h-48 overflow-hidden">
-                      <img
-                        src={story.image_url}
-                        alt={story.pet_name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <h3 className="mb-2 text-lg font-bold text-foreground">
-                      {story.pet_name}&apos;s Journey
-                    </h3>
-                    <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
-                      {story.story_content}
-                    </p>
-                    <span className="text-xs font-medium uppercase tracking-wider text-primary">
-                      {story.pet_type}
-                    </span>
-                  </div>
-                </div>
+                <PetStory key={story.id} story={story} />
               ))}
             </div>
 

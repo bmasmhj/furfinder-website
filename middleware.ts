@@ -1,8 +1,5 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from './lib/auth';
-
-const protectedRoutes = ['/dashboard', '/reports', '/matches', '/messages', '/profile'];
 
 const allowedOrigins = [
   'http://localhost:8081',
@@ -45,30 +42,6 @@ export function middleware(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Credentials', 'true');
     response.headers.set('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
     return response;
-  }
-
-  // 2. Handle protection for frontend routes
-  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
-
-  if (isProtectedRoute) {
-    const token = request.cookies.get('token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
-
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    try {
-      verifyToken(token);
-      return NextResponse.next();
-    } catch {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
-
-  // 3. Redirect authenticated users away from auth pages
-  const token = request.cookies.get('token')?.value;
-  if (token && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();
