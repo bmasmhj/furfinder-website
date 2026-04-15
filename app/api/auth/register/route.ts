@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const { 
       email, 
       password, 
-      displayName, 
+      display_name, 
       phone, 
       consentPrivacy, 
       consentTerms, 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       referralCode 
     } = body;
 
-    if (!email || !password || !displayName) {
+    if (!email || !password || !display_name) {
       return NextResponse.json({ message: 'Email, password, and display name are required' }, { status: 400 });
     }
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       `INSERT INTO users (email, password_hash, display_name, phone, consent_privacy, consent_terms, consent_ai, consent_data_storage, consent_date, referral_code, referred_by)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10)
        RETURNING id, email, display_name as "displayName", phone, referral_code as "referralCode", role`,
-      [email.toLowerCase(), passwordHash, displayName, phone || '', consentPrivacy, consentTerms, consentAi, consentDataStorage, newCode, referrerId]
+      [email.toLowerCase(), passwordHash, display_name, phone || '', consentPrivacy, consentTerms, consentAi, consentDataStorage, newCode, referrerId]
     );
 
     const user = result.rows[0];
