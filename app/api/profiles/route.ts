@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { 
-      petType, petName, breed, size, color, markings, 
-      photoUris, biometricPhotoUris, microchipNumber, 
+      petType, pet_name, breed, size, color, markings, 
+      photo_uris, biometricphoto_uris, microchipNumber, 
       medicalNotes, suburb, ownerName, ownerPhone 
     } = body;
 
@@ -42,8 +42,8 @@ export async function POST(request: NextRequest) {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING *`,
       [
-        user.id, petType, petName, breed || '', size || 'medium', color || '', markings || '',
-        JSON.stringify(photoUris || []), JSON.stringify(biometricPhotoUris || []),
+        user.id, petType, pet_name, breed || '', size || 'medium', color || '', markings || '',
+        JSON.stringify(photo_uris || []), JSON.stringify(biometricphoto_uris || []),
         microchipNumber || '', medicalNotes || '', suburb || '', ownerName || '', ownerPhone || ''
       ]
     );

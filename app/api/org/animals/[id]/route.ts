@@ -9,12 +9,12 @@ function mapAnimalRow(a: any) {
     id: a.id, 
     orgId: a.org_id, 
     petType: a.pet_type, 
-    petName: a.pet_name, 
+    pet_name: a.pet_name, 
     breed: a.breed,
     size: a.size, 
     color: a.color, 
     markings: a.markings, 
-    photoUris: typeof a.photo_uris === 'string' ? JSON.parse(a.photo_uris) : (a.photo_uris || []),
+    photo_uris: typeof a.photo_uris === 'string' ? JSON.parse(a.photo_uris) : (a.photo_uris || []),
     description: a.description, 
     intakeDate: a.intake_date, 
     intakeType: a.intake_type,
@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest, { params }: Context) {
     }
     const orgId = org.rows[0].id;
     const body = await request.json();
-    const { petType, petName, breed, size, color, markings, photoUris, description, intakeDate, intakeType, microchipNumber, desexed, status } = body;
+    const { petType, pet_name, breed, size, color, markings, photo_uris, description, intakeDate, intakeType, microchipNumber, desexed, status } = body;
     
     if (petType && !['dog', 'cat', 'bird', 'rabbit', 'other'].includes(petType)) {
       return NextResponse.json({ message: "Invalid pet type" }, { status: 400 });
@@ -96,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: Context) {
            updated_at = NOW()
        WHERE id = $14 AND org_id = $15
        RETURNING *`,
-      [petType, petName, breed, size, color, markings, photoUris ? JSON.stringify(photoUris) : null, description, intakeDate, intakeType, microchipNumber, desexed, status, id, orgId]
+      [petType, pet_name, breed, size, color, markings, photo_uris ? JSON.stringify(photo_uris) : null, description, intakeDate, intakeType, microchipNumber, desexed, status, id, orgId]
     );
 
     if (result.rows.length === 0) {

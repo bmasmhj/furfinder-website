@@ -909,18 +909,18 @@ var RADIUS_KM = 5;
 var MAX_VISION_CANDIDATES = 15;
 function getReportPhotos(report) {
   const photos = [];
-  if (report.photoUris && report.photoUris.length > 0) {
-    photos.push(...report.photoUris);
-  } else if (report.photoUri) {
-    photos.push(report.photoUri);
+  if (report.photo_uris && report.photo_uris.length > 0) {
+    photos.push(...report.photo_uris);
+  } else if (report.photo_uri) {
+    photos.push(report.photo_uri);
   }
   return photos.filter((p) => p && (p.startsWith("data:") || p.startsWith("http")));
 }
 function getProfilePhotos(profile) {
-  return (profile.photoUris || []).filter((p) => p && (p.startsWith("data:") || p.startsWith("http")));
+  return (profile.photo_uris || []).filter((p) => p && (p.startsWith("data:") || p.startsWith("http")));
 }
 function getProfileBiometricPhotos(profile) {
-  return (profile.biometricPhotoUris || []).filter((p) => p && (p.startsWith("data:") || p.startsWith("http")));
+  return (profile.biometricphoto_uris || []).filter((p) => p && (p.startsWith("data:") || p.startsWith("http")));
 }
 function mapReportRow(row, isOwner, likedByMe) {
   return {
@@ -928,17 +928,17 @@ function mapReportRow(row, isOwner, likedByMe) {
     userId: row.user_id,
     status: row.status,
     petType: row.pet_type,
-    petName: row.pet_name,
+    pet_name: row.pet_name,
     breed: row.breed,
     size: row.size,
     color: row.color,
     markings: row.markings,
-    photoUri: row.photo_uri,
-    photoUris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
+    photo_uri: row.photo_uri,
+    photo_uris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
     description: row.description,
     latitude: row.latitude,
     longitude: row.longitude,
-    locationName: row.location_name,
+    location_name: row.location_name,
     lastSeenDate: row.last_seen_date,
     reward: row.reward,
     rewardPool: row.reward_pool || 0,
@@ -950,7 +950,7 @@ function mapReportRow(row, isOwner, likedByMe) {
     comments: [],
     timeline: [],
     reunionMessage: row.reunion_message || void 0,
-    reunionDate: row.reunion_date ? row.reunion_date instanceof Date ? row.reunion_date.toISOString() : row.reunion_date : void 0,
+    reunion_date: row.reunion_date ? row.reunion_date instanceof Date ? row.reunion_date.toISOString() : row.reunion_date : void 0,
     likes: row.likes || 0,
     likedByMe,
     isBoosted: row.is_boosted || false,
@@ -962,13 +962,13 @@ function mapProfileRow(row) {
   return {
     id: row.id,
     petType: row.pet_type,
-    petName: row.pet_name,
+    pet_name: row.pet_name,
     breed: row.breed,
     size: row.size,
     color: row.color,
     markings: row.markings,
-    photoUris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
-    biometricPhotoUris: typeof row.biometric_photo_uris === "string" ? JSON.parse(row.biometric_photo_uris) : row.biometric_photo_uris || [],
+    photo_uris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
+    biometricphoto_uris: typeof row.biometric_photo_uris === "string" ? JSON.parse(row.biometric_photo_uris) : row.biometric_photo_uris || [],
     microchipNumber: row.microchip_number,
     medicalNotes: row.medical_notes,
     suburb: row.suburb,
@@ -1059,9 +1059,9 @@ async function registerRoutes(app2) {
           [row.user_id, match.id]
         );
         if (dedup.rows.length > 0) continue;
-        const petName = row.pet_name || "your pet";
-        const title = `Possible match found for ${petName}!`;
-        const message = `Someone spotted a pet nearby that our AI thinks could be a match for your lost ${petName}. Open The Fur Finder to review the details \u2014 it may not be exact, but it's worth checking.`;
+        const pet_name = row.pet_name || "your pet";
+        const title = `Possible match found for ${pet_name}!`;
+        const message = `Someone spotted a pet nearby that our AI thinks could be a match for your lost ${pet_name}. Open The Fur Finder to review the details \u2014 it may not be exact, but it's worth checking.`;
         await db_default.query(
           `INSERT INTO notifications (user_id, type, title, message, report_id)
            VALUES ($1, 'ai_match', $2, $3, $4)`,
@@ -1102,7 +1102,7 @@ async function registerRoutes(app2) {
         candidates.push({
           type: "report",
           id: r.id,
-          summary: `[Report] ${r.status.toUpperCase()} ${r.petType} named "${r.petName}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.locationName}, distance: ${dist.toFixed(1)}km, date: ${r.lastSeenDate}, description: "${r.description}"`,
+          summary: `[Report] ${r.status.toUpperCase()} ${r.petType} named "${r.pet_name}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.location_name}, distance: ${dist.toFixed(1)}km, date: ${r.lastSeenDate}, description: "${r.description}"`,
           photos: getReportPhotos(r),
           distance: dist
         });
@@ -1114,7 +1114,7 @@ async function registerRoutes(app2) {
         candidates.push({
           type: "profile",
           id: p.id,
-          summary: `[Registered Pet] ${p.petType} named "${p.petName}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, microchip: ${p.microchipNumber || "none"}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s) (close-up nose/eyes/face)` : ""}`,
+          summary: `[Registered Pet] ${p.petType} named "${p.pet_name}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, microchip: ${p.microchipNumber || "none"}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s) (close-up nose/eyes/face)` : ""}`,
           photos: allPhotos
         });
       }
@@ -1141,7 +1141,7 @@ async function registerRoutes(app2) {
       const visionCandidates = candidates.slice(0, MAX_VISION_CANDIDATES);
       const targetPhotos = getReportPhotos(report);
       const hasPhotos = targetPhotos.length > 0 || visionCandidates.some((c) => c.photos.length > 0);
-      const targetSummary = `${report.status.toUpperCase()} ${report.petType} named "${report.petName}", breed: ${report.breed}, size: ${report.size}, color: ${report.color}, markings: "${report.markings}", location: ${report.locationName}, date: ${report.lastSeenDate}, description: "${report.description}"`;
+      const targetSummary = `${report.status.toUpperCase()} ${report.petType} named "${report.pet_name}", breed: ${report.breed}, size: ${report.size}, color: ${report.color}, markings: "${report.markings}", location: ${report.location_name}, date: ${report.lastSeenDate}, description: "${report.description}"`;
       const candidateList = visionCandidates.map(
         (c, i) => `${i + 1}. (${c.type}:${c.id}) ${c.summary} | Has ${c.photos.length} photo(s)`
       ).join("\n");
@@ -1227,11 +1227,11 @@ Return ONLY valid JSON, no markdown formatting.`;
   });
   app2.post("/api/quick-snap-match", aiLimiter, optionalAuth, async (req, res) => {
     try {
-      const { photoUri, petType, reports, profiles } = req.body;
-      if (!photoUri) {
+      const { photo_uri, petType, reports, profiles } = req.body;
+      if (!photo_uri) {
         return res.status(400).json({ error: "A photo is required" });
       }
-      const validPhoto = photoUri.startsWith("data:") || photoUri.startsWith("http");
+      const validPhoto = photo_uri.startsWith("data:") || photo_uri.startsWith("http");
       if (!validPhoto) {
         return res.status(400).json({ error: "Invalid photo format" });
       }
@@ -1249,7 +1249,7 @@ Return ONLY valid JSON, no markdown formatting.`;
         candidates.push({
           type: "report",
           id: r.id,
-          summary: `[Lost Report] ${r.petType} named "${r.petName}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.locationName}, date: ${r.lastSeenDate}`,
+          summary: `[Lost Report] ${r.petType} named "${r.pet_name}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.location_name}, date: ${r.lastSeenDate}`,
           photos: getReportPhotos(r)
         });
       }
@@ -1259,7 +1259,7 @@ Return ONLY valid JSON, no markdown formatting.`;
         candidates.push({
           type: "profile",
           id: p.id,
-          summary: `[Registered Pet] ${p.petType} named "${p.petName}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, owner: ${p.ownerName}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s) (close-up nose/eyes/face)` : ""}`,
+          summary: `[Registered Pet] ${p.petType} named "${p.pet_name}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, owner: ${p.ownerName}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s) (close-up nose/eyes/face)` : ""}`,
           photos: [...profilePhotos, ...biometricPhotos]
         });
       }
@@ -1503,7 +1503,7 @@ Return ONLY valid JSON, no markdown.`;
         `INSERT INTO pet_reports (user_id, status, pet_type, pet_name, breed, size, color, markings, photo_uri, photo_uris, description, latitude, longitude, location_name, last_seen_date, reward, contact_name, contact_phone, show_contact_public)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
          RETURNING *`,
-        [req.user.id, b.status, b.petType, b.petName, b.breed || "", b.size || "medium", b.color || "", b.markings || "", b.photoUri || "", JSON.stringify(b.photoUris || []), b.description || "", b.latitude || 0, b.longitude || 0, b.locationName || "", b.lastSeenDate || "", b.reward || "", b.contactName || "", b.contactPhone || "", b.showContactPublic !== false]
+        [req.user.id, b.status, b.petType, b.pet_name, b.breed || "", b.size || "medium", b.color || "", b.markings || "", b.photo_uri || "", JSON.stringify(b.photo_uris || []), b.description || "", b.latitude || 0, b.longitude || 0, b.location_name || "", b.lastSeenDate || "", b.reward || "", b.contactName || "", b.contactPhone || "", b.showContactPublic !== false]
       );
       const reportId = result.rows[0].id;
       await db_default.query(
@@ -1528,16 +1528,16 @@ Return ONLY valid JSON, no markdown.`;
       let idx = 1;
       const updatable = {
         status: "status",
-        petName: "pet_name",
+        pet_name: "pet_name",
         breed: "breed",
         size: "size",
         color: "color",
         markings: "markings",
-        photoUri: "photo_uri",
+        photo_uri: "photo_uri",
         description: "description",
         latitude: "latitude",
         longitude: "longitude",
-        locationName: "location_name",
+        location_name: "location_name",
         lastSeenDate: "last_seen_date",
         reward: "reward",
         contactName: "contact_name",
@@ -1552,9 +1552,9 @@ Return ONLY valid JSON, no markdown.`;
           idx++;
         }
       }
-      if (b.photoUris !== void 0) {
+      if (b.photo_uris !== void 0) {
         fields.push(`photo_uris = $${idx}`);
-        values.push(JSON.stringify(b.photoUris));
+        values.push(JSON.stringify(b.photo_uris));
         idx++;
       }
       if (fields.length === 0) return res.status(400).json({ message: "No fields to update" });
@@ -1786,12 +1786,12 @@ Return ONLY valid JSON, no markdown.`;
       return res.json(result.rows.map((row) => ({
         id: row.id,
         petType: row.pet_type,
-        petName: row.pet_name,
+        pet_name: row.pet_name,
         breed: row.breed,
         size: row.size,
         color: row.color,
         markings: row.markings,
-        photoUris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
+        photo_uris: typeof row.photo_uris === "string" ? JSON.parse(row.photo_uris) : row.photo_uris || [],
         suburb: row.suburb,
         hasChip: !!row.microchip_number,
         ownerdisplay_name: row.owner_display_name,
@@ -1809,7 +1809,7 @@ Return ONLY valid JSON, no markdown.`;
         `INSERT INTO pet_profiles (user_id, pet_type, pet_name, breed, size, color, markings, photo_uris, biometric_photo_uris, microchip_number, medical_notes, suburb, owner_name, owner_phone)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
          RETURNING *`,
-        [req.user.id, b.petType, b.petName, b.breed || "", b.size || "medium", b.color || "", b.markings || "", JSON.stringify(b.photoUris || []), JSON.stringify(b.biometricPhotoUris || []), b.microchipNumber || "", b.medicalNotes || "", b.suburb || "", b.ownerName || "", b.ownerPhone || ""]
+        [req.user.id, b.petType, b.pet_name, b.breed || "", b.size || "medium", b.color || "", b.markings || "", JSON.stringify(b.photo_uris || []), JSON.stringify(b.biometricphoto_uris || []), b.microchipNumber || "", b.medicalNotes || "", b.suburb || "", b.ownerName || "", b.ownerPhone || ""]
       );
       return res.status(201).json(mapProfileRow(result.rows[0]));
     } catch (err) {
@@ -1829,7 +1829,7 @@ Return ONLY valid JSON, no markdown.`;
       let idx = 1;
       const updatable = {
         petType: "pet_type",
-        petName: "pet_name",
+        pet_name: "pet_name",
         breed: "breed",
         size: "size",
         color: "color",
@@ -1847,14 +1847,14 @@ Return ONLY valid JSON, no markdown.`;
           idx++;
         }
       }
-      if (b.photoUris !== void 0) {
+      if (b.photo_uris !== void 0) {
         fields.push(`photo_uris = $${idx}`);
-        values.push(JSON.stringify(b.photoUris));
+        values.push(JSON.stringify(b.photo_uris));
         idx++;
       }
-      if (b.biometricPhotoUris !== void 0) {
+      if (b.biometricphoto_uris !== void 0) {
         fields.push(`biometric_photo_uris = $${idx}`);
-        values.push(JSON.stringify(b.biometricPhotoUris));
+        values.push(JSON.stringify(b.biometricphoto_uris));
         idx++;
       }
       fields.push(`updated_at = NOW()`);
@@ -2247,12 +2247,12 @@ Return ONLY valid JSON, no markdown.`;
         id: a.id,
         orgId: a.org_id,
         petType: a.pet_type,
-        petName: a.pet_name,
+        pet_name: a.pet_name,
         breed: a.breed,
         size: a.size,
         color: a.color,
         markings: a.markings,
-        photoUris: a.photo_uris || [],
+        photo_uris: a.photo_uris || [],
         description: a.description,
         intakeDate: a.intake_date,
         intakeType: a.intake_type,
@@ -2285,12 +2285,12 @@ Return ONLY valid JSON, no markdown.`;
         id: a.id,
         orgId: a.org_id,
         petType: a.pet_type,
-        petName: a.pet_name,
+        pet_name: a.pet_name,
         breed: a.breed,
         size: a.size,
         color: a.color,
         markings: a.markings,
-        photoUris: a.photo_uris || [],
+        photo_uris: a.photo_uris || [],
         description: a.description,
         intakeDate: a.intake_date,
         intakeType: a.intake_type,
@@ -2315,7 +2315,7 @@ Return ONLY valid JSON, no markdown.`;
         return res.status(403).json({ message: "Organisation must be approved to add animals" });
       }
       const orgId = org.rows[0].id;
-      const { petType, petName, breed, size, color, markings, photoUris, description, intakeDate, intakeType, microchipNumber, desexed } = req.body;
+      const { petType, pet_name, breed, size, color, markings, photo_uris, description, intakeDate, intakeType, microchipNumber, desexed } = req.body;
       if (!petType) {
         return res.status(400).json({ message: "Pet type is required" });
       }
@@ -2331,19 +2331,19 @@ Return ONLY valid JSON, no markdown.`;
       const result = await db_default.query(
         `INSERT INTO organisation_animals (org_id, pet_type, pet_name, breed, size, color, markings, photo_uris, description, intake_date, intake_type, microchip_number, desexed)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
-        [orgId, petType, petName || "", breed || "", size || "medium", color || "", markings || "", JSON.stringify(photoUris || []), description || "", intakeDate || null, intakeType || "stray", microchipNumber || null, desexed || false]
+        [orgId, petType, pet_name || "", breed || "", size || "medium", color || "", markings || "", JSON.stringify(photo_uris || []), description || "", intakeDate || null, intakeType || "stray", microchipNumber || null, desexed || false]
       );
       const a = result.rows[0];
       return res.status(201).json({
         id: a.id,
         orgId: a.org_id,
         petType: a.pet_type,
-        petName: a.pet_name,
+        pet_name: a.pet_name,
         breed: a.breed,
         size: a.size,
         color: a.color,
         markings: a.markings,
-        photoUris: a.photo_uris || [],
+        photo_uris: a.photo_uris || [],
         description: a.description,
         intakeDate: a.intake_date,
         intakeType: a.intake_type,
@@ -2369,7 +2369,7 @@ Return ONLY valid JSON, no markdown.`;
       if (animal.rows.length === 0) {
         return res.status(404).json({ message: "Animal not found" });
       }
-      const { petType, petName, breed, size, color, markings, photoUris, description, intakeDate, intakeType, microchipNumber, desexed, status } = req.body;
+      const { petType, pet_name, breed, size, color, markings, photo_uris, description, intakeDate, intakeType, microchipNumber, desexed, status } = req.body;
       if (petType && !["dog", "cat", "bird", "rabbit", "other"].includes(petType)) {
         return res.status(400).json({ message: "Invalid pet type" });
       }
@@ -2389,19 +2389,19 @@ Return ONLY valid JSON, no markdown.`;
          description = COALESCE($8, description), intake_date = $9, intake_type = COALESCE($10, intake_type),
          microchip_number = $11, desexed = COALESCE($12, desexed), status = COALESCE($13, status),
          updated_at = NOW() WHERE id = $14 RETURNING *`,
-        [petType, petName, breed, size, color, markings, photoUris ? JSON.stringify(photoUris) : null, description, intakeDate || null, intakeType, microchipNumber || null, desexed, status, animalId]
+        [petType, pet_name, breed, size, color, markings, photo_uris ? JSON.stringify(photo_uris) : null, description, intakeDate || null, intakeType, microchipNumber || null, desexed, status, animalId]
       );
       const a = result.rows[0];
       return res.json({
         id: a.id,
         orgId: a.org_id,
         petType: a.pet_type,
-        petName: a.pet_name,
+        pet_name: a.pet_name,
         breed: a.breed,
         size: a.size,
         color: a.color,
         markings: a.markings,
-        photoUris: a.photo_uris || [],
+        photo_uris: a.photo_uris || [],
         description: a.description,
         intakeDate: a.intake_date,
         intakeType: a.intake_type,
@@ -2480,12 +2480,12 @@ Return ONLY valid JSON, no markdown.`;
         id: a.id,
         orgId: a.org_id,
         petType: a.pet_type,
-        petName: a.pet_name,
+        pet_name: a.pet_name,
         breed: a.breed,
         size: a.size,
         color: a.color,
         markings: a.markings,
-        photoUris: a.photo_uris || [],
+        photo_uris: a.photo_uris || [],
         description: a.description,
         intakeDate: a.intake_date,
         intakeType: a.intake_type,
@@ -2585,7 +2585,7 @@ Return ONLY valid JSON, no markdown.`;
       return res.json(result.rows.map((r) => ({
         id: r.id,
         reportId: r.report_id,
-        reportPetName: r.report_pet_name || null,
+        reportpet_name: r.report_pet_name || null,
         reportStatus: r.report_status || null,
         reportPhoto: r.report_photo || null,
         otherUserId: r.participant1_id === userId ? r.participant2_id : r.participant1_id,
@@ -2953,7 +2953,7 @@ Return ONLY valid JSON, no markdown.`;
           reviewedAt: r.reviewed_at,
           lostReport: {
             id: r.lost_id,
-            petName: r.lost_pet_name,
+            pet_name: r.lost_pet_name,
             petType: r.lost_pet_type,
             breed: r.lost_breed,
             color: r.lost_color,
@@ -2967,7 +2967,7 @@ Return ONLY valid JSON, no markdown.`;
           },
           foundReport: {
             id: r.found_id,
-            petName: r.found_pet_name,
+            pet_name: r.found_pet_name,
             petType: r.found_pet_type,
             breed: r.found_breed,
             color: r.found_color,

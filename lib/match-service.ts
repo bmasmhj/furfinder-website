@@ -4,15 +4,15 @@ import { sendPushNotification } from './push';
 export interface MatchCandidate {
   id: string;
   userId: string;
-  petName: string;
+  pet_name: string;
   petType: string;
   breed: string;
   color: string;
-  photoUri: string;
+  photo_uri: string;
   distance: number;
   score: number;
   status: string;
-  locationName: string;
+  location_name: string;
   reason: string;
   type: 'report' | 'org_animal';
   orgType?: string;
@@ -117,15 +117,15 @@ export async function findMatchesForReport(reportId: string) {
     return {
       id: c.id,
       userId: c.user_id,
-      petName: c.pet_name,
+      pet_name: c.pet_name,
       petType: c.pet_type,
       breed: c.breed,
       color: c.color,
-      photoUri: c.photo_uri,
+      photo_uri: c.photo_uri,
       distance: parseFloat(distanceVal.toFixed(2)),
       score: score,
       status: c.status,
-      locationName: c.location_name,
+      location_name: c.location_name,
       reason : reason,
       type: c.match_type,
       orgType: c.org_type,

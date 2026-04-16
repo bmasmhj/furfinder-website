@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
     let query = '';
     let params: any[] = [];
 
+    const isAll = status === 'all';
+    
     if (type === 'sent') {
       query = `
         SELECT c.*, 
@@ -28,10 +30,10 @@ export async function GET(request: NextRequest) {
         FROM claim_requests c
         JOIN pet_reports f ON f.id = c.found_report_id
         JOIN users u ON u.id = c.found_user_id
-        WHERE c.claimer_user_id = $1 AND c.status = $2
+        WHERE c.claimer_user_id = $1 ${isAll ? '' : 'AND c.status = $2'}
         ORDER BY c.created_at DESC
       `;
-      params = [user.id, status];
+      params = isAll ? [user.id] : [user.id, status];
     } else {
       query = `
         SELECT c.*, 
@@ -43,10 +45,10 @@ export async function GET(request: NextRequest) {
         FROM claim_requests c
         JOIN pet_reports l ON l.id = c.lost_report_id
         JOIN users u ON u.id = c.claimer_user_id
-        WHERE c.found_user_id = $1 AND c.status = $2
+        WHERE c.found_user_id = $1 ${isAll ? '' : 'AND c.status = $2'}
         ORDER BY c.created_at DESC
       `;
-      params = [user.id, status];
+      params = isAll ? [user.id] : [user.id, status];
     }
 
     const claims = await db.queryMany(query, params);

@@ -10,10 +10,10 @@ const MAX_VISION_CANDIDATES = 15;
 
 function getReportPhotos(report: any): string[] {
   const photos = [];
-  if (report.photoUris && Array.isArray(report.photoUris)) {
-    photos.push(...report.photoUris);
-  } else if (report.photoUri) {
-    photos.push(report.photoUri);
+  if (report.photo_uris && Array.isArray(report.photo_uris)) {
+    photos.push(...report.photo_uris);
+  } else if (report.photo_uri) {
+    photos.push(report.photo_uri);
   }
   return photos.filter(p => p && (p.startsWith('data:') || p.startsWith('http')));
 }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       candidates.push({
         type: 'report',
         id: r.id,
-        summary: `[Report] ${r.status.toUpperCase()} ${r.petType} named "${r.petName}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.locationName}, distance: ${dist.toFixed(1)}km, date: ${r.lastSeenDate}, description: "${r.description}"`,
+        summary: `[Report] ${r.status.toUpperCase()} ${r.petType} named "${r.pet_name}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.location_name}, distance: ${dist.toFixed(1)}km, date: ${r.lastSeenDate}, description: "${r.description}"`,
         photos: getReportPhotos(r),
         distance: dist,
       });
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       candidates.push({
         type: 'profile',
         id: p.id,
-        summary: `[Registered Pet] ${p.petType} named "${p.petName}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, microchip: ${p.microchipNumber || 'none'}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s)` : ''}`,
+        summary: `[Registered Pet] ${p.petType} named "${p.pet_name}", breed: ${p.breed}, size: ${p.size}, color: ${p.color}, markings: "${p.markings}", suburb: ${p.suburb}, microchip: ${p.microchipNumber || 'none'}${biometricPhotos.length > 0 ? `, has ${biometricPhotos.length} biometric ID scan(s)` : ''}`,
         photos: allPhotos,
       });
     }

@@ -34,23 +34,12 @@ export async function POST(request: NextRequest, { params }: Context) {
       return NextResponse.json({ message: 'Claim is already ' + claim.status }, { status: 400 });
     }
 
-    const petReunitedId = crypto.randomUUID(); // Use crypto if uuid lib not available, or just random bits
 
     // Update BOTH reports and the claim request in a transaction if possible, 
     // but db.query doesn't seem to support easy transactions here without getting a client.
     // I'll do them sequentially or check if I can use a transaction.
     
-    // For safety in this environment, I'll just run them.
     
-    await db.query(
-      `UPDATE pet_reports 
-       SET status = 'reunited', 
-           reunion_date = NOW(), 
-           pet_reunited_id = $1 
-       WHERE id IN ($2, $3)`,
-      [petReunitedId, claim.lost_report_id, claim.found_report_id]
-    );
-
     await db.query(
       "UPDATE claim_requests SET status = 'approved' WHERE id = $1",
       [claimId]
@@ -79,7 +68,7 @@ export async function POST(request: NextRequest, { params }: Context) {
       }).catch(err => console.error('[Approve] Push error:', err));
     }
 
-    return NextResponse.json({ success: true, pet_reunited_id: petReunitedId });
+    return NextResponse.json({ success: true });
   } catch (error) {
     return handleApiError(error);
   }

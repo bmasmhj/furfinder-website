@@ -8,13 +8,13 @@ function mapProfileRow(row: any): any {
   return {
     id: row.id,
     petType: row.pet_type,
-    petName: row.pet_name,
+    pet_name: row.pet_name,
     breed: row.breed,
     size: row.size,
     color: row.color,
     markings: row.markings,
-    photoUris: typeof row.photo_uris === 'string' ? JSON.parse(row.photo_uris) : (row.photo_uris || []),
-    biometricPhotoUris: typeof row.biometric_photo_uris === 'string' ? JSON.parse(row.biometric_photo_uris) : (row.biometric_photo_uris || []),
+    photo_uris: typeof row.photo_uris === 'string' ? JSON.parse(row.photo_uris) : (row.photo_uris || []),
+    biometricphoto_uris: typeof row.biometric_photo_uris === 'string' ? JSON.parse(row.biometric_photo_uris) : (row.biometric_photo_uris || []),
     microchipNumber: row.microchip_number,
     medicalNotes: row.medical_notes,
     suburb: row.suburb,
@@ -50,7 +50,7 @@ export async function PUT(request: NextRequest, { params }: Context) {
 
     const body = await request.json();
     const updatable: Record<string, string> = {
-      petType: 'pet_type', petName: 'pet_name', breed: 'breed', size: 'size',
+      petType: 'pet_type', pet_name: 'pet_name', breed: 'breed', size: 'size',
       color: 'color', markings: 'markings', microchipNumber: 'microchip_number',
       medicalNotes: 'medical_notes', suburb: 'suburb', ownerName: 'owner_name',
       ownerPhone: 'owner_phone'
@@ -68,14 +68,14 @@ export async function PUT(request: NextRequest, { params }: Context) {
       }
     }
 
-    if (body.photoUris !== undefined) {
+    if (body.photo_uris !== undefined) {
       fields.push(`photo_uris = $${idx}`);
-      values.push(JSON.stringify(body.photoUris));
+      values.push(JSON.stringify(body.photo_uris));
       idx++;
     }
-    if (body.biometricPhotoUris !== undefined) {
+    if (body.biometricphoto_uris !== undefined) {
       fields.push(`biometric_photo_uris = $${idx}`);
-      values.push(JSON.stringify(body.biometricPhotoUris));
+      values.push(JSON.stringify(body.biometricphoto_uris));
       idx++;
     }
 

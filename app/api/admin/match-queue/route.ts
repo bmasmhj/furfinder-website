@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         reviewedAt: r.reviewed_at,
         lostReport: {
           id: r.lost_id,
-          petName: r.lost_pet_name,
+          pet_name: r.lost_pet_name,
           petType: r.lost_pet_type,
           breed: r.lost_breed,
           color: r.lost_color,
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
         },
         foundReport: {
           id: r.found_id,
-          petName: r.found_pet_name,
+          pet_name: r.found_pet_name,
           petType: r.found_pet_type,
           breed: r.found_breed,
           color: r.found_color,

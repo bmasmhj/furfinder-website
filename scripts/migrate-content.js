@@ -415,7 +415,7 @@ async function runMigration() {
   console.log('Creating 20 interconnected reunited pets & stories...');
   for (let i = 0; i < 20; i++) {
     const petType = rand(PET_TYPES);
-    const petName = getName(petType);
+    const pet_name = getName(petType);
     const breed = getBreed(petType);
     const area = rand(AUSTRALIAN_AREAS);
 
@@ -429,18 +429,18 @@ async function runMigration() {
     const daysLost = Math.floor(Math.random() * 9) + 1;
     foundDate.setDate(foundDate.getDate() + daysLost);
 
-    const reunitedStoryText = REUNITED_MESSAGE[i % REUNITED_MESSAGE.length].replace(/{name}/g, petName);
-    const slug = `${petName.toLowerCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const reunitedStoryText = REUNITED_MESSAGE[i % REUNITED_MESSAGE.length].replace(/{name}/g, pet_name);
+    const slug = `${pet_name.toLowerCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const storyRes = await pool.query(
       `INSERT INTO reunited_stories (slug, pet_name, pet_type, owner_name, story_title, story_content, before_image_url, after_image_url, reunion_date, lost_duration_days, location_lost, location_found, is_published, featured_on_homepage) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, true) RETURNING id`,
       [
         slug, 
-        petName, 
+        pet_name, 
         petType, 
         userLost.name, 
-        `${petName} Found!`, 
+        `${pet_name} Found!`, 
         reunitedStoryText, 
         'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop', 
         'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=600&h=400&fit=crop',
@@ -457,7 +457,7 @@ async function runMigration() {
       `INSERT INTO pet_reports (user_id, status, pet_type, pet_name, breed, size, color, markings, description, latitude, longitude, location_name, last_seen_date, photo_uris, pet_reunited_id) 
        VALUES ($1, 'reunited', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [
-        userLost.id, petType, petName, breed, rand(SIZES), rand(COLORS), rand(MARKINGS), rand(DESCRIPTIONS),
+        userLost.id, petType, pet_name, breed, rand(SIZES), rand(COLORS), rand(MARKINGS), rand(DESCRIPTIONS),
         jitter(area.lat, 8), jitter(area.lng, 8), area.name, lostDate.toISOString().split('T')[0], '[]', reunitedId
       ]
     );
@@ -467,7 +467,7 @@ async function runMigration() {
       `INSERT INTO pet_reports (user_id, status, pet_type, pet_name, breed, size, color, markings, description, latitude, longitude, location_name, last_seen_date, photo_uris, pet_reunited_id) 
        VALUES ($1, 'reunited', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [
-        userFound.id, petType, petName, breed, rand(SIZES), rand(COLORS), rand(MARKINGS), rand(DESCRIPTIONS),
+        userFound.id, petType, pet_name, breed, rand(SIZES), rand(COLORS), rand(MARKINGS), rand(DESCRIPTIONS),
         jitter(area.lat, 8), jitter(area.lng, 8), area.name, foundDate.toISOString().split('T')[0], '[]', reunitedId
       ]
     );

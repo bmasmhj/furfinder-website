@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { 
-      petType, petName, breed, size, color, markings, photoUri, photoUris,
-      description, latitude, longitude, locationName, lastSeenDate,
+      petType, pet_name, breed, size, color, markings, photo_uri, photo_uris,
+      description, latitude, longitude, location_name, lastSeenDate,
       reward, contactName, contactPhone, showContactPublic, status 
     } = body;
 
@@ -148,9 +148,9 @@ export async function POST(request: NextRequest) {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
       RETURNING *`,
       [
-        user.id, reportStatus, petType, petName, breed || '', size || 'medium', 
-        color || '', markings || '', photoUri || '', JSON.stringify(photoUris || []),
-        description || '', latitude || 0, longitude || 0, locationName || '',
+        user.id, reportStatus, petType, pet_name, breed || '', size || 'medium', 
+        color || '', markings || '', photo_uri || '', JSON.stringify(photo_uris || []),
+        description || '', latitude || 0, longitude || 0, location_name || '',
         lastSeenDate || '', reward || '', contactName || '', contactPhone || '',
         showContactPublic ?? true
       ]

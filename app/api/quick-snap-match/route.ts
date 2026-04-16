@@ -8,10 +8,10 @@ const MAX_VISION_CANDIDATES = 15;
 
 function getReportPhotos(report: any): string[] {
   const photos = [];
-  if (report.photoUris && Array.isArray(report.photoUris)) {
-    photos.push(...report.photoUris);
-  } else if (report.photoUri) {
-    photos.push(report.photoUri);
+  if (report.photo_uris && Array.isArray(report.photo_uris)) {
+    photos.push(...report.photo_uris);
+  } else if (report.photo_uri) {
+    photos.push(report.photo_uri);
   }
   return photos.filter(p => p && (p.startsWith('data:') || p.startsWith('http')));
 }
@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser();
     const body = await request.json();
-    const { photoUri, petType, reports, profiles } = body;
+    const { photo_uri, petType, reports, profiles } = body;
 
-    if (!photoUri) {
+    if (!photo_uri) {
       return NextResponse.json({ error: "A photo is required" }, { status: 400 });
     }
 
-    const validPhoto = photoUri.startsWith('data:') || photoUri.startsWith('http');
+    const validPhoto = photo_uri.startsWith('data:') || photo_uri.startsWith('http');
     if (!validPhoto) {
       return NextResponse.json({ error: "Invalid photo format" }, { status: 400 });
     }
@@ -80,8 +80,8 @@ export async function POST(request: NextRequest) {
         id: r.id,
         summary: `[Lost Report] ${r.pet_type} named "${r.pet_name}", breed: ${r.breed}, size: ${r.size}, color: ${r.color}, markings: "${r.markings}", location: ${r.location_name}, date: ${r.last_seen_date}`,
         photos: getReportPhotos({ 
-          photoUris: r.photo_uris ? (typeof r.photo_uris === 'string' ? JSON.parse(r.photo_uris) : r.photo_uris) : [], 
-          photoUri: r.photo_uri 
+          photo_uris: r.photo_uris ? (typeof r.photo_uris === 'string' ? JSON.parse(r.photo_uris) : r.photo_uris) : [], 
+          photo_uri: r.photo_uri 
         }),
         name: r.pet_name,
         breed: r.breed,
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
         details: c.summary,
         name: c.name,
         breed: c.breed,
-        photoUri: c.photos[0] || '',
+        photo_uri: c.photos[0] || '',
         petType: c.petType,
         status: c.status
       }))

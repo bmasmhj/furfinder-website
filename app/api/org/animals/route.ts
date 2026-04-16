@@ -9,12 +9,12 @@ function mapAnimalRow(a: any) {
     id: a.id, 
     orgId: a.org_id, 
     petType: a.pet_type, 
-    petName: a.pet_name, 
+    pet_name: a.pet_name, 
     breed: a.breed,
     size: a.size, 
     color: a.color, 
     markings: a.markings, 
-    photoUris: typeof a.photo_uris === 'string' ? JSON.parse(a.photo_uris) : (a.photo_uris || []),
+    photo_uris: typeof a.photo_uris === 'string' ? JSON.parse(a.photo_uris) : (a.photo_uris || []),
     description: a.description, 
     intakeDate: a.intake_date, 
     intakeType: a.intake_type,
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
     const orgId = org.rows[0].id;
     const body = await request.json();
-    const { petType, petName, breed, size, color, markings, photoUris, description, intakeDate, intakeType, microchipNumber, desexed } = body;
+    const { petType, pet_name, breed, size, color, markings, photo_uris, description, intakeDate, intakeType, microchipNumber, desexed } = body;
     
     if (!petType) {
       return NextResponse.json({ message: "Pet type is required" }, { status: 400 });
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     const result = await db.query(
       `INSERT INTO organisation_animals (org_id, pet_type, pet_name, breed, size, color, markings, photo_uris, description, intake_date, intake_type, microchip_number, desexed)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
-      [orgId, petType, petName || '', breed || '', size || 'medium', color || '', markings || '', JSON.stringify(photoUris || []), description || '', intakeDate || null, intakeType || 'stray', microchipNumber || null, desexed || false]
+      [orgId, petType, pet_name || '', breed || '', size || 'medium', color || '', markings || '', JSON.stringify(photo_uris || []), description || '', intakeDate || null, intakeType || 'stray', microchipNumber || null, desexed || false]
     );
     return NextResponse.json(mapAnimalRow(result.rows[0]), { status: 201 });
   } catch (error) {
