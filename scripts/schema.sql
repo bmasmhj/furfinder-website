@@ -582,7 +582,8 @@ CREATE TABLE public.pet_profiles (
     owner_name character varying(255) DEFAULT ''::character varying NOT NULL,
     owner_phone character varying(100) DEFAULT ''::character varying NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    lost_id uuid
 );
 
 
@@ -622,6 +623,8 @@ CREATE TABLE public.pet_reports (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     pet_reunited_id uuid
+    is_reunited BOOLEAN DEFAULT false
+    pet_id UUID
 );
 
 
@@ -758,8 +761,11 @@ CREATE TABLE public.users (
     referred_by uuid,
     premium_until timestamp with time zone,
     push_token text,
+    reset_otp character varying(10),
+    reset_otp_expires_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    premium_source TEXT
 );
 
 
@@ -2062,3 +2068,88 @@ CREATE TABLE public.claim_requests (
 );
 
 ALTER TABLE public.claim_requests OWNER TO neondb_owner;
+
+--
+-- Name: subscriptions; Type: TABLE; Schema: public; Owner: neondb_owner
+--
+
+CREATE TABLE public.subscriptions (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
+    plan VARCHAR(50) NOT NULL DEFAULT 'premium_monthly',
+    status VARCHAR(20) NOT NULL DEFAULT 'active', -- active | expired | cancelled | revoked
+    source VARCHAR(20) NOT NULL, -- apple | google | stripe | manual
+    store_product_id TEXT, -- legacy
+    product_id TEXT,
+    original_transaction_id TEXT,
+    latest_transaction_id TEXT,
+    current_period_start TIMESTAMPTZ DEFAULT now(),
+    current_period_end TIMESTAMPTZ,
+    started_at TIMESTAMPTZ NOT NULL DEFAULT now(), -- legacy compatibility
+    expires_at TIMESTAMPTZ, -- legacy compatibility
+    cancelled_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+ALTER TABLE public.subscriptions OWNER TO neondb_owner;
+
+--
+-- Name: purchase_events; Type: TABLE; Schema: public; Owner: neondb_owner
+--
+
+CREATE TABLE public.purchase_events (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid REFERENCES public.users(id) ON DELETE SET NULL,
+    platform VARCHAR(20) NOT NULL,
+    event_type VARCHAR(64) NOT NULL,
+    transaction_id TEXT,
+    original_transaction_id TEXT,
+    product_id TEXT,
+    expires_at TIMESTAMPTZ,
+    store_payload JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+ALTER TABLE public.purchase_events OWNER TO neondb_owner;
+
+--
+-- Name: webhook_events; Type: TABLE; Schema: public; Owner: neondb_owner
+--
+
+CREATE TABLE public.webhook_events (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    source VARCHAR(20) NOT NULL,
+    event_id TEXT NOT NULL,
+    payload JSONB DEFAULT '{}'::jsonb,
+    processed BOOLEAN NOT NULL DEFAULT false,
+    processed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+ALTER TABLE public.webhook_events OWNER TO neondb_owner;
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON public.subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON public.subscriptions(status);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_product_id ON public.subscriptions(product_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_period_end ON public.subscriptions(current_period_end);
+
+CREATE INDEX IF NOT EXISTS idx_purchase_events_user_id ON public.purchase_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_purchase_events_created_at ON public.purchase_events(created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_purchase_events_transaction_id
+    ON public.purchase_events(transaction_id)
+    WHERE transaction_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_webhook_events_source_event_id
+    ON public.webhook_events(source, event_id);
+CREATE INDEX IF NOT EXISTS idx_webhook_events_processed
+    ON public.webhook_events(processed, created_at DESC);
+
+--
+-- Update pricing_plans
+--
+
+ALTER TABLE public.pricing_plans
+  ADD COLUMN IF NOT EXISTS apple_product_id TEXT,
+  ADD COLUMN IF NOT EXISTS google_product_id TEXT,
+  ADD COLUMN IF NOT EXISTS stripe_price_id TEXT;

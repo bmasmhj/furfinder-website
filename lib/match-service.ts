@@ -99,10 +99,19 @@ export async function findMatchesForReport(reportId: string) {
       reason += 'Same pet type, ';
     }
 
-    // same color = 15
-    if (c.color && report.color && c.color.toLowerCase() === report.color.toLowerCase()) {
-      score += 15;
-      reason += 'Same color, ';
+    // same color = 15 (supports comma-separated color lists — score by intersection ratio)
+    if (c.color && report.color) {
+      const toTokens = (s: string) =>
+        s.toLowerCase().split(',').map((t: string) => t.trim()).filter(Boolean);
+      const cColors = toTokens(c.color);
+      const rColors = toTokens(report.color);
+      const matches = cColors.filter((col: string) => rColors.includes(col)).length;
+      const maxLen = Math.max(cColors.length, rColors.length);
+      if (maxLen > 0 && matches > 0) {
+        const colorScore = Math.round(15 * (matches / maxLen));
+        score += colorScore;
+        reason += matches === maxLen ? 'Same color, ' : `Partial color match (${matches}/${maxLen}), `;
+      }
     }
 
     // same breed = 10

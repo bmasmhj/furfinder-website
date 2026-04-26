@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { Check, X } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Pricing - The Fur Finder",
@@ -82,19 +83,15 @@ export default async function Pricing() {
                     {Array.isArray(plan.features)
                       ? plan.features.map((feature: string, idx: number) => (
                           <div key={idx} className="mb-2.5 flex items-start gap-2.5 text-[13px] text-foreground/80 last:mb-0">
-                            {feature.includes("✓") ? (
                               <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                            ) : (
-                              <X className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40" />
-                            )}
-                            {feature.replace("✓ ", "").replace("– ", "")}
+                            {feature}
                           </div>
                         ))
                       : null}
                   </div>
 
-                  <a
-                    href="https://apps.apple.com/app/id6759967208"
+                  <Link
+                    href="/join-testing"
                     className={`mt-6 block rounded-xl py-3 text-center text-sm font-semibold transition-all ${
                       plan.name.toLowerCase() === "free"
                         ? "bg-muted text-foreground hover:bg-muted/80"
@@ -106,7 +103,7 @@ export default async function Pricing() {
                     {plan.name.toLowerCase() === "free"
                       ? "Get Started Free"
                       : "Start Premium Trial"}
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
