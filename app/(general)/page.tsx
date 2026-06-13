@@ -10,7 +10,7 @@ import { downloadApp } from "@/lib/downloadHandler";
 export const metadata: Metadata = {
   title: "The Fur Finder — Australia's AI-Powered Lost & Found Pets App",
   description:
-    "Report lost or found pets, get instant AI photo matching, and connect with your community to bring pets home. Available on iOS and Android.",
+    "Report lost or found pets, review AI-suggested matches, and connect with your community. See current beta and web availability.",
 };
 
 async function getFaqs() {
@@ -28,7 +28,7 @@ async function getFaqs() {
 async function getFeaturedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND deleted_at IS NULL AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
     );
     return stories || [];
   } catch (error) {
@@ -166,12 +166,10 @@ export default async function HomePage() {
       {/* Download CTA */}
       <section className="bg-gradient-to-br from-[#1A1A2E] to-[#2d2d4a] px-6 py-[90px] text-center text-white" id="download">
         <h2 className="mb-3 text-[34px] font-extrabold tracking-[-1px] max-md:text-[26px]">
-          Download The Fur Finder — Free
+          Get The Fur Finder
         </h2>
         <p className="mx-auto mb-9 max-w-[500px] text-base leading-[1.7] text-white/70">
-          Every pet deserves the best chance of getting home. Join thousands of
-          Australians already using The Fur Finder to report, search, and
-          reunite.
+          View the currently available beta and web access options.
         </p>
         <div className="flex flex-wrap justify-center gap-3.5">
           <Link
@@ -180,8 +178,8 @@ export default async function HomePage() {
           >
             <Apple className="h-[26px] w-[26px]" />
             <div className="text-left">
-              <span className="block text-[10px] font-normal opacity-65">Download on the</span>
-              <span className="block text-base font-bold leading-tight">App Store</span>
+              <span className="block text-[10px] font-normal opacity-65">Join through</span>
+              <span className="block text-base font-bold leading-tight">iOS TestFlight</span>
             </div>
           </Link>
           <Link
@@ -190,13 +188,13 @@ export default async function HomePage() {
           >
             <PlayStore className="h-[26px] w-[26px]" />
             <div className="text-left">
-              <span className="block text-[10px] font-normal opacity-65">Get it on</span>
-              <span className="block text-base font-bold leading-tight">Google Play</span>
+              <span className="block text-[10px] font-normal opacity-65">Request access to</span>
+              <span className="block text-base font-bold leading-tight">Android Beta</span>
             </div>
           </Link>
         </div>
         <p className="mt-6 text-[13px] text-white/40">
-          Free to download · iOS &amp; Android · No account needed to browse
+          Beta capacity and platform availability may change.
         </p>
       </section>
     </div>

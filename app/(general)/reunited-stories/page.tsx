@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 async function getReunitedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true ORDER BY created_at DESC LIMIT 12'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 12'
     );
     return { data: stories, pagination: {} };
   } catch (error) {
@@ -24,7 +24,7 @@ async function getReunitedStories() {
 async function getFeaturedStories() {
   try {
     const stories = await db.queryMany(
-      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
+      'SELECT *, after_image_url AS image_url FROM reunited_stories WHERE is_published = true AND deleted_at IS NULL AND featured_on_homepage = true ORDER BY created_at DESC LIMIT 3'
     );
     return { data: stories };
   } catch (error) {
@@ -100,8 +100,8 @@ export default async function ReunitedStoriesPage() {
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Reunited:{" "}
-                      {story.reunited_date
-                        ? new Date(story.reunited_date).toLocaleDateString(
+                      {story.reunion_date
+                        ? new Date(story.reunion_date).toLocaleDateString(
                             "en-US",
                             { year: "numeric", month: "long" }
                           )
@@ -150,8 +150,8 @@ export default async function ReunitedStoriesPage() {
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Reunited:{" "}
-                      {story.reunited_date
-                        ? new Date(story.reunited_date).toLocaleDateString(
+                      {story.reunion_date
+                        ? new Date(story.reunion_date).toLocaleDateString(
                             "en-US",
                             { year: "numeric", month: "long" }
                           )

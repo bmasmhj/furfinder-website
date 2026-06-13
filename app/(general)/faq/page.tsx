@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { faqItems, supportEmail } from "@/components/marketing/site-content";
 import { db } from "@/lib/db";
 
 export const metadata: Metadata = {
@@ -20,9 +22,9 @@ async function getFaqs() {
 }
 
 export default async function FaqPage() {
-  const faqs = await getFaqs();
+  const databaseFaqs = await getFaqs();
 
-  const groupedFaqs = faqs.reduce((acc: any, faq: any) => {
+  const groupedFaqs = databaseFaqs.reduce((acc: any, faq: any) => {
     if (!acc[faq.category]) {
       acc[faq.category] = [];
     }
@@ -37,12 +39,35 @@ export default async function FaqPage() {
           Common questions
         </h2>
         <p className="mx-auto mt-2.5 max-w-[580px] text-[15px] leading-[1.7] text-muted-foreground">
-          Everything you need to know about The Fur Finder.
+          Permissions, AI limits, safety, purchases, privacy, and account management.
         </p>
 
+        <div className="mb-12 mt-8">
+          <h3 className="mb-6 text-left text-xl font-semibold text-foreground">
+            Essential information
+          </h3>
+          <div className="mx-auto flex max-w-[720px] flex-col gap-3">
+            {faqItems.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-[14px] border border-border bg-card transition-shadow open:border-primary/20 open:shadow-md"
+              >
+                <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-[15px] font-semibold text-foreground">
+                  {faq.question}
+                  <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-bold text-primary transition-transform group-open:rotate-45 group-open:bg-primary group-open:text-white">
+                    +
+                  </span>
+                </summary>
+                <div className="border-t border-border px-6 pb-5 pt-4 text-left text-sm leading-[1.8] text-muted-foreground">
+                  {faq.answer}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
         {Object.keys(groupedFaqs).length > 0 ? (
-          <>
-            {Object.entries(groupedFaqs).map(
+          Object.entries(groupedFaqs).map(
               ([category, categoryFaqs]: [string, any]) => (
                 <div key={category} className="mb-12 mt-8">
                   <h3 className="mb-6 text-left text-xl font-semibold text-foreground">
@@ -68,11 +93,20 @@ export default async function FaqPage() {
                   </div>
                 </div>
               )
-            )}
-          </>
-        ) : (
-          <p className="mt-8 text-muted-foreground">No FAQs available at the moment.</p>
-        )}
+            )
+        ) : null}
+
+        <p className="mt-10 text-sm text-muted-foreground">
+          Still need help? Visit{" "}
+          <Link href="/support" className="font-semibold text-primary hover:underline">
+            Support
+          </Link>{" "}
+          or email{" "}
+          <a href={`mailto:${supportEmail}`} className="font-semibold text-primary hover:underline">
+            {supportEmail}
+          </a>
+          .
+        </p>
       </div>
     </section>
   );

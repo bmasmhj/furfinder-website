@@ -36,6 +36,7 @@ export default function Footer() {
             <div className="space-y-2 text-sm">
               <Link href="/how-it-works" className="block text-[#6b7280] transition hover:text-primary">How It Works</Link>
               <Link href="/faq" className="block text-[#6b7280] transition hover:text-primary">FAQ</Link>
+              <Link href="/support" className="block text-[#6b7280] transition hover:text-primary">Support</Link>
               <Link href="/contact" className="block text-[#6b7280] transition hover:text-primary">Contact</Link>
               <Link href="/partner-registration" className="block text-[#6b7280] transition hover:text-primary">Partner With Us</Link>
               <Link href="/blog" className="block text-[#6b7280] transition hover:text-primary">Blog</Link>

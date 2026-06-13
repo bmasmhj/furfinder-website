@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { LegalPageLayout, LegalSection } from '@/components/marketing/MarketingPrimitives'
 import { termsSections, supportEmail } from '@/components/marketing/site-content'
 
@@ -14,12 +15,17 @@ export default function TermsOfUsePage() {
         tone="teal"
         title="The Fur Finder Terms of Use"
         subtitle="Please read these terms carefully"
-        meta="Last updated: February 2026 | Version 1.0"
+        meta="Effective date: June 11, 2026 | Version 2.0"
       >
         {termsSections.map((section) => (
           <LegalSection key={section.title} title={section.title} body={section.body} />
         ))}
-        <LegalSection title="6. Contact" body={`For questions about these terms, contact us at:\n\nEmail: ${supportEmail}`} />
+        <LegalSection title="13. Contact" body={`For questions or reports about these terms, contact ${supportEmail}.`} />
+        <div className="flex flex-wrap gap-3">
+          <Link className="font-semibold text-primary hover:underline" href="/privacy-policy">Privacy Policy</Link>
+          <Link className="font-semibold text-primary hover:underline" href="/support">Support</Link>
+          <Link className="font-semibold text-primary hover:underline" href="/safety-tips">Safety Tips</Link>
+        </div>
       </LegalPageLayout>
     </div>
   )

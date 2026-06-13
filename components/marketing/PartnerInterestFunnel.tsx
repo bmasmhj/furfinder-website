@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { partnershipsEmail } from "@/components/marketing/site-content";
+import { isSafeHttpsUrl } from "@/lib/external-url";
 import { cn } from "@/lib/utils";
 
 type PartnerType = "vet_clinic" | "shelter" | "rescue" | "council" | "community" | "other";
@@ -134,7 +135,11 @@ export default function PartnerInterestFunnel() {
 
   const canContinue = useMemo(() => {
     if (stepIndex === 0) {
-      return form.partnerType.length > 0 && form.organisationName.trim().length > 1;
+      return (
+        form.partnerType.length > 0 &&
+        form.organisationName.trim().length > 1 &&
+        (!form.website.trim() || isSafeHttpsUrl(form.website))
+      );
     }
 
     if (stepIndex === 1) {
@@ -276,10 +281,17 @@ export default function PartnerInterestFunnel() {
                   </Label>
                   <Input
                     id="website"
+                    type="url"
+                    inputMode="url"
                     value={form.website}
                     onChange={(event) => setField("website", event.target.value)}
                     placeholder="https://"
                   />
+                  {form.website && !isSafeHttpsUrl(form.website) ? (
+                    <p className="mt-2 text-xs text-red-500">
+                      Use a valid public https:// address. Other schemes and private-network links are not accepted.
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>

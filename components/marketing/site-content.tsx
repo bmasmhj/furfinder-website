@@ -24,7 +24,7 @@ export const featureCards = [
     iconClassName: 'bg-[#fff1ed]',
     title: 'AI Photo Matching',
     description:
-      'Upload a photo and our AI scans every found report, comparing coat colour, markings, face shape, and breed characteristics to surface likely matches.',
+      'Upload a photo and our AI compares it with eligible reports, using visible characteristics and report details to suggest possible matches for you to verify.',
   },
   {
     icon: '📍',
@@ -45,7 +45,7 @@ export const featureCards = [
     iconClassName: 'bg-[#fff1ed]',
     title: 'Scan Online Posts',
     description:
-      'Paste text from Facebook, Nextdoor, or local community pages and let AI cross-check it against active reports.',
+      'Paste text you are authorised to use from a community post and let AI extract details that can be compared with eligible reports. The Fur Finder does not automatically scan social networks.',
   },
   {
     icon: '📱',
@@ -93,7 +93,7 @@ export const audienceCards = [
     items: [
       'Post a report in under 2 minutes',
       'Run AI matching against found pets nearby',
-      'Create a printable flyer instantly',
+      'Create a printable flyer from your report',
       'Message people who report sightings',
       'Boost your report for extra visibility',
     ],
@@ -130,12 +130,12 @@ export const steps = [
   {
     title: 'Create a Report',
     description:
-      'Upload photos, describe the pet, drop a pin on the map, and publish in under two minutes.',
+      'Upload photos, describe the pet, choose a relevant map location, and review the information before publishing.',
   },
   {
     title: 'AI Scans for Matches',
     description:
-      'The app compares photos, markings, breed details, and location radius across the database automatically.',
+      'The app compares available photos, markings, breed details, and location information to suggest possible matches.',
   },
   {
     title: 'Connect and Reunite',
@@ -191,34 +191,44 @@ export const pricingPlans = [
 
 export const faqItems = [
   {
-    question: 'Is The Fur Finder free to use?',
+    question: 'Which permissions does The Fur Finder request?',
     answer:
-      'Yes. Downloading the app and posting lost or found reports is free. Premium unlocks AI photo matching, online post scanning, and biometric identification.',
+      'Location supports map pins and nearby alerts; camera and photo access support pet reports and optional biometric pet images; notifications support report and match alerts. You can deny or later change permissions in device settings, although related features may not work.',
   },
   {
-    question: 'How does the AI photo matching work?',
+    question: 'Are AI matches guaranteed?',
     answer:
-      'The AI compares pet photos for coat colour, markings, facial features, and body shape, then ranks possible matches with a confidence score and explanation.',
+      'No. AI results are suggestions based on available images and report details. Always verify ownership, markings, records, and microchip information before handing over a pet.',
   },
   {
-    question: "I've found a stray. What should I do?",
+    question: 'How do I report or block someone?',
     answer:
-      'Create a found pet report with photos and a map pin, then let AI compare it against nearby lost reports. You can also check with a vet for a microchip.',
+      'Use the report or block controls on the relevant profile, message, comment, Quick Snap, or report. For urgent safety issues, contact local emergency services first and then email support@thefurfinder.com.',
   },
   {
-    question: 'My pet is lost right now. What do I do first?',
+    question: 'How do subscriptions and cancellations work?',
     answer:
-      'Post a report immediately, contact nearby vets and shelters, share the report to your community channels, and enable alerts so you know about likely sightings quickly.',
+      'Subscriptions renew unless cancelled through the store account used to purchase them. Deleting your Fur Finder account does not cancel an App Store or Google Play subscription.',
   },
   {
-    question: 'What types of pets are supported?',
+    question: 'How do I restore a purchase?',
     answer:
-      'Dogs, cats, birds, rabbits, reptiles, small animals, and other companion pets are all supported in reports and matching.',
+      'Sign in with the same store account used for the purchase, then use Restore Purchases in the app. If access is not restored, contact support with the platform and purchase date, but do not send full payment-card details.',
   },
   {
-    question: 'Is my information private?',
+    question: 'What are credits?',
     answer:
-      'Yes. Messaging happens inside the app, and contact details stay under your control. The service is built for safe coordination, not public oversharing.',
+      'Credits are limited, in-service units for eligible features. They are not money, cannot be redeemed for cash, and may be subject to expiry or promotional terms disclosed when issued.',
+  },
+  {
+    question: 'How is my information used?',
+    answer:
+      'Information is used to operate reports, matching, alerts, messaging, purchases, safety, analytics, and advertising where applicable. See the Privacy Policy for the full list of data categories, sharing, retention, and your rights.',
+  },
+  {
+    question: 'How do I delete my account?',
+    answer:
+      'In the app, go to Settings → Account → Delete Account. You can also request deletion by emailing support@thefurfinder.com from your account email. Store subscriptions must be cancelled separately.',
   },
 ]
 
@@ -292,29 +302,59 @@ export const appFeatureSections: Array<{
 
 export const privacySections = [
   {
-    title: '1. Information We Collect',
+    title: '1. Account, Contact, and Pet Information',
     body:
-      'We collect contact details, optional GPS location you explicitly share, pet photos, report information, and pet-related details used for matching. When AI features are used, pet descriptions and imagery are processed to help surface likely matches.',
+      'We collect account identifiers and contact details such as your name, email address, phone number, login credentials, support correspondence, and communication preferences. Pet profiles and reports may include names, species, breed, age, sex, colour, markings, ownership details, medical notes, microchip information, and lost, found, or reunion details.',
   },
   {
-    title: '2. How We Use Your Information',
+    title: '2. Location, Photos, Camera, and Biometric Pet Images',
     body:
-      'We use your information to help reunite pets, power AI matching, notify users about nearby activity, and support core community features. We do not sell personal data for advertising.',
+      'With permission, we process precise or approximate location to place reports on maps, calculate proximity, and provide nearby alerts. Camera and photo-library access lets you upload report images and optional close-up images of a pet’s face, eyes, nose, or other features. These pet images may be analysed as biometric-style identifiers for pet matching; they are not used to identify a person.',
   },
   {
-    title: '3. How We Store Your Data',
+    title: '3. Community Content and Communications',
     body:
-      'Data is stored on secured cloud infrastructure with encrypted transmission and password hashing. Users can delete reports, profiles, and account data through the app, with backup retention limited to operational recovery windows.',
+      'We process content you submit, including comments, chats, reports, sightings, moderation reports, and Quick Snaps. Content intended for the community may be visible to other users. Private messages are available to their participants and may be reviewed when reported or when reasonably necessary for safety, support, fraud prevention, or legal compliance.',
   },
   {
-    title: '4. Sharing Your Information',
+    title: '4. Device, Notification, Purchase, and Usage Data',
     body:
-      'Pet reports are visible to other users to support reunification. AI processing is used only for matching-related functionality. We do not share personal information for third-party marketing.',
+      'We may collect push-notification tokens, device and app identifiers, operating system, app version, language, IP address, crash and diagnostic data, and feature activity. We process subscription status, purchase history, credit balances, and transaction identifiers, but app-store providers process full payment-card details. We may also process analytics and advertising interactions, subject to applicable consent and platform settings.',
   },
   {
-    title: '5. Your Rights',
+    title: '5. How We Use Information',
     body:
-      'You can request access, correction, deletion, and withdrawal of consent in line with Australian privacy obligations. Complaints can be directed to the support address listed below.',
+      'We use information to provide accounts, publish and match pet reports, send nearby and service alerts, enable communications, process entitlements and credits, prevent abuse, moderate content, provide support, improve performance, measure usage, comply with law, and display or measure advertising where enabled. AI results are generated from available inputs and are suggestions requiring user verification.',
+  },
+  {
+    title: '6. Sharing and Service Providers',
+    body:
+      'We share information with other users when you publish a report or community content, and with service providers that support hosting, databases, authentication, AI processing, mapping, notifications, analytics, customer support, security, advertising, and payment entitlement verification. We may also disclose information to authorities or professional advisers where required by law or reasonably necessary to protect users, animals, rights, or safety. We do not sell personal information for money.',
+  },
+  {
+    title: '7. Retention and Account Deletion',
+    body:
+      'We retain information while your account is active and as needed for the purposes described above. After a verified deletion request, account and user-generated content are removed or de-identified from active systems, generally within 30 days. Encrypted backups may persist for up to 90 days before normal rotation. Purchase, tax, fraud-prevention, dispute, safety, and legal records may be retained where required or permitted by law. See the Delete Account page for instructions.',
+  },
+  {
+    title: '8. Your Choices and Rights',
+    body:
+      'Depending on your location, you may request access, correction, portability, restriction, objection, or deletion, and may withdraw consent where processing relies on consent. You can manage location, camera, photos, notifications, and advertising permissions through the app or device settings. You may lodge a complaint with your local privacy regulator. We may need to verify your identity before completing a request.',
+  },
+  {
+    title: '9. Children’s Privacy',
+    body:
+      'The service is not directed to children under 13, and children who cannot legally consent in their location should use it only with a parent or guardian. We do not knowingly collect personal information from a child in violation of applicable law. A parent or guardian can contact us to request review or deletion.',
+  },
+  {
+    title: '10. Cross-Border Storage and Processing',
+    body:
+      'Our service providers may store or process information in Australia, the United States, and other countries where they operate. Privacy protections may differ from those in your home country. We use contractual, technical, and organisational safeguards appropriate to the information and applicable law.',
+  },
+  {
+    title: '11. Security and Policy Changes',
+    body:
+      'We use reasonable administrative, technical, and organisational safeguards, but no system is completely secure. We may update this policy as the service or law changes. Material updates will be identified by a new effective date and version and, where appropriate, communicated in the app or website.',
   },
 ]
 
@@ -332,17 +372,52 @@ export const termsSections = [
   {
     title: '3. User Responsibilities',
     body:
-      'Users must provide accurate information, avoid fraudulent or harmful content, respect other users’ privacy, and only use the app for legitimate pet reunification and support purposes.',
+      'You must provide accurate information, use the service lawfully, respect privacy and intellectual-property rights, and use pet reports and communications only for legitimate pet reunification, care, safety, partnership, or approved advertising purposes. You are responsible for activity on your account.',
   },
   {
-    title: '4. AI Matching Disclaimer',
+    title: '4. User-Generated Content Rules',
     body:
-      'AI results are suggestions only. Owners and finders should still verify identity carefully through direct confirmation, physical checks, and microchip verification where possible.',
+      'You may not post illegal, fraudulent, threatening, abusive, hateful, sexually exploitative, graphic, deceptive, harassing, privacy-invasive, infringing, spam, malware, or dangerous content. Do not publish another person’s sensitive information without permission, impersonate others, solicit prohibited transactions, or use pet reports to facilitate theft or harm. You grant The Fur Finder a limited licence to host, display, process, and distribute content as needed to operate and promote the service.',
   },
   {
-    title: '5. Subscription and Premium Features',
+    title: '5. Moderation, Reporting, and Blocking',
     body:
-      'Premium subscriptions unlock additional AI and visibility tools. Billing and cancellation are handled through the relevant app store platform.',
+      'We may review, restrict, remove, preserve, or report content and may warn, suspend, or terminate accounts when we reasonably believe these terms, law, safety, or platform rules have been violated. Users can report or block profiles, messages, comments, Quick Snaps, and reports using in-app controls. Blocking limits direct interaction but may not remove content already shared publicly. Urgent threats should be reported to local emergency services.',
+  },
+  {
+    title: '6. AI and Matching Disclaimer',
+    body:
+      'AI-generated matches, confidence indicators, extracted details, and other automated results are suggestions, not guarantees. Results may be incomplete, delayed, or wrong. Verify identity using distinctive markings, ownership records, veterinary or microchip checks, and safe direct communication before relying on a result.',
+  },
+  {
+    title: '7. Ownership and Meeting Safety',
+    body:
+      'A report or match does not prove ownership. Finders should ask for reasonable evidence without publicly revealing every identifying feature. Meet in a safe, public, well-lit place or through a vet, shelter, council, or police station where appropriate. Do not send deposits or hand over a pet based only on messages, payment claims, or an AI result.',
+  },
+  {
+    title: '8. Subscriptions, Renewal, and Cancellation',
+    body:
+      'Paid subscriptions may renew automatically at the price and interval shown before purchase unless cancelled at least 24 hours before renewal or as otherwise stated by the applicable store. Manage or cancel through the store account used to subscribe. Deleting your Fur Finder account does not automatically cancel a subscription. Feature availability and pricing may change prospectively with notice required by law or the store.',
+  },
+  {
+    title: '9. iOS Payments, Refunds, and Credits',
+    body:
+      'Apple processes iOS in-app purchases, subscription billing, cancellation, and refund requests under Apple’s terms and policies. The Fur Finder does not receive full payment-card details and cannot directly issue an Apple refund. Credits are limited service units, have no cash value, are not transferable unless stated, and cannot be redeemed for money. Promotional credits may expire under the terms shown when issued.',
+  },
+  {
+    title: '10. External Links, Partners, and Advertisers',
+    body:
+      'External destinations must use valid public https:// links and may be reviewed or removed for safety, accuracy, legality, or policy compliance. Advertiser and partner content does not constitute our endorsement. Report malicious, misleading, or inappropriate destinations through in-app reporting or support. We may moderate campaigns, links, and organisation content before or after publication.',
+  },
+  {
+    title: '11. Service Changes and Liability',
+    body:
+      'The service may change, be interrupted, or contain errors. To the extent permitted by law, The Fur Finder is not responsible for user conduct, the accuracy of reports or AI suggestions, unsuccessful reunions, third-party destinations, or in-person interactions. Nothing in these terms excludes rights or remedies that cannot lawfully be excluded, including applicable consumer guarantees.',
+  },
+  {
+    title: '12. Privacy and Support',
+    body:
+      'Our Privacy Policy explains how personal information is handled. For account, safety, billing, moderation, or legal support, use the Support page or email support@thefurfinder.com.',
   },
 ]
 
@@ -350,16 +425,26 @@ export const deleteAccountCards: Array<{ title: string; content: ReactNode }> = 
   {
     title: 'Delete Your Account',
     content:
-      'You can request permanent deletion of your The Fur Finder account and associated data at any time. This action removes your account details, pet reports, registered pet profiles, comments, biometric scans, and notification history.',
+      'You can request permanent deletion of your The Fur Finder account at any time. Deletion removes or de-identifies your profile, contact details, pet profiles, pet photos and biometric pet images, reports, comments, chats, Quick Snaps, saved items, push tokens, credit balance, and other account-linked content from active systems.',
   },
   {
     title: 'How to Delete Your Account',
     content:
-      'Option 1: In the app, open Settings, go to Account, tap Delete My Account, and confirm. Option 2: send an email request with your account email address and we will process it.',
+      'In the app, go to Settings → Account → Delete Account and follow the confirmation prompts. If you cannot access the app, email support@thefurfinder.com from the address associated with your account and use the subject “Account Deletion Request.”',
   },
   {
-    title: 'Data Retention',
+    title: 'Identity Verification and Timing',
     content:
-      'Active records are removed from our main database when deletion is processed. Operational backups are purged on the normal retention cycle, and only anonymised analytics may remain.',
+      'To protect accounts from unauthorised deletion, we may ask you to confirm your email, sign in again, or provide limited information that matches the account. We generally complete verified requests within 30 days. Encrypted backup copies may remain inaccessible in normal operations for up to 90 days before rotation.',
+  },
+  {
+    title: 'Records We May Retain',
+    content:
+      'We may retain limited purchase, subscription, tax, fraud-prevention, chargeback, dispute, moderation, safety, and legal-compliance records where required or permitted by law. These records are access-restricted and are not kept for ordinary product use. Aggregated or de-identified analytics may also remain.',
+  },
+  {
+    title: 'Cancel Store Subscriptions Separately',
+    content:
+      'Deleting your account does not cancel an App Store or Google Play subscription. Cancel through the store account used to subscribe before deleting your account to prevent future renewals. Apple handles iOS subscription cancellation and refund requests under its policies.',
   },
 ]

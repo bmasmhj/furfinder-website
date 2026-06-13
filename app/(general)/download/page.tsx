@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Globe, Smartphone, Star, Shield, Zap } from "lucide-react";
+import { Globe, Smartphone, Shield, Search } from "lucide-react";
 import CopyButton from "@/components/CopyButton";
 import Apple from "@/components/icons/Apple";
 import PlayStore from "@/components/icons/PlayStore";
@@ -7,17 +7,17 @@ import { downloadApp } from "@/lib/downloadHandler";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Download The Fur Finder - Free on iOS, Android & Web",
+  title: "Get The Fur Finder - Current Platform Availability",
   description:
-    "Download The Fur Finder — Australia's AI-powered lost & found pet app. Available free on the App Store, Google Play, and Web.",
+    "See current TestFlight, Android beta, and web availability for The Fur Finder.",
 };
 
 const webAppUrl = "https://app.thefurfinder.com";
 
 const highlights = [
-  { icon: Zap, label: "AI Photo Matching", desc: "Instantly scan for matches" },
-  { icon: Shield, label: "Free to Use", desc: "No account needed to browse" },
-  { icon: Star, label: "4.9★ Rated", desc: "Loved by pet owners" },
+  { icon: Search, label: "Suggested Matches", desc: "Review and verify possible matches" },
+  { icon: Shield, label: "Safety First", desc: "Reporting and community guidance" },
+  { icon: Globe, label: "Web Access", desc: "Open the current browser experience" },
 ];
 
 export default function DownloadPage() {
@@ -31,7 +31,7 @@ export default function DownloadPage() {
 
         <div className="relative z-10 mx-auto max-w-3xl">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/90 backdrop-blur-sm">
-            🐾 Free Download
+            Current availability
           </span>
 
           <h1 className="mb-5 text-4xl font-extrabold tracking-[-0.03em] md:text-6xl">
@@ -39,8 +39,8 @@ export default function DownloadPage() {
           </h1>
 
           <p className="mx-auto mb-10 max-w-lg text-lg leading-relaxed text-white/70">
-            Australia&apos;s AI-powered lost &amp; found pet platform. Report,
-            search, and reunite — available on every device.
+            Access the current beta or open the web experience. Public App Store
+            and Google Play listings are not currently advertised on this page.
           </p>
 
           {/* Download buttons */}
@@ -52,11 +52,9 @@ export default function DownloadPage() {
             >
               <Apple />
               <div className="text-left">
-                <span className="block text-[10px] font-normal opacity-65">
-                  Download on the
-                </span>
+                <span className="block text-[10px] font-normal opacity-65">Join through</span>
                 <span className="block text-lg font-bold leading-tight">
-                  App Store
+                  iOS TestFlight
                 </span>
               </div>
             </Link>
@@ -68,11 +66,9 @@ export default function DownloadPage() {
             >
              <PlayStore />
               <div className="text-left">
-                <span className="block text-[10px] font-normal opacity-65">
-                  Get it on
-                </span>
+                <span className="block text-[10px] font-normal opacity-65">Request access to</span>
                 <span className="block text-lg font-bold leading-tight">
-                  Google Play
+                  Android Beta
                 </span>
               </div>
             </Link>
@@ -95,7 +91,7 @@ export default function DownloadPage() {
           </div>
 
           <p className="mt-6 text-[13px] text-white/40">
-            Free to download · No account needed to browse · Australia-wide
+            Beta capacity and platform availability may change.
           </p>
         </div>
       </section>
@@ -123,11 +119,11 @@ export default function DownloadPage() {
       {/* Platform details */}
       <section className="mx-auto max-w-4xl px-6 py-20">
         <h2 className="mb-3 text-center text-2xl font-bold tracking-[-0.02em] text-foreground md:text-3xl">
-          Available everywhere
+          Choose an available option
         </h2>
         <p className="mx-auto mb-12 max-w-lg text-center text-sm text-muted-foreground">
-          Use The Fur Finder on whichever platform works best for you. All
-          platforms share the same data in real time.
+          These links describe the channels currently offered. We do not display
+          unavailable store buttons or purchase options.
         </p>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -136,13 +132,13 @@ export default function DownloadPage() {
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 text-white shadow-lg">
               <Apple className="w-8 h-8" />
             </div>
-            <h3 className="mb-1 text-lg font-bold text-foreground">iPhone &amp; iPad</h3>
-            <p className="mb-5 text-xs text-muted-foreground">iOS 15+ · Free</p>
+            <h3 className="mb-1 text-lg font-bold text-foreground">iOS beta</h3>
+            <p className="mb-5 text-xs text-muted-foreground">TestFlight access, subject to availability</p>
             <Link
               href={downloadApp("ios")}
               className="block w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
             >
-              App Store →
+              View TestFlight instructions →
             </Link>
           </div>
 
@@ -151,13 +147,13 @@ export default function DownloadPage() {
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-600 to-green-700 text-white shadow-lg">
               <PlayStore className="w-8 h-8" />
             </div>
-            <h3 className="mb-1 text-lg font-bold text-foreground">Android</h3>
-            <p className="mb-5 text-xs text-muted-foreground">Android 8+ · Free</p>
+            <h3 className="mb-1 text-lg font-bold text-foreground">Android beta</h3>
+            <p className="mb-5 text-xs text-muted-foreground">Request access with your email</p>
             <Link
               href={downloadApp("android")}
               className="block w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
             >
-              Google Play →
+              Request beta access →
             </Link>
           </div>
 
@@ -186,8 +182,8 @@ export default function DownloadPage() {
             Share with someone who needs it
           </h2>
           <p className="mb-6 text-sm text-muted-foreground">
-            Know someone who&apos;s lost a pet? Share this page so they can
-            download The Fur Finder and start searching right away.
+            Know someone who&apos;s lost a pet? Share this page so they can see
+            the current app and web access options.
           </p>
           <div className="mx-auto flex max-w-sm items-center gap-2 rounded-xl border border-border bg-card px-4 py-3">
             <span className="flex-1 truncate text-left text-sm text-muted-foreground">
@@ -200,5 +196,3 @@ export default function DownloadPage() {
     </div>
   );
 }
-
-

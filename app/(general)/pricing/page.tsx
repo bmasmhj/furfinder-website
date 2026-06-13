@@ -100,16 +100,15 @@ export default async function Pricing() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {plan.name.toLowerCase() === "free"
-                      ? "Get Started Free"
-                      : "Start Premium Trial"}
+                    View current availability
                   </Link>
                 </div>
               ))}
             </div>
             <p className="mt-16 text-[13px] text-muted-foreground">
-              Subscriptions managed securely via the App Store &amp; Google
-              Play. Cancel anytime.
+              When subscriptions are offered, the price and renewal period are
+              shown before purchase. Manage cancellation through the store
+              account used to subscribe. Account deletion does not cancel a subscription.
             </p>
           </>
         ) : (

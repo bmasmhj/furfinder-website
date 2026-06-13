@@ -6,8 +6,8 @@ const cards = [
     title: "My Pet Is Lost",
     description: "Your pet is missing and every minute feels like an eternity. Here's how we help you get them back.",
     items: [
-      "Post a report in under 2 minutes",
-      "AI instantly scans all found reports for matches",
+      "Create and review a detailed lost-pet report",
+      "AI suggests possible matches from eligible reports",
       "Share a printable flyer with one tap",
       "Message anyone who spots your pet directly",
       "Offer a reward to boost your report's visibility",
@@ -19,7 +19,7 @@ const cards = [
     description: "You've spotted a lost animal and want to reunite it with its family. You're in the right place.",
     items: [
       "Post a found report with photos",
-      "AI matches it against all active lost reports nearby",
+      "Review suggested matches from eligible nearby reports",
       "Quick Snap to ID the pet using biometric scan",
       "Find nearby vets and shelters to take the pet",
       "Contact the owner safely through the app",

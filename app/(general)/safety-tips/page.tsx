@@ -28,27 +28,47 @@ const categories = [
     ],
   },
   {
-    title: 'Prevention Tips',
+    title: 'Verify Ownership Before a Handover',
     color: 'text-indigo-500',
     bg: 'bg-indigo-50 dark:bg-indigo-950/20',
     tips: [
-      'Microchip your pet and keep registration details updated',
-      'Use a collar with ID tag including your phone number',
-      'Take clear, recent photos of your pet from multiple angles',
-      'Keep gates and fences secure, check for escape points',
-      'Consider GPS tracking collars for adventurous pets',
+      'Ask the claimant for photos, records, microchip details, or distinctive features not shown publicly',
+      'Arrange a microchip scan through a vet, shelter, council, or authorised registry where possible',
+      'Do not reveal every identifying detail in a public post',
+      'Remember that a report, message, or AI suggestion does not prove ownership',
     ],
   },
   {
-    title: 'Emergency Contacts',
+    title: 'Meet Safely',
     color: 'text-orange-500',
     bg: 'bg-orange-50 dark:bg-orange-950/20',
     tips: [
-      'RSPCA: 1300 278 3589',
-      'Animal Emergency: Contact your nearest 24hr vet',
-      'Local Council Animal Services',
-      'National Pet Register: 1300 734 738',
-      "The Fur Finder AI Matching: Use our app's AI feature!",
+      'Meet in daylight at a public, well-lit location and bring another adult',
+      'Prefer a vet, shelter, council facility, or police station when appropriate',
+      'Keep communication in the app until you are comfortable sharing contact details',
+      'Tell someone where you are going and do not enter an unfamiliar home alone',
+    ],
+  },
+  {
+    title: 'Avoid Scams and Abuse',
+    color: 'text-red-500',
+    bg: 'bg-red-50 dark:bg-red-950/20',
+    tips: [
+      'Do not send deposits, gift cards, cryptocurrency, verification fees, or reward money before verification',
+      'Be cautious of pressure, threats, copied photos, requests for login codes, and claims that cannot be checked',
+      'Never share passwords, one-time codes, or full payment-card details',
+      'Block and report users who harass, threaten, impersonate, scam, or post harmful content',
+    ],
+  },
+  {
+    title: 'Emergency Guidance',
+    color: 'text-orange-500',
+    bg: 'bg-orange-50 dark:bg-orange-950/20',
+    tips: [
+      'Call 000 in Australia when a person is in immediate danger',
+      'Contact the nearest emergency veterinarian when an animal is injured or critically unwell',
+      'Contact local police, council animal services, or an animal-welfare authority for urgent welfare concerns',
+      'The Fur Finder is not an emergency or veterinary service',
     ],
   },
 ];
@@ -101,9 +121,16 @@ export default function SafetyTipsPage() {
             <Sparkles />
           </div>
           <p className="text-sm">
-            Use The Fur Finder&apos;s AI matching to quickly find potential matches
-            for lost or found pets
+            AI matches are suggestions. Verify ownership and identity before relying on them.
           </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/support" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-700">
+              Report abusive content
+            </Link>
+            <Link href="/terms-of-use" className="rounded-lg border border-white/50 px-4 py-2 text-sm font-semibold text-white">
+              Community rules
+            </Link>
+          </div>
         </div>
       </div>
     </div>

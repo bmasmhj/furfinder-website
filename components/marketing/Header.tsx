@@ -134,7 +134,7 @@ export default function Header() {
             className="mt-5 rounded-xl bg-primary py-4 text-center font-bold text-white"
             onClick={() => setMobileOpen(false)}
           >
-            Download Free
+            Get the App
           </Link>
         </div>
       </div>

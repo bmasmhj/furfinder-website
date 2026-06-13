@@ -5,7 +5,7 @@ import { partnershipsEmail } from "@/components/marketing/site-content";
 export const metadata: Metadata = {
   title: "Advertise - The Fur Finder",
   description:
-    "Advertising on The Fur Finder is coming soon. Reach pet owners and local communities with trusted placements.",
+    "Advertising enquiries, pricing approach, campaign terms, and content standards for The Fur Finder.",
 };
 
 export default function AdvertisePage() {
@@ -16,25 +16,49 @@ export default function AdvertisePage() {
           Advertise
         </span>
         <h1 className="mt-6 text-4xl font-extrabold tracking-[-0.05em] text-foreground md:text-6xl">
-          Coming soon
+          Advertising enquiries
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
-          We are preparing advertising options for pet-focused businesses and
-          community partners. Stay tuned for launch details.
+          Self-service ad purchasing is not available. Eligible businesses and organisations can request a reviewed campaign proposal through this website.
         </p>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          For early advertising and partner interest, email{" "}
-          <a className="font-semibold text-primary hover:underline" href={`mailto:${partnershipsEmail}`}>
-            {partnershipsEmail}
-          </a>
-          .
-        </p>
+        <div className="mx-auto mt-10 grid max-w-3xl gap-5 text-left md:grid-cols-2">
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="text-lg font-bold">Pricing</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              Pricing is custom quoted based on placement, duration, audience, creative work, and campaign scope. There is no published fixed price and no charge until both parties accept a written insertion order or campaign agreement showing all fees, dates, and cancellation terms.
+            </p>
+          </section>
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="text-lg font-bold">Campaign terms</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              Proposals identify the campaign period, placement, budget, deliverables, invoicing, cancellation rules, and any make-good terms. Impressions, clicks, leads, sales, reunions, or other performance outcomes are not guaranteed.
+            </p>
+          </section>
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="text-lg font-bold">Content and links</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              Creative, claims, targeting, and destination links are moderated. Links must use a valid public https:// address. Misleading claims, unsafe products, malware, deceptive redirects, and prohibited content are rejected or removed.
+            </p>
+          </section>
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="text-lg font-bold">iOS availability</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              Ad purchasing and campaign management are not available inside the iOS app. The app does not redirect iOS users into an external digital-purchase flow. Advertiser enquiries on this website are business-to-business requests reviewed by our team.
+            </p>
+          </section>
+        </div>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/contact"
+          <a
+            href={`mailto:${partnershipsEmail}?subject=Advertising%20Enquiry`}
             className="inline-flex rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
           >
-            Contact us
+            Request a campaign quote
+          </a>
+          <Link
+            href="/support"
+            className="inline-flex rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+          >
+            Report an advertiser or link
           </Link>
           <Link
             href="/"

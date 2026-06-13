@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { featureCards } from "@/components/marketing/site-content";
+import { featureCards, steps as defaultSteps } from "@/components/marketing/site-content";
 import { db } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "How It Works - The Fur Finder",
   description:
-    "Learn how The Fur Finder helps reunite lost pets with their families in just three simple steps, powered by AI technology.",
+    "Learn how The Fur Finder supports lost and found pet reports and suggests possible matches for users to verify.",
 };
 
 async function getHowItWorksSteps() {
@@ -22,7 +22,8 @@ async function getHowItWorksSteps() {
 }
 
 export default async function HowitWorks() {
-  const steps = await getHowItWorksSteps();
+  const databaseSteps = await getHowItWorksSteps();
+  const steps = databaseSteps.length > 0 ? databaseSteps : defaultSteps;
 
   return (
     <div className="bg-background">
@@ -36,9 +37,12 @@ export default async function HowitWorks() {
             Simple steps to <span className="text-primary">reunite.</span>
           </h1>
           <p className="text-xl leading-relaxed text-muted-foreground">
-            Our technology does the heavy lifting so you can focus on bringing
-            your pet home safely.
+            Create a report, review suggested matches, and coordinate carefully
+            with other users, vets, shelters, or councils.
           </p>
+          <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-left text-sm leading-7 text-amber-900 dark:text-amber-200">
+            AI and proximity results are suggestions, not proof or guarantees. The Fur Finder does not automatically scan social media. Users must provide or paste content they are authorised to use and verify every potential match.
+          </div>
         </div>
       </section>
 
@@ -48,11 +52,11 @@ export default async function HowitWorks() {
           {steps.length > 0 ? (
             steps.map((step: any, index: number) => (
               <div
-                key={step.id}
+                key={"id" in step ? step.id : step.title}
                 className="relative rounded-3xl border border-border bg-card p-8 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-3xl font-bold text-white shadow-lg shadow-primary/20">
-                  {step.step_number || index + 1}
+                  {"step_number" in step ? step.step_number || index + 1 : index + 1}
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-foreground">
                   {step.title}
@@ -89,8 +93,8 @@ export default async function HowitWorks() {
               Tools for every step
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-white/60">
-              Each feature is designed to support the reunification workflow and
-              maximize the chances of a happy ending.
+              These features organise available information and surface possible
+              leads. They do not replace user verification or professional advice.
             </p>
           </div>
 

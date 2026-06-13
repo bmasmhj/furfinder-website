@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isSafeHttpsUrl } from './external-url'
 
 type ValidationSuccess<T> = {
   success: true
@@ -62,6 +63,12 @@ export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
 })
+
+export const safeExternalUrlSchema = z
+  .string()
+  .trim()
+  .max(2048)
+  .refine(isSafeHttpsUrl, 'Enter a valid public https:// URL')
 
 // Pet Report Schemas
 export const petReportSchema = z.object({

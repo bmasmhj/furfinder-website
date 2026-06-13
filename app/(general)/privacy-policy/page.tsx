@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { LegalPageLayout, LegalSection } from '@/components/marketing/MarketingPrimitives'
 import { privacyEmail, privacySections } from '@/components/marketing/site-content'
 
@@ -15,7 +16,7 @@ export default function PrivacyPolicyPage() {
           <LegalPageLayout
             title="The Fur Finder Privacy Policy"
             subtitle="Your privacy matters to us"
-            meta="Last updated: February 2026 | Version 1.0"
+            meta="Effective date: June 11, 2026 | Version 2.0"
           >
             <div className="inline-flex items-center gap-2 rounded-xl border border-primary bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
               Data Protection Compliant
@@ -27,9 +28,14 @@ export default function PrivacyPolicyPage() {
               <LegalSection key={section.title} title={section.title} body={section.body} />
             ))}
             <LegalSection
-              title="6. Contact Us"
-              body={`If you have questions about this policy or want to exercise your privacy rights, contact us at:\n\nEmail: ${privacyEmail}`}
+              title="12. Contact Us"
+              body={`If you have questions, a complaint, or want to exercise a privacy right, email ${privacyEmail}. You may also use our Support page or Account Deletion page. We may verify your identity before acting on a request.`}
             />
+            <div className="flex flex-wrap gap-3">
+              <Link className="font-semibold text-primary hover:underline" href="/support">Support</Link>
+              <Link className="font-semibold text-primary hover:underline" href="/delete-account">Delete Account</Link>
+              <Link className="font-semibold text-primary hover:underline" href="/terms-of-use">Terms of Use</Link>
+            </div>
           </LegalPageLayout>
         </div>
 

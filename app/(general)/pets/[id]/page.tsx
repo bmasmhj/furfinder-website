@@ -232,15 +232,15 @@ export default async function PetIdPage({
                         <div className="relative z-10">
                             <h2 className="mb-3 text-2xl font-black leading-tight md:mb-4 md:text-4xl">Have you seen {displayName}?</h2>
                             <p className="mb-6 text-base opacity-90 md:mb-8 md:max-w-lg md:text-lg">
-                                Download our app to report sightings, get instant proximity alerts, and help bring {displayName} home. Every second counts!
+                                View current app access options to report sightings and enable available nearby alerts for {displayName}.
                             </p>
                             <div className="flex flex-wrap gap-3 md:gap-4">
                                 <DownloadButton href="/download" variant="secondary">
-                                      <Apple className="h-5 w-5" /> App Store
+                                      <Apple className="h-5 w-5" /> iOS beta
                                 </DownloadButton>
                                 <DownloadButton href="/download" variant="secondary">
                                         <PlayStore className="h-5 w-5" />
-                                      Google Play
+                                      Android beta
                                 </DownloadButton>
                             </div>
                         </div>

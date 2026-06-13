@@ -20,10 +20,41 @@ export default function PartnerRegistrationPage() {
             Join The Fur Finder partner network
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
-            Help reunite more pets by connecting your team to Australia&apos;s AI-powered lost and found workflow. This intake is designed for veterinary clinics, shelters, rescue organisations, and councils.
+            This intake is for legitimate veterinary clinics, shelters, rescue organisations, councils, and established animal-welfare or community organisations.
           </p>
         </div>
       </section>
+
+      <section className="mx-auto mt-12 grid max-w-6xl gap-5 px-6 md:grid-cols-2 lg:grid-cols-4 md:px-8">
+        {[
+          {
+            title: "Eligibility",
+            body: "Applicants must be authorised to represent the organisation and use the network for legitimate animal care, reunification, or community-service purposes.",
+          },
+          {
+            title: "Verification & approval",
+            body: "We may verify registration, licences, domain ownership, contact details, and public records. Submitting an application does not guarantee approval or listing.",
+          },
+          {
+            title: "How data is used",
+            body: "Application data is used to assess eligibility, contact the organisation, prevent abuse, onboard approved partners, and maintain directory accuracy.",
+          },
+          {
+            title: "Content moderation",
+            body: "Organisation profiles, reports, links, and other content may be reviewed, corrected, limited, removed, or suspended for safety, accuracy, legality, or policy compliance.",
+          },
+        ].map((item) => (
+          <article key={item.title} className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="text-lg font-bold text-foreground">{item.title}</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.body}</p>
+          </article>
+        ))}
+      </section>
+
+      <p className="mx-auto mt-6 max-w-3xl px-6 text-center text-sm leading-7 text-muted-foreground md:px-8">
+        External organisation links must be valid public <strong>https://</strong> destinations. Dangerous schemes and private-network links are rejected. Report a malicious or misleading partner destination through{" "}
+        <Link href="/support" className="font-semibold text-primary hover:underline">Support</Link>.
+      </p>
 
       <div className="mt-12">
         <PartnerInterestFunnel />

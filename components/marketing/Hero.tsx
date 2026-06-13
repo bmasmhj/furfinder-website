@@ -26,15 +26,14 @@ export default function HeroSection() {
           </h1>
 
           <p className="max-w-[540px] text-[17px] leading-[1.75] text-muted-foreground max-md:text-[15px]">
-            Report a lost or found pet, let our AI scan photos for matches, and
-            connect with your community — all in one app. Free to download and
-            use.
+            Report a lost or found pet, review AI-suggested matches, and connect
+            with your community in one place.
           </p>
 
           {/* Trust indicators */}
           <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground">
-            <span>Free to download</span>
-            <span className="text-primary">iOS &amp; Android</span>
+            <span>Current beta access</span>
+            <span className="text-primary">iOS, Android &amp; Web options</span>
             <span>Australia-wide</span>
           </div>
 
@@ -44,14 +43,14 @@ export default function HeroSection() {
               className="inline-flex w-full items-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-[15px] font-semibold text-white shadow-[0_4px_16px_rgba(255,107,74,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#e5553a] hover:shadow-[0_8px_24px_rgba(255,107,74,0.35)] md:w-auto"
             >
               <Apple className='h-5 w-5'/>
-              Download on App Store
+              Join iOS TestFlight
             </Link>
             <Link
               href={downloadApp("android")}
               className="inline-flex w-full items-center gap-2 rounded-xl border-[1.5px] border-border bg-card px-7 py-3.5 text-[15px] font-semibold text-foreground transition-all hover:border-primary hover:text-primary md:w-auto"
             >
               <PlayStore className='h-5 w-5'/>
-              Get on Google Play
+              Request Android beta
             </Link>
             <a
               href="https://app.thefurfinder.com"

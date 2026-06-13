@@ -5,7 +5,7 @@ import { partnershipsEmail } from "@/components/marketing/site-content";
 export const metadata: Metadata = {
   title: "Manage Ads - The Fur Finder",
   description:
-    "The ad management dashboard is coming soon. Soon you'll be able to manage campaigns and performance in one place.",
+    "Support and campaign-management information for existing The Fur Finder advertisers.",
 };
 
 export default function ManageAdsPage() {
@@ -16,25 +16,39 @@ export default function ManageAdsPage() {
           Manage Ads
         </span>
         <h1 className="mt-6 text-4xl font-extrabold tracking-[-0.05em] text-foreground md:text-6xl">
-          Coming soon
+          Existing campaign support
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
-          A dedicated portal for managing ad campaigns, budgets, and reporting
-          is currently in development.
+          Self-service campaign management and ad purchasing are not available on this page or inside the iOS app. Existing advertisers can request creative, destination, schedule, billing, or cancellation changes from the partnerships team.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          Need campaign details now? Email{" "}
+          Include your business name and campaign reference when emailing{" "}
           <a className="font-semibold text-primary hover:underline" href={`mailto:${partnershipsEmail}`}>
             {partnershipsEmail}
           </a>
           .
         </p>
+        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 text-left">
+          <h2 className="text-lg font-bold text-foreground">Campaign controls</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Changes remain subject to the written campaign agreement. Updated advertiser destinations must be valid public https:// links and may be re-reviewed before publication. We can pause or remove misleading, malicious, unsafe, or non-compliant creative and links.
+          </p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Report a suspicious destination or advertiser through Support. Performance metrics are estimates based on available event data and are not guarantees of clicks, leads, sales, or other outcomes.
+          </p>
+        </div>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/contact"
+          <a
+            href={`mailto:${partnershipsEmail}?subject=Existing%20Campaign%20Support`}
             className="inline-flex rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
           >
-            Contact us
+            Email campaign support
+          </a>
+          <Link
+            href="/support"
+            className="inline-flex rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+          >
+            Report a destination
           </Link>
           <Link
             href="/"
