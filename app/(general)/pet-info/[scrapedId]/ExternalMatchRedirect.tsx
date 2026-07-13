@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { isPostRedirectUrl, submitPostRedirect } from "./postRedirect";
 
 interface ExternalMatchRedirectProps {
   redirectUrl: string;
@@ -20,7 +21,11 @@ export default function ExternalMatchRedirect({
     }, 1000);
 
     const redirectTimer = window.setTimeout(() => {
-      window.location.assign(redirectUrl);
+      if (isPostRedirectUrl(redirectUrl)) {
+        submitPostRedirect(redirectUrl);
+      } else {
+        window.location.assign(redirectUrl);
+      }
     }, delayMs);
 
     return () => {

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, MapPin, PawPrint } from "lucide-react";
+import { ArrowRight, MapPin, PawPrint } from "lucide-react";
 import { db } from "@/lib/db";
 import ExternalMatchRedirect from "./ExternalMatchRedirect";
+import ContinueLink from "./ContinueLink";
 
 const REDIRECT_DELAY_MS = 3000;
 
@@ -175,14 +176,11 @@ export default async function ExternalMatchPage({
             <div className="mt-5">
               <ExternalMatchRedirect redirectUrl={fallbackTargetUrl} delayMs={REDIRECT_DELAY_MS} />
             </div>
-            <a
-              href={fallbackTargetUrl}
-              rel="noopener noreferrer"
+            <ContinueLink
+              url={fallbackTargetUrl}
+              label="Continue now"
               className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-            >
-              Continue now
-              <ExternalLink size={16} />
-            </a>
+            />
           </div>
         </main>
       );
@@ -276,14 +274,11 @@ export default async function ExternalMatchPage({
             </p>
           )}
 
-          <a
-            href={redirectUrl}
-            rel="noopener noreferrer"
+          <ContinueLink
+            url={redirectUrl}
+            label="Continue to source website"
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-          >
-            Continue to source website
-            <ExternalLink size={16} />
-          </a>
+          />
         </div>
       </section>
     </main>
