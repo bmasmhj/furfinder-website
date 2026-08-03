@@ -54,7 +54,6 @@ export default function Footer() {
             <div className="space-y-2.5 font-body text-sm">
               <Link href="/privacy-policy" className="block transition hover:text-amber">Privacy Policy</Link>
               <Link href="/terms-of-use" className="block transition hover:text-amber">Terms of Use</Link>
-              <Link href="/delete-account" className="block transition hover:text-amber">Delete Account</Link>
             </div>
           </div>
         </div>
@@ -64,7 +63,6 @@ export default function Footer() {
           <div className="flex gap-5">
             <Link href="/privacy-policy" className="transition hover:text-amber">Privacy</Link>
             <Link href="/terms-of-use" className="transition hover:text-amber">Terms</Link>
-            <Link href="/delete-account" className="transition hover:text-amber">Delete Account</Link>
           </div>
         </div>
       </div>
