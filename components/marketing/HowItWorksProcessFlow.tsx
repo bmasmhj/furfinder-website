@@ -12,7 +12,7 @@ type Step = {
 
 const STEP_ICONS = [FileEdit, ScanSearch, HeartHandshake];
 
-export default function ProcessFlow({ steps }: { steps: Step[] }) {
+export default function HowItWorksProcessFlow({ steps }: { steps: Step[] }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {

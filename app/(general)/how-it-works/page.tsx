@@ -15,7 +15,7 @@ import { featureCards, steps as defaultSteps } from "@/components/marketing/site
 import { db } from "@/lib/db";
 import Reveal from "@/components/marketing/Reveal";
 import Magnetic from "@/components/marketing/Magnetic";
-import ProcessFlow from "@/components/marketing/ProcessFlow";
+import HowItWorksProcessFlow from "@/components/marketing/HowItWorksProcessFlow";
 
 export const metadata: Metadata = {
   title: "How It Works - The Fur Finder",
@@ -81,7 +81,7 @@ export default async function HowitWorks() {
       {/* Main Steps */}
       <section className="px-6 pb-24 md:pb-28">
         <div className="mx-auto max-w-5xl">
-          <ProcessFlow
+          <HowItWorksProcessFlow
             steps={steps.map((step: any) => ({
               key: "id" in step ? step.id : step.title,
               title: step.title,
