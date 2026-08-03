@@ -39,7 +39,7 @@ export function PartnerCard({ org }: { org: PartnerCardOrg }) {
         <span className="line-clamp-2">{org.address}</span>
       </p>
 
-      <div className="mt-auto flex items-center justify-between border-t border-forest/10 pt-3 font-body text-xs font-semibold text-forest/60">
+      <div className="mt-auto flex items-center justify-between border-t border-forest/10 pt-3 font-body text-xs font-semibold text-forest/75">
         <span>
           {org.animal_count ?? 0} pet{org.animal_count === 1 ? "" : "s"} available
         </span>

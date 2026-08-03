@@ -175,7 +175,7 @@ export default async function ReunitedStoryDetailPage({
                   alt={`${story.pet_name}: ${image.label}`}
                   className="aspect-[4/3] w-full object-cover"
                 />
-                <figcaption className="px-4 py-3 font-body text-xs font-semibold uppercase tracking-wide text-forest/60">
+                <figcaption className="px-4 py-3 font-body text-xs font-semibold uppercase tracking-wide text-forest/75">
                   {image.label}
                 </figcaption>
               </figure>
@@ -202,16 +202,16 @@ export default async function ReunitedStoryDetailPage({
             <section className="rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6">
               <h2 className="font-display text-[17px] italic text-forest">Story details</h2>
               <dl className="mt-4 space-y-3 font-body text-sm">
-                <div><dt className="text-forest/55">Pet</dt><dd className="font-medium text-forest">{story.pet_name}</dd></div>
-                <div><dt className="text-forest/55">Type</dt><dd className="font-medium text-forest">{story.pet_type}</dd></div>
-                <div><dt className="text-forest/55">Submitted by</dt><dd className="font-medium text-forest">{story.owner_name}</dd></div>
+                <div><dt className="text-forest/75">Pet</dt><dd className="font-medium text-forest">{story.pet_name}</dd></div>
+                <div><dt className="text-forest/75">Type</dt><dd className="font-medium text-forest">{story.pet_type}</dd></div>
+                <div><dt className="text-forest/75">Submitted by</dt><dd className="font-medium text-forest">{story.owner_name}</dd></div>
                 {story.location_found ? (
-                  <div><dt className="text-forest/55">Found near</dt><dd className="font-medium text-forest">{story.location_found}</dd></div>
+                  <div><dt className="text-forest/75">Found near</dt><dd className="font-medium text-forest">{story.location_found}</dd></div>
                 ) : null}
               </dl>
             </section>
             <section className="rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6 font-body text-sm leading-7 text-forest/75">
-              <p className="mb-1.5 font-body text-[12px] font-semibold uppercase tracking-[0.12em] text-forest/55">
+              <p className="mb-1.5 font-body text-[12px] font-semibold uppercase tracking-[0.12em] text-forest/75">
                 Please note
               </p>
               Community stories describe individual experiences. They are not guarantees that a feature or matching suggestion will produce the same outcome.

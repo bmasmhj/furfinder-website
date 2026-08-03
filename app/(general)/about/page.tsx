@@ -45,7 +45,7 @@ export default function AboutPage() {
 
       <section className="border-t border-forest/10 px-6 py-20 md:py-24">
         <div className="mx-auto max-w-3xl">
-          <Reveal className="font-body text-[12px] font-semibold uppercase tracking-[0.14em] text-forest/55">
+          <Reveal className="font-body text-[12px] font-semibold uppercase tracking-[0.14em] text-forest/75">
             Founder
           </Reveal>
           <Reveal delay={40} as="h2" className="mt-2 font-display text-[28px] italic leading-tight text-forest max-md:text-[24px]">

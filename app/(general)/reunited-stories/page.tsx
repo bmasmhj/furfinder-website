@@ -70,7 +70,7 @@ function StoryCard({ story, featured, delay }: { story: any; featured?: boolean;
           <p className="mt-2 line-clamp-3 font-body text-[13.5px] leading-relaxed text-forest/75">
             {story.story_content}
           </p>
-          <p className="mt-4 font-body text-[12px] text-forest/55">
+          <p className="mt-4 font-body text-[12px] text-forest/75">
             Reunited:{" "}
             {story.reunion_date
               ? new Date(story.reunion_date).toLocaleDateString("en-US", { year: "numeric", month: "long" })
