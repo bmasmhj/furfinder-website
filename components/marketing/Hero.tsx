@@ -1,80 +1,100 @@
-import Image from 'next/image'
-import Mobile from '@/assets/images/mobile.png'
+import Link from 'next/link'
 import { Globe } from 'lucide-react'
 import Apple from '../icons/Apple'
 import PlayStore from '../icons/PlayStore'
-import Link from 'next/link'
 import { downloadApp } from '@/lib/downloadHandler'
+import { heroTrustItems } from './site-content'
+import IllustratedMap from './IllustratedMap'
+import Reveal from './Reveal'
+import Magnetic from './Magnetic'
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background via-orange-50/50 to-teal-50/30 px-6 py-[72px] pb-[90px] dark:from-background dark:via-orange-950/10 dark:to-teal-950/10">
-      {/* Decorative radial gradient */}
-      <div className="pointer-events-none absolute left-1/2 top-[-250px] h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,107,74,0.07)_0%,transparent_70%)]" />
+    <section className="relative overflow-hidden bg-cream px-6 pb-20 pt-14 md:pb-28 md:pt-20">
+      {/* Contour field, low-opacity, reads as topographic paper rather than gradient decoration */}
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] w-full opacity-[0.55]"
+        viewBox="0 0 1440 420"
+        preserveAspectRatio="none"
+      >
+        <path d="M-40 60 C 300 10, 600 110, 900 50 S 1500 70, 1600 20" stroke="hsl(var(--forest) / 0.08)" strokeWidth="1.5" fill="none" />
+        <path d="M-40 160 C 300 110, 600 210, 900 150 S 1500 170, 1600 120" stroke="hsl(var(--forest) / 0.08)" strokeWidth="1.5" fill="none" />
+        <path d="M-40 260 C 300 210, 600 310, 900 250 S 1500 270, 1600 220" stroke="hsl(var(--forest) / 0.06)" strokeWidth="1.5" fill="none" />
+      </svg>
 
-      <div className="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-x-16 px-6">
-        <div className="flex max-w-2xl flex-col justify-center gap-7">
-          {/* Pill badge */}
-          <div className="inline-flex max-w-fit items-center gap-1.5 rounded-full border border-teal-300/20 bg-teal-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">
-            &#x1F1E6;&#x1F1FA; Australia&apos;s First AI-Powered Pet Recovery App
+      <div className="relative mx-auto grid max-w-7xl items-center gap-14 md:grid-cols-[1.1fr_0.95fr] md:gap-10 lg:gap-16">
+        <div className="flex flex-col gap-7">
+          <div className="flex items-center gap-2 font-body text-[13px] font-semibold uppercase tracking-[0.14em] text-forest/75">
+            <span aria-hidden>🇦🇺</span>
+            Australia&apos;s first AI-powered pet recovery app
           </div>
 
-          <h1 className="text-[46px] font-extrabold leading-[1.12] tracking-[-1.5px] text-foreground max-md:text-[30px]">
-            Helping bring{' '}
-            <span className="text-primary">lost pets</span> home,{' '}
-            <em className="not-italic">faster.</em>
-          </h1>
+          <Reveal as="h1" className="max-w-[15ch] font-display text-[52px] italic leading-[1.05] tracking-[-0.02em] text-forest max-md:text-[36px]">
+            Every missing pet has <span className="text-coral-text not-italic">a way home.</span>
+          </Reveal>
 
-          <p className="max-w-[540px] text-[17px] leading-[1.75] text-muted-foreground max-md:text-[15px]">
-            Report a lost or found pet, review AI-suggested matches, and connect
-            with your community in one place.
-          </p>
+          <Reveal delay={80} className="max-w-[46ch] font-body text-[18px] leading-[1.7] text-forest/70 max-md:text-[16px]">
+            The Fur Finder pairs AI photo matching with your local community and a live map of every report, so lost and found pets across Australia find each other faster.
+          </Reveal>
 
-          {/* Trust indicators */}
-          <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground">
-            <span>Current beta access</span>
-            <span className="text-primary">iOS, Android &amp; Web options</span>
-            <span>Australia-wide</span>
-          </div>
+          <Reveal delay={140} className="flex flex-wrap items-center gap-3.5">
+            <Magnetic>
+              <a
+                href="https://app.thefurfinder.com"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber px-7 py-4 font-body text-[15.5px] font-bold text-forest shadow-[0_14px_28px_-14px_hsl(var(--amber)/0.75)] transition-shadow hover:shadow-[0_18px_34px_-14px_hsl(var(--amber)/0.85)]"
+              >
+                Report a Lost Pet
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a
+                href="https://app.thefurfinder.com"
+                className="inline-flex items-center gap-2 rounded-xl border-[1.5px] border-forest/25 px-7 py-4 font-body text-[15.5px] font-bold text-forest transition-colors hover:border-forest hover:bg-forest/[0.04]"
+              >
+                Browse Found Pets
+              </a>
+            </Magnetic>
+          </Reveal>
 
-          <div className="flex flex-wrap gap-3">
+          <Reveal delay={200} className="flex flex-wrap gap-x-6 gap-y-2 pt-1 font-body text-[13.5px] font-medium text-forest/75">
+            {heroTrustItems.map((item) => (
+              <span key={item} className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-leaf" />
+                {item}
+              </span>
+            ))}
+          </Reveal>
+
+          <Reveal delay={260} className="flex flex-wrap items-center gap-3 border-t border-forest/10 pt-6">
+            <span className="mr-1 font-body text-[13px] font-semibold text-forest/75">Get the app</span>
             <Link
-              href={downloadApp("ios")}
-              className="inline-flex w-full items-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-[15px] font-semibold text-white shadow-[0_4px_16px_rgba(255,107,74,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#e5553a] hover:shadow-[0_8px_24px_rgba(255,107,74,0.35)] md:w-auto"
+              href={downloadApp('ios')}
+              className="flex items-center gap-2 rounded-xl border border-forest/15 bg-cream px-3.5 py-2 text-forest transition-colors hover:border-forest/35"
             >
-              <Apple className='h-5 w-5'/>
-              Download on App Store
+              <Apple className="h-[18px] w-[18px]" />
+              <span className="font-body text-[13px] font-semibold">App Store</span>
             </Link>
             <Link
-              href={downloadApp("android")}
-              className="inline-flex w-full items-center gap-2 rounded-xl border-[1.5px] border-border bg-card px-7 py-3.5 text-[15px] font-semibold text-foreground transition-all hover:border-primary hover:text-primary md:w-auto"
+              href={downloadApp('android')}
+              className="flex items-center gap-2 rounded-xl border border-forest/15 bg-cream px-3.5 py-2 text-forest transition-colors hover:border-forest/35"
             >
-              <PlayStore className='h-5 w-5'/>
-              Request Android beta
+              <PlayStore className="h-[18px] w-[18px]" />
+              <span className="font-body text-[13px] font-semibold">Android beta</span>
             </Link>
             <a
               href="https://app.thefurfinder.com"
-              className="inline-flex w-full items-center gap-2 rounded-xl border-[1.5px] border-border bg-card px-7 py-3.5 text-[15px] font-semibold text-foreground transition-all hover:border-primary hover:text-primary md:w-auto"
+              className="flex items-center gap-2 rounded-xl border border-forest/15 bg-cream px-3.5 py-2 text-forest transition-colors hover:border-forest/35"
             >
-              <Globe size={18} />
-              Try on Web
+              <Globe size={16} />
+              <span className="font-body text-[13px] font-semibold">Web</span>
             </a>
-          </div>
+          </Reveal>
         </div>
 
-        <div className="hidden items-center justify-center md:flex">
-          <div className="relative">
-            <div className="absolute inset-0 -z-10 scale-110 rounded-full bg-primary/10 blur-3xl" />
-            <Image
-              src={Mobile}
-              alt="The Fur Finder mobile app"
-              width={300}
-              height={580}
-              className="relative z-10 drop-shadow-2xl"
-              priority
-            />
-          </div>
-        </div>
+        <Reveal delay={160} className="relative">
+          <IllustratedMap variant="hero" className="aspect-[4/5] w-full max-w-[440px] md:ml-auto md:aspect-[7/8]" />
+        </Reveal>
       </div>
     </section>
   )

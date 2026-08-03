@@ -1,12 +1,38 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import {
+  PawPrint,
+  Camera,
+  MapPin,
+  Map as MapIcon,
+  Search,
+  ScanFace,
+  Stethoscope,
+  BellRing,
+  MessageCircle,
+  PartyPopper,
+} from "lucide-react";
 import { featureCards, steps as defaultSteps } from "@/components/marketing/site-content";
 import { db } from "@/lib/db";
+import Reveal from "@/components/marketing/Reveal";
+import Magnetic from "@/components/marketing/Magnetic";
+import ProcessFlow from "@/components/marketing/ProcessFlow";
 
 export const metadata: Metadata = {
   title: "How It Works - The Fur Finder",
   description:
     "Learn how The Fur Finder supports lost and found pet reports and suggests possible matches for users to verify.",
+};
+
+const FEATURE_ICON_MAP: Record<string, typeof PawPrint> = {
+  "📸": Camera,
+  "📍": MapPin,
+  "🗺️": MapIcon,
+  "🔎": Search,
+  "📱": ScanFace,
+  "🏥": Stethoscope,
+  "🔔": BellRing,
+  "💬": MessageCircle,
+  "🎉": PartyPopper,
 };
 
 async function getHowItWorksSteps() {
@@ -26,134 +52,117 @@ export default async function HowitWorks() {
   const steps = databaseSteps.length > 0 ? databaseSteps : defaultSteps;
 
   return (
-    <div className="bg-background">
+    <div className="bg-cream text-forest">
       {/* Header */}
-      <section className="bg-muted/50 px-6 py-24 text-center">
-        <div className="mx-auto max-w-3xl">
-          <span className="mb-3.5 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-primary">
-            The Process
-          </span>
-          <h1 className="mt-4 mb-6 text-4xl font-extrabold tracking-tight text-foreground md:text-6xl">
-            Simple steps to <span className="text-primary">reunite.</span>
-          </h1>
-          <p className="text-xl leading-relaxed text-muted-foreground">
-            Create a report, review suggested matches, and coordinate carefully
-            with other users, vets, shelters, or councils.
-          </p>
-          <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-left text-sm leading-7 text-amber-900 dark:text-amber-200">
-            AI and proximity results are suggestions, not proof or guarantees. The Fur Finder does not automatically scan social media. Users must provide or paste content they are authorised to use and verify every potential match.
-          </div>
+      <section className="relative overflow-hidden px-6 pb-14 pt-16 md:pb-16 md:pt-24">
+        <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[300px] w-full opacity-[0.5]" viewBox="0 0 1440 300" preserveAspectRatio="none">
+          <path d="M-40 50 C 300 5, 600 95, 900 35 S 1500 55, 1600 15" stroke="hsl(var(--forest) / 0.08)" strokeWidth="1.5" fill="none" />
+          <path d="M-40 160 C 300 110, 600 210, 900 150 S 1500 170, 1600 120" stroke="hsl(var(--forest) / 0.06)" strokeWidth="1.5" fill="none" />
+        </svg>
+
+        <div className="relative mx-auto max-w-3xl text-center">
+          <Reveal as="h1" className="font-display text-[44px] italic leading-[1.08] tracking-[-0.02em] text-forest max-md:text-[32px]">
+            Simple steps to <span className="text-coral-text not-italic">reunite.</span>
+          </Reveal>
+          <Reveal delay={80} className="mx-auto mt-5 max-w-[54ch] font-body text-[17px] leading-relaxed text-forest/75">
+            Create a report, review suggested matches, and coordinate carefully with other users, vets, shelters, or councils.
+          </Reveal>
+          <Reveal delay={140} className="mx-auto mt-8 max-w-[54ch] rounded-2xl border-[1.5px] border-forest/15 bg-card px-6 py-5 text-left">
+            <p className="font-body text-[12px] font-semibold uppercase tracking-[0.12em] text-forest/55">
+              Please note
+            </p>
+            <p className="mt-1.5 font-body text-[14.5px] leading-relaxed text-forest/80">
+              AI and proximity results are suggestions, not proof or guarantees. The Fur Finder does not automatically scan social media. Users must provide or paste content they are authorised to use and verify every potential match.
+            </p>
+          </Reveal>
         </div>
       </section>
 
       {/* Main Steps */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid gap-12 md:grid-cols-3">
-          {steps.length > 0 ? (
-            steps.map((step: any, index: number) => (
-              <div
-                key={"id" in step ? step.id : step.title}
-                className="relative rounded-3xl border border-border bg-card p-8 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-3xl font-bold text-white shadow-lg shadow-primary/20">
-                  {"step_number" in step ? step.step_number || index + 1 : index + 1}
-                </div>
-                <h3 className="mb-4 text-2xl font-bold text-foreground">
-                  {step.title}
-                </h3>
-                <p className="leading-relaxed text-muted-foreground">
-                  {step.description}
-                </p>
-                {index < steps.length - 1 && (
-                  <div className="absolute -right-8 top-[60px] z-10 hidden text-4xl text-primary/20 lg:block">
-                    →
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="col-span-3 text-center text-muted-foreground">
-              Process details coming soon.
-            </div>
-          )}
+      <section className="px-6 pb-24 md:pb-28">
+        <div className="mx-auto max-w-5xl">
+          <ProcessFlow
+            steps={steps.map((step: any) => ({
+              key: "id" in step ? step.id : step.title,
+              title: step.title,
+              description: step.description,
+            }))}
+          />
         </div>
       </section>
 
-      {/* Features Section (Dark) */}
-      <section className="relative mx-4 mb-24 overflow-hidden rounded-[40px] bg-[#1A1A2E] px-6 py-24 text-white md:mx-8 md:rounded-[80px]">
-        <div className="pointer-events-none absolute -mr-48 -mt-48 right-0 top-0 h-96 w-96 rounded-full bg-primary opacity-10 blur-[120px]" />
-        <div className="pointer-events-none absolute -mb-48 -ml-48 bottom-0 left-0 h-96 w-96 rounded-full bg-teal-500 opacity-10 blur-[120px]" />
+      {/* Toolset (dark) */}
+      <section className="border-t border-forest/10 bg-forest px-6 py-24 text-cream md:py-28">
+        <div className="mx-auto max-w-5xl">
+          <Reveal as="h2" className="max-w-[18ch] font-display text-[32px] italic leading-[1.1] tracking-[-0.01em] max-md:text-[26px]">
+            Tools for every step
+          </Reveal>
+          <Reveal delay={60} className="mt-3 max-w-[54ch] font-body text-[15px] leading-relaxed text-cream/65">
+            These features organise available information and surface possible leads. They do not replace user verification or professional advice.
+          </Reveal>
 
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="mb-16 text-center">
-            <span className="mb-3.5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
-              Smart Features
-            </span>
-            <h2 className="mt-4 mb-6 text-3xl font-bold md:text-5xl">
-              Tools for every step
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-white/60">
-              These features organise available information and surface possible
-              leads. They do not replace user verification or professional advice.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {featureCards.map((feature, i) => (
-              <div
-                key={i}
-                className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all hover:bg-white/10"
-              >
-                <div
-                  className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${feature.iconClassName || "bg-white/10"}`}
+          <div className="mt-14 grid border-t border-cream/15 md:grid-cols-2">
+            {featureCards.map((feature, i) => {
+              const Icon = FEATURE_ICON_MAP[feature.icon] || PawPrint;
+              return (
+                <Reveal
+                  key={feature.title}
+                  delay={(i % 6) * 50}
+                  className="flex gap-4 border-b border-cream/15 py-8 pr-6 md:odd:border-r md:odd:pr-10 md:even:pl-10"
                 >
-                  {feature.icon}
-                </div>
-                <h3 className="mb-3 text-xl font-bold transition-colors group-hover:text-primary">
-                  {feature.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-white/60">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-[1.5px] border-cream/25 text-cream">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-[18px] italic leading-tight text-cream">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-1.5 font-body text-[14px] leading-relaxed text-cream/65">
+                      {feature.description}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Partners */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="flex flex-col items-center gap-12 rounded-[32px] border border-teal-500/20 bg-gradient-to-br from-teal-50 to-orange-50 p-12 dark:from-teal-950/20 dark:to-orange-950/10 md:flex-row">
-          <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-[24px] bg-teal-500 text-5xl text-white">
-            🏥
-          </div>
+      <section className="px-6 py-24 md:py-28">
+        <Reveal className="mx-auto flex max-w-5xl flex-col items-start gap-8 rounded-[24px] border-[1.5px] border-forest/15 bg-card p-10 md:flex-row md:items-center md:p-14">
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[1.5px] border-forest/15 text-forest">
+            <Stethoscope className="h-7 w-7" strokeWidth={1.75} />
+          </span>
           <div>
-            <h2 className="mb-4 text-3xl font-bold text-foreground">
+            <h2 className="font-display text-[28px] italic leading-tight text-forest max-md:text-[24px]">
               Run a clinic, shelter, or rescue team?
             </h2>
-            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
-              Join The Fur Finder partner network so animals in your care are
-              easier to discover in lost-and-found searches. We support
-              veterinary clinics, shelters, rescue organisations, and councils.
+            <p className="mt-4 max-w-[58ch] font-body text-[15.5px] leading-relaxed text-forest/75">
+              Join The Fur Finder partner network so animals in your care are easier to discover in lost-and-found searches. We support veterinary clinics, shelters, rescue organisations, and councils.
             </p>
-            <div className="mb-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-2.5">
               {["Free Registration", "AI Match Integration", "Public Directory"].map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-teal-500/30 bg-white px-3.5 py-1 text-xs font-bold text-teal-600 dark:bg-teal-950/20 dark:text-teal-400"
+                  className="rounded-full border-[1.5px] border-leaf/40 bg-leaf/10 px-3.5 py-1 font-body text-[12px] font-bold text-leaf-text"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <Link
-              href="/partner-registration"
-              className="inline-flex rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
-            >
-              Start partner intake
-            </Link>
+            <Magnetic className="mt-7">
+              <a
+                href="https://partners.thefurfinder.com/partner/signup"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber px-6 py-3 font-body text-[15px] font-bold text-forest"
+              >
+                Start partner intake
+              </a>
+            </Magnetic>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

@@ -42,7 +42,7 @@ export default function ContactPage() {
                 title: 'Partnerships',
                 body: 'For vets, shelters, rescues, and organisations joining our directory or partner network.',
                 email: partnershipsEmail,
-                href: '/partner-registration',
+                href: 'https://partners.thefurfinder.com/partner/signup',
                 cta: 'Start partner intake',
               },
               {
