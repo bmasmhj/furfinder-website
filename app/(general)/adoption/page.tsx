@@ -56,7 +56,7 @@ async function getFilterOptions(): Promise<FilterOptions> {
     `SELECT DISTINCT oa.breed, oa.age, oa.size, oa.gender, oa.color
      FROM organisation_animals oa
      JOIN organisations o ON o.id = oa.org_id
-     WHERE oa.status = 'available' AND oa.deleted_at IS NULL AND o.status = 'approved' AND o.deleted_at IS NULL`
+     WHERE oa.status = 'adopt' AND oa.deleted_at IS NULL AND o.status = 'approved' AND o.deleted_at IS NULL`
   );
 
   return {
@@ -76,7 +76,7 @@ async function getAnimals(filters: {
   color?: string;
 }): Promise<AnimalRow[]> {
   const conditions = [
-    "oa.status = 'available'",
+    "oa.status = 'adopt'",
     "oa.deleted_at IS NULL",
     "o.status = 'approved'",
     "o.deleted_at IS NULL",
@@ -129,10 +129,10 @@ export default async function AdoptionPage({
   }));
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="bg-cream text-forest">
       <AdoptionHero />
 
-      <main className="mx-auto max-w-6xl px-6 pb-20">
+      <main id="pet-grid" className="mx-auto max-w-6xl scroll-mt-24 px-6 py-14">
         <Suspense fallback={null}>
           <FilterBar options={filterOptions} />
         </Suspense>
@@ -140,15 +140,22 @@ export default async function AdoptionPage({
         <div className="mt-8">
           {animals.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {animals.map((animal) => (
-                <PetCard key={animal.id} animal={animal} />
+              {animals.map((animal, i) => (
+                <PetCard
+                  key={animal.id}
+                  animal={animal}
+                  featured={i === 0}
+                  className={i === 0 ? "sm:col-span-2" : undefined}
+                />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-20 text-center">
-              <PawPrint size={40} className="text-muted-foreground/30" />
-              <p className="text-base font-semibold text-foreground">No pets match those filters</p>
-              <p className="max-w-sm text-sm text-muted-foreground">
+            <div className="flex flex-col items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-forest/15 py-20 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl border-[1.5px] border-forest/15 text-forest/40">
+                <PawPrint size={20} strokeWidth={1.75} />
+              </span>
+              <p className="font-display text-[19px] italic text-forest">No pets match those filters</p>
+              <p className="max-w-sm font-body text-sm text-forest/70">
                 Try widening your search, or use the AI suggestion above to find a good match.
               </p>
             </div>

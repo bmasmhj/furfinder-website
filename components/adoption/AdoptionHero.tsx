@@ -3,41 +3,56 @@
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { AiSuggestionPanel } from "./AiSuggestionPanel";
+import Reveal from "@/components/marketing/Reveal";
+import Magnetic from "@/components/marketing/Magnetic";
 
 export function AdoptionHero() {
   const [aiOpen, setAiOpen] = useState(false);
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-b from-background via-orange-50/50 to-teal-50/30 px-6 py-16 dark:from-background dark:via-orange-950/10 dark:to-teal-950/10">
-        <div className="pointer-events-none absolute left-1/2 top-[-250px] h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,107,74,0.07)_0%,transparent_70%)]" />
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <div className="mx-auto mb-5 inline-flex max-w-fit items-center gap-1.5 rounded-full border border-teal-300/20 bg-teal-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">
-            &#x1F43E; Adopt, don&apos;t shop
-          </div>
-          <h1 className="text-4xl font-extrabold leading-[1.12] tracking-[-1.5px] text-foreground md:text-6xl">
-            Find your new best friend
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-[17px] leading-[1.75] text-muted-foreground max-md:text-[15px]">
-            Browse adoptable pets from shelters and rescues across Australia — or let us help you narrow it
-            down.
-          </p>
-          <button
-            type="button"
-            onClick={() => setAiOpen((open) => !open)}
-            aria-expanded={aiOpen}
-            aria-controls="ai-suggestion-panel"
-            className="mx-auto mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-semibold text-white shadow-[0_4px_16px_rgba(255,107,74,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#e5553a] hover:shadow-[0_8px_24px_rgba(255,107,74,0.35)]"
-          >
-            <Sparkles size={18} />
-            {aiOpen ? "Hide AI suggestion" : "Confused? Try our AI suggestion"}
-          </button>
+      <section className="relative overflow-hidden bg-cream px-6 pb-16 pt-14 md:pb-20 md:pt-20">
+        <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[320px] w-full opacity-[0.5]" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path d="M-40 60 C 300 15, 600 105, 900 45 S 1500 65, 1600 25" stroke="hsl(var(--forest) / 0.08)" strokeWidth="1.5" fill="none" />
+        </svg>
+
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+          <Reveal className="flex items-center gap-2 font-body text-[13px] font-semibold uppercase tracking-[0.14em] text-forest/75">
+            Thousands of pets, waiting
+          </Reveal>
+
+          <Reveal delay={60} as="h1" className="max-w-[16ch] font-display text-[44px] italic leading-[1.08] tracking-[-0.02em] text-forest max-md:text-[32px]">
+            Find your <span className="text-coral-text not-italic">new best friend.</span>
+          </Reveal>
+
+          <Reveal delay={120} className="max-w-[46ch] font-body text-[17px] leading-[1.7] text-forest/75 max-md:text-[16px]">
+            Browse adoptable pets from shelters and rescues across Australia — or let us help you narrow it down.
+          </Reveal>
+
+          <Reveal delay={180} className="flex flex-wrap items-center justify-center gap-3.5 pt-1">
+            <Magnetic>
+              <button
+                type="button"
+                onClick={() => setAiOpen((open) => !open)}
+                aria-expanded={aiOpen}
+                aria-controls="ai-suggestion-panel"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber px-7 py-4 font-body text-[15.5px] font-bold text-forest shadow-[0_14px_28px_-14px_hsl(var(--amber)/0.75)] transition-shadow hover:shadow-[0_18px_34px_-14px_hsl(var(--amber)/0.85)]"
+              >
+                <Sparkles size={18} />
+                {aiOpen ? "Hide AI suggestion" : "Not sure? Try our AI suggestion"}
+              </button>
+            </Magnetic>
+            <a
+              href="#pet-grid"
+              className="font-body text-[14.5px] font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text"
+            >
+              Or browse everyone below ↓
+            </a>
+          </Reveal>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 pt-8">
-        <AiSuggestionPanel open={aiOpen} onClose={() => setAiOpen(false)} />
-      </div>
+      <AiSuggestionPanel open={aiOpen} onClose={() => setAiOpen(false)} />
     </>
   );
 }

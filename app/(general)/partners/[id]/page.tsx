@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { PetCard, type PetCardAnimal } from "@/components/adoption/PetCard";
+import { LostFoundCard, type LostFoundAnimal } from "@/components/adoption/LostFoundCard";
 import { isSafeHttpsUrl } from "@/lib/external-url";
-import { ArrowLeft, Building2, Globe, Phone, Mail, MapPin, PawPrint, Megaphone } from "lucide-react";
+import { ArrowLeft, Building2, Globe, Phone, Mail, MapPin, PawPrint, Megaphone, Search } from "lucide-react";
 
 interface OrgDetail {
   id: string;
@@ -27,6 +28,19 @@ interface AnimalRow {
   gender: string | null;
   size: string;
   color: string;
+  photo_uris: unknown;
+}
+
+interface LostFoundRow {
+  id: string;
+  pet_type: string;
+  breed: string | null;
+  color: string | null;
+  status: "lost" | "found";
+  location_name: string | null;
+  found_location: string | null;
+  last_seen_date: string | null;
+  reward: string | null;
   photo_uris: unknown;
 }
 
@@ -63,7 +77,17 @@ async function getOrgAnimals(orgId: string): Promise<AnimalRow[]> {
   return db.queryMany<AnimalRow>(
     `SELECT id, pet_name, pet_type, breed, age, gender, size, color, photo_uris
      FROM organisation_animals
-     WHERE org_id = $1 AND status = 'available' AND deleted_at IS NULL
+     WHERE org_id = $1 AND status = 'adopt' AND deleted_at IS NULL
+     ORDER BY created_at DESC`,
+    [orgId]
+  );
+}
+
+async function getOrgLostFoundAnimals(orgId: string): Promise<LostFoundRow[]> {
+  return db.queryMany<LostFoundRow>(
+    `SELECT id, pet_type, breed, color, status, location_name, found_location, last_seen_date, reward, photo_uris
+     FROM organisation_animals
+     WHERE org_id = $1 AND status IN ('lost', 'found') AND deleted_at IS NULL
      ORDER BY created_at DESC`,
     [orgId]
   );
@@ -102,7 +126,11 @@ export default async function PartnerDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const [animalRows, adRows] = await Promise.all([getOrgAnimals(org.id), getOrgAds(org.id)]);
+  const [animalRows, lostFoundRows, adRows] = await Promise.all([
+    getOrgAnimals(org.id),
+    getOrgLostFoundAnimals(org.id),
+    getOrgAds(org.id),
+  ]);
 
   const animals: PetCardAnimal[] = animalRows.map((a) => ({
     id: a.id,
@@ -113,6 +141,19 @@ export default async function PartnerDetailPage({ params }: { params: Promise<{ 
     gender: a.gender,
     size: a.size,
     color: a.color,
+    photo_uris: parsePhotoUris(a.photo_uris),
+  }));
+
+  const lostFoundAnimals: LostFoundAnimal[] = lostFoundRows.map((a) => ({
+    id: a.id,
+    pet_type: a.pet_type,
+    breed: a.breed,
+    color: a.color,
+    status: a.status,
+    location_name: a.location_name,
+    found_location: a.found_location,
+    last_seen_date: a.last_seen_date,
+    reward: a.reward,
     photo_uris: parsePhotoUris(a.photo_uris),
   }));
 
@@ -207,6 +248,25 @@ export default async function PartnerDetailPage({ params }: { params: Promise<{ 
           ) : (
             <p className="rounded-2xl border-[1.5px] border-dashed border-forest/15 py-10 text-center font-body text-sm text-forest/70">
               {org.name} doesn&apos;t have any pets listed for adoption right now.
+            </p>
+          )}
+        </div>
+
+        {/* Lost & found near this partner */}
+        <div className="mt-12">
+          <h2 className="mb-5 flex items-center gap-2 font-display text-[22px] italic text-forest md:text-[26px]">
+            <Search size={20} className="text-forest/60" strokeWidth={1.75} />
+            Lost &amp; found
+          </h2>
+          {lostFoundAnimals.length > 0 ? (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {lostFoundAnimals.map((animal) => (
+                <LostFoundCard key={animal.id} animal={animal} />
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-2xl border-[1.5px] border-dashed border-forest/15 py-10 text-center font-body text-sm text-forest/70">
+              No lost or found reports linked to {org.name} right now.
             </p>
           )}
         </div>

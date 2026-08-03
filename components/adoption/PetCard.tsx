@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { PawPrint } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 export interface PetCardAnimal {
@@ -16,55 +15,46 @@ export interface PetCardAnimal {
   org_name?: string
 }
 
-export function PetCard({ animal, className }: { animal: PetCardAnimal; className?: string }) {
+export function PetCard({ animal, featured, className }: { animal: PetCardAnimal; featured?: boolean; className?: string }) {
   const photo = animal.photo_uris?.[0]
+  const tags = [animal.breed, animal.age, animal.gender].filter(Boolean)
 
   return (
     <Link
       href={`/adoption/${animal.id}`}
       className={cn(
-        'group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg',
+        'group relative flex flex-col overflow-hidden rounded-2xl border-[1.5px] border-forest/15 bg-forest transition-colors hover:border-forest/35',
+        featured ? 'aspect-[16/10] md:aspect-[21/9]' : 'aspect-[4/5]',
         className
       )}
     >
-      <div className="relative aspect-[4/3] w-full bg-muted">
-        {photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photo}
-            alt={animal.pet_name}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted/50">
-            <PawPrint size={48} className="text-muted-foreground/20" />
-          </div>
-        )}
-        <div className="absolute left-3 top-3">
-          <Badge variant="coral" className="capitalize">
-            {animal.pet_type}
-          </Badge>
+      {photo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={photo}
+          alt={animal.pet_name}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-expo group-hover:scale-[1.04]"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center bg-forest">
+          <PawPrint size={featured ? 64 : 44} className="text-cream/15" strokeWidth={1.5} />
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="text-lg font-bold text-foreground">{animal.pet_name || 'Unnamed'}</h3>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-forest/95 via-forest/30 to-transparent" />
 
-        <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-          {animal.breed ? <span className="rounded-full bg-muted px-2 py-1 font-medium">{animal.breed}</span> : null}
-          {animal.age ? <span className="rounded-full bg-muted px-2 py-1 font-medium">{animal.age}</span> : null}
-          {animal.gender ? (
-            <span className="rounded-full bg-muted px-2 py-1 font-medium capitalize">{animal.gender}</span>
-          ) : null}
-          {animal.size ? (
-            <span className="rounded-full bg-muted px-2 py-1 font-medium capitalize">{animal.size}</span>
-          ) : null}
-        </div>
-
+      <div className="relative mt-auto flex flex-col gap-1.5 p-4">
+        <span className="inline-flex w-fit rounded-full border-[1.5px] border-leaf/50 bg-leaf/15 px-2.5 py-0.5 font-body text-[10.5px] font-bold capitalize text-leaf">
+          {animal.pet_type}
+        </span>
+        <h3 className={cn('font-display italic leading-tight text-cream', featured ? 'text-[26px]' : 'text-[19px]')}>
+          {animal.pet_name || 'Unnamed'}
+        </h3>
+        {tags.length > 0 ? (
+          <p className="font-body text-[12.5px] capitalize text-cream/70">{tags.join(' · ')}</p>
+        ) : null}
         {animal.org_name ? (
-          <p className="mt-auto pt-2 text-xs font-semibold uppercase tracking-wide text-primary">
-            {animal.org_name}
-          </p>
+          <p className="font-body text-[11px] font-semibold uppercase tracking-wide text-cream/65">{animal.org_name}</p>
         ) : null}
       </div>
     </Link>

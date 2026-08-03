@@ -45,25 +45,32 @@ export function FilterBar({ options }: { options: FilterOptions }) {
   const hasActiveFilters = FILTERS.some((f) => searchParams.get(PARAM_BY_OPTION_KEY[f.key]));
 
   return (
-    <div className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+    <div className="flex flex-wrap items-center gap-2.5 border-b border-forest/10 pb-6">
+      <span className="mr-1 font-body text-[13px] font-semibold text-forest/75">Filter:</span>
       {FILTERS.map(({ key, label }) => {
         const paramKey = PARAM_BY_OPTION_KEY[key];
+        const current = searchParams.get(paramKey) || "";
         return (
-          <label key={key} className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            {label}
+          <div key={key} className="relative">
             <select
-              value={searchParams.get(paramKey) || ""}
+              aria-label={label}
+              value={current}
               onChange={(e) => updateFilter(paramKey, e.target.value)}
-              className="min-w-[9rem] rounded-lg border border-input bg-background px-3 py-2 text-sm capitalize text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className={`appearance-none rounded-full border-[1.5px] py-1.5 pl-3.5 pr-8 font-body text-[13px] font-semibold capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber ${
+                current ? "border-amber bg-amber/15 text-forest" : "border-forest/15 bg-card text-forest/75 hover:border-forest/35"
+              }`}
             >
-              <option value="">All</option>
+              <option value="">{label}: All</option>
               {options[key].map((opt) => (
                 <option key={opt} value={opt} className="capitalize">
                   {opt}
                 </option>
               ))}
             </select>
-          </label>
+            <svg aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-forest/50" viewBox="0 0 12 12" fill="none">
+              <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
         );
       })}
 
@@ -71,10 +78,10 @@ export function FilterBar({ options }: { options: FilterOptions }) {
         <button
           type="button"
           onClick={() => router.push(pathname)}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-[13px] font-semibold text-forest/70 transition-colors hover:text-coral-text"
         >
           <X size={14} />
-          Clear filters
+          Clear
         </button>
       ) : null}
     </div>

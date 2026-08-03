@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { Badge } from "@/components/ui/badge";
 import { isSafeHttpsUrl } from "@/lib/external-url";
 import {
   ArrowLeft,
@@ -56,7 +55,7 @@ async function getAnimal(id: string): Promise<AnimalDetail | null> {
             o.id AS org_id, o.name AS org_name, o.logo_uri AS org_logo_uri, o.website AS org_website, o.phone AS org_phone, o.email AS org_email
      FROM organisation_animals oa
      JOIN organisations o ON o.id = oa.org_id
-     WHERE oa.id = $1 AND oa.status = 'available' AND oa.deleted_at IS NULL AND o.status = 'approved' AND o.deleted_at IS NULL`,
+     WHERE oa.id = $1 AND oa.status = 'adopt' AND oa.deleted_at IS NULL AND o.status = 'approved' AND o.deleted_at IS NULL`,
     [id]
   );
 }
@@ -91,96 +90,103 @@ export default async function AdoptionPetPage({ params }: { params: Promise<{ id
   const photos = parsePhotoUris(animal.photo_uris);
   const [mainPhoto, ...restPhotos] = photos;
   const hasSafeWebsite = animal.org_website ? isSafeHttpsUrl(animal.org_website) : false;
+  const stats = [
+    { icon: Tag, label: "Breed", value: animal.breed },
+    { icon: Cake, label: "Age", value: animal.age },
+    { icon: Ruler, label: "Size", value: animal.size },
+    { icon: VenetianMask, label: "Gender", value: animal.gender },
+    { icon: Palette, label: "Color", value: animal.color },
+  ].filter((s) => s.value);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-16">
-        <div className="mb-6 md:mb-8">
+    <div className="bg-cream text-forest">
+      {/* Photo banner */}
+      <section className="relative aspect-[16/9] w-full overflow-hidden bg-forest md:aspect-[21/9]">
+        {mainPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={mainPhoto} alt={animal.pet_name} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <PawPrint size={96} className="text-cream/15" strokeWidth={1.5} />
+          </div>
+        )}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/10 to-transparent" />
+
+        <div className="absolute inset-x-0 top-0 px-6 pt-6 md:px-10 md:pt-8">
           <Link
             href="/adoption"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+            className="group inline-flex items-center gap-2 font-body text-sm font-semibold text-cream/85 transition-colors hover:text-cream"
           >
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
             Back to Adoption
           </Link>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-          {/* Photos */}
-          <div>
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-muted md:rounded-3xl">
-              {mainPhoto ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={mainPhoto} alt={animal.pet_name} className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-muted/50">
-                  <PawPrint size={80} className="text-muted-foreground/20" />
-                </div>
-              )}
-              <div className="absolute left-4 top-4">
-                <Badge variant="coral" className="px-4 py-1.5 text-sm font-black uppercase tracking-widest shadow-lg">
-                  Available
-                </Badge>
-              </div>
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-6 md:px-10 md:pb-10">
+          <div className="mx-auto flex max-w-6xl items-end justify-between gap-4">
+            <div>
+              <span className="inline-flex rounded-full border-[1.5px] border-leaf/50 bg-leaf/15 px-3 py-1 font-body text-[11px] font-bold uppercase tracking-widest text-leaf">
+                Available · {animal.pet_type}
+              </span>
+              <h1 className="mt-2 font-display text-[40px] italic leading-[1.05] text-cream md:text-[56px]">
+                {animal.pet_name || "Unnamed"}
+              </h1>
             </div>
-
-            {restPhotos.length > 0 ? (
-              <div className="mt-3 grid grid-cols-4 gap-3">
-                {restPhotos.slice(0, 4).map((photo, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={photo + i}
-                    src={photo}
-                    alt={`${animal.pet_name} photo ${i + 2}`}
-                    className="aspect-square w-full rounded-xl border border-border object-cover"
-                  />
-                ))}
-              </div>
-            ) : null}
           </div>
+        </div>
+      </section>
 
-          {/* Details */}
-          <div className="flex flex-col">
-            <div className="mb-2 flex items-center gap-2 text-primary">
-              <PawPrint size={20} />
-              <span className="text-xs font-bold uppercase tracking-wider md:text-sm">{animal.pet_type}</span>
-            </div>
-            <h1 className="text-4xl font-black uppercase tracking-tighter text-foreground md:text-6xl">
-              {animal.pet_name || "Unnamed"}
-            </h1>
-
-            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 md:gap-x-6 md:gap-y-6">
-              <DetailItem icon={<Tag size={20} />} label="Breed" value={animal.breed || "Unknown"} />
-              <DetailItem icon={<Cake size={20} />} label="Age" value={animal.age || "Unknown"} />
-              <DetailItem icon={<Ruler size={20} />} label="Size" value={animal.size || "Unknown"} />
-              <DetailItem
-                icon={<VenetianMask size={20} />}
-                label="Gender"
-                value={animal.gender || "Unknown"}
+      {restPhotos.length > 0 ? (
+        <div className="mx-auto max-w-6xl px-6 pt-4">
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
+            {restPhotos.slice(0, 6).map((photo, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={photo + i}
+                src={photo}
+                alt={`${animal.pet_name} photo ${i + 2}`}
+                className="aspect-square w-full rounded-xl border-[1.5px] border-forest/15 object-cover"
               />
-              <DetailItem icon={<Palette size={20} />} label="Color" value={animal.color || "Unknown"} />
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <main className="mx-auto max-w-6xl px-6 py-10 md:py-14">
+        {/* Stat strip */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-forest/10 py-6 sm:grid-cols-3 md:grid-cols-5">
+          {stats.map((s) => (
+            <div key={s.label} className="flex items-start gap-2.5">
+              <s.icon size={18} className="mt-0.5 shrink-0 text-forest/60" strokeWidth={1.75} />
+              <div>
+                <p className="font-body text-[10.5px] font-bold uppercase tracking-[0.1em] text-forest/75">{s.label}</p>
+                <p className="font-body text-sm font-bold capitalize leading-tight text-forest">{s.value}</p>
+              </div>
             </div>
+          ))}
+        </div>
+
+        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_300px]">
+          <article>
+            <h2 className="font-display text-[22px] italic text-forest">About {animal.pet_name || "this pet"}</h2>
+            <p className="mt-3 font-body text-[15px] leading-relaxed text-forest/80">
+              {animal.description || "No additional description provided."}
+            </p>
 
             {animal.markings ? (
-              <div className="mt-6 border-t border-border pt-4 md:pt-6">
-                <p className="mb-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+              <div className="mt-8 border-t border-forest/10 pt-6">
+                <p className="mb-2 font-body text-[11px] font-bold uppercase tracking-widest text-forest/75">
                   Distinctive Markings
                 </p>
-                <p className="font-semibold leading-relaxed text-foreground">{animal.markings}</p>
+                <p className="font-body leading-relaxed text-forest/85">{animal.markings}</p>
               </div>
             ) : null}
+          </article>
 
-            <div className="mt-6 rounded-2xl bg-muted/40 p-4 md:p-6">
-              <h3 className="mb-2 font-bold text-foreground">About {animal.pet_name || "this pet"}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground md:text-[15px]">
-                {animal.description || "No additional description provided."}
-              </p>
-            </div>
-
-            {/* Partner section */}
-            <div className="mt-6 rounded-2xl border-2 border-primary/20 bg-primary/5 p-4 md:p-6">
+          <aside className="space-y-5">
+            <section className="rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-card">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border-[1.5px] border-forest/15">
                   {animal.org_logo_uri ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -189,26 +195,26 @@ export default async function AdoptionPetPage({ params }: { params: Promise<{ id
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <Building2 size={22} className="text-muted-foreground/40" />
+                    <Building2 size={22} className="text-forest/40" strokeWidth={1.75} />
                   )}
                 </div>
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-widest text-primary">
+                  <p className="font-body text-[11px] font-bold uppercase tracking-widest text-forest/75">
                     Listed by
                   </p>
-                  <Link href={`/partners/${animal.org_id}`} className="font-bold text-foreground hover:text-primary">
+                  <Link href={`/partners/${animal.org_id}`} className="font-display text-[17px] italic text-forest hover:text-coral-text">
                     {animal.org_name}
                   </Link>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground">
+              <div className="mt-4 flex flex-col gap-2 border-t border-forest/10 pt-4 font-body text-sm text-forest/75">
                 {hasSafeWebsite ? (
                   <a
                     href={animal.org_website!}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-2 font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text"
                   >
                     <Globe size={16} />
                     Visit {animal.org_name}&apos;s site to donate or inquire
@@ -227,24 +233,10 @@ export default async function AdoptionPetPage({ params }: { params: Promise<{ id
                   </span>
                 ) : null}
               </div>
-            </div>
-          </div>
+            </section>
+          </aside>
         </div>
       </main>
-    </div>
-  );
-}
-
-function DetailItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="flex items-start gap-3 md:gap-4">
-      <div className="mt-1 text-primary">{icon}</div>
-      <div>
-        <p className="mb-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground/70 md:text-[11px]">
-          {label}
-        </p>
-        <p className="text-sm font-bold capitalize leading-tight text-foreground md:text-base">{value}</p>
-      </div>
     </div>
   );
 }
