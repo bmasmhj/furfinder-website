@@ -18,7 +18,8 @@ export function AdoptionHero() {
           </svg>
         )}
 
-        <div className={`relative transition-all duration-700 ${aiOpen ? "opacity-0" : "opacity-100"}`}>
+        {!aiOpen && (
+          <div className={`relative transition-all duration-700 `}>
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 text-center py-14 md:py-20">
             <Reveal className="flex items-center gap-2 font-body text-[13px] font-semibold uppercase tracking-[0.14em] text-forest/75">
               Thousands of pets, waiting
@@ -51,7 +52,8 @@ export function AdoptionHero() {
               </a>
             </Reveal>
           </div>
-        </div>
+          </div>
+        )}
 
         {aiOpen && (
           <div className="opacity-100 transition-opacity duration-700">

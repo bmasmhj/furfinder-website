@@ -104,6 +104,7 @@ export function AiSuggestionPanel({ open, onClose, isHeroMode }: { open: boolean
 
   async function handleDescriptionSubmit(e: FormEvent) {
     e.preventDefault();
+    scrollToTop();
     if (description.trim().length < 15) {
       setError("Tell us a bit more about what you're looking for (at least 15 characters).");
       return;
@@ -113,10 +114,18 @@ export function AiSuggestionPanel({ open, onClose, isHeroMode }: { open: boolean
 
   async function handleCriteriaSubmit(e: FormEvent) {
     e.preventDefault();
+    scrollToTop();
     await runSuggestion({
       mode: "criteria",
       criteria: { ...criteria, hours_away_daily: TIME_AVAILABILITY_TO_HOURS_AWAY[timeAvailability] },
     });
+  }
+
+  function scrollToTop() {
+    const panel = document.getElementById("ai-suggestion-panel");
+    if (panel) {
+      panel.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   const containerClass = isHeroMode
