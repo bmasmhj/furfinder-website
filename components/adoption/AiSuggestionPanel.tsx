@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PetCard, type PetCardAnimal } from "./PetCard";
+import { AIProcessingState } from "./AIProcessingState";
+import { BreedRecommendationCard } from "./BreedRecommendationCard";
 import {
   CriteriaForm,
   DEFAULT_CRITERIA,
@@ -48,9 +50,27 @@ function formatBreedName(breed: string) {
   return breed.replace(/_/g, " ");
 }
 
+function getMatchLabel(score: number): "Excellent Match" | "Great Match" | "Good Match" {
+  const pct = formatScore(score);
+  if (pct >= 85) return "Excellent Match";
+  if (pct >= 70) return "Great Match";
+  return "Good Match";
+}
+
+function getMatchBenefits(breed: BreedRecommendation): string[] {
+  const benefits: string[] = [];
+  if (breed.size) benefits.push(`${breed.size} size`);
+  if (breed.temperament?.includes("Calm")) benefits.push("Calm temperament");
+  if (breed.temperament?.includes("Friendly")) benefits.push("Friendly");
+  if (breed.temperament?.includes("Playful")) benefits.push("Playful");
+  if (breed.noise_level?.includes("Low")) benefits.push("Quiet");
+  if (breed.noise_level?.includes("Moderate")) benefits.push("Moderate barking");
+  return benefits.slice(0, 4);
+}
+
 type SuggestionMode = "description" | "criteria";
 
-export function AiSuggestionPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function AiSuggestionPanel({ open, onClose, isHeroMode }: { open: boolean; onClose: () => void; isHeroMode?: boolean }) {
   const [mode, setMode] = useState<SuggestionMode>("description");
   const [description, setDescription] = useState("");
   const [criteria, setCriteria] = useState<AdoptionCriteria>(DEFAULT_CRITERIA);
@@ -60,7 +80,7 @@ export function AiSuggestionPanel({ open, onClose }: { open: boolean; onClose: (
   const [result, setResult] = useState<SuggestionResult | null>(null);
   const [expandedBreed, setExpandedBreed] = useState<string | null>(null);
 
-  if (!open) return null;
+  if (!open && !isHeroMode) return null;
 
   async function runSuggestion(payload: Record<string, unknown>) {
     setLoading(true);
@@ -74,7 +94,7 @@ export function AiSuggestionPanel({ open, onClose }: { open: boolean; onClose: (
       if (!res.ok) throw new Error("Something went wrong, please try again.");
       const data = (await res.json()) as SuggestionResult;
       setResult(data);
-      setExpandedBreed(null);
+      setExpandedBreed(result?.breeds[0]?.breed ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong, please try again.");
     } finally {
@@ -99,156 +119,219 @@ export function AiSuggestionPanel({ open, onClose }: { open: boolean; onClose: (
     });
   }
 
+  const containerClass = isHeroMode
+    ? "mx-auto max-w-4xl px-6 py-16 md:py-20"
+    : "scroll-mt-24 border-y border-forest/10 bg-muted/60 px-6 py-12 md:py-14";
+
+  const sectionClass = isHeroMode ? "mx-auto max-w-4xl" : "mx-auto max-w-4xl";
+
   return (
-    <section id="ai-suggestion-panel" className="scroll-mt-24 border-y border-forest/10 bg-muted/60 px-6 py-12 md:py-14">
-      <div className="mx-auto max-w-4xl">
-      <div className="mb-1 flex items-start justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="text-forest" size={22} />
-          <h2 className="font-display text-[24px] italic text-forest max-md:text-[20px]">Not sure what pet is right for you?</h2>
-        </div>
+    <section id="ai-suggestion-panel" className={containerClass}>
+      <div className={sectionClass}>
+        {result ? (
+          // RESULTS STATE
+          <div className="space-y-12">
+            {/* Success heading */}
+            <div className="text-center">
+              <h2 className="font-display text-[32px] italic leading-tight text-forest max-md:text-[24px]">
+                ✨ We found your perfect companion
+              </h2>
+              <p className="mt-3 max-w-2xl mx-auto font-body text-[15px] text-forest/75 leading-relaxed">
+                Based on your lifestyle and preferences, we found several breeds that fit you extremely well.
+              </p>
+            </div>
+
+            {/* Featured Match */}
+            {result.breeds.length > 0 && (
+              <div className="animate-in fade-in duration-500" style={{ animationDelay: "200ms" }}>
+                <BreedRecommendationCard
+                  breed={result.breeds[0].breed}
+                  matchScore={formatScore(result.breeds[0].overall_score)}
+                  matchLabel={getMatchLabel(result.breeds[0].overall_score)}
+                  benefits={getMatchBenefits(result.breeds[0])}
+                  featured
+                  isExpanded={expandedBreed === result.breeds[0].breed}
+                  onToggleExpand={() => setExpandedBreed(expandedBreed === result.breeds[0].breed ? null : result.breeds[0].breed)}
+                />
+              </div>
+            )}
+
+            {/* Featured Breed Details */}
+            {expandedBreed && (
+              <div className="animate-in fade-in duration-500">
+                <BreedDetailCard breed={result.breeds.find((b) => b.breed === expandedBreed)!} />
+              </div>
+            )}
+
+            {/* Other Recommendations */}
+            {result.breeds.length > 1 && (
+              <div className="space-y-4">
+                <h3 className="font-display text-lg italic text-forest">Other great matches</h3>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {result.breeds.slice(1).map((breed, idx) => (
+                    <div key={breed.breed} className="animate-in fade-in duration-500" style={{ animationDelay: `${(idx + 1) * 100}ms` }}>
+                      <BreedRecommendationCard
+                        breed={breed.breed}
+                        matchScore={formatScore(breed.overall_score)}
+                        matchLabel={getMatchLabel(breed.overall_score)}
+                        benefits={getMatchBenefits(breed)}
+                        isExpanded={expandedBreed === breed.breed}
+                        onToggleExpand={() => setExpandedBreed(expandedBreed === breed.breed ? null : breed.breed)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Matching Pets */}
+            <div className="space-y-4 pt-4 border-t border-forest/10">
+              <h3 className="font-display text-lg italic text-forest">
+                {result.animals.length > 0 ? "Pets waiting for you" : "Similar companions available"}
+              </h3>
+              {result.animals.length === 0 && (
+                <div className="rounded-xl border border-forest/15 bg-forest/5 p-4">
+                  <p className="font-body text-sm text-forest/75">
+                    <span className="font-semibold text-forest">Good news!</span> We found similar pets that match your lifestyle, even if these exact breeds aren't available right now.
+                  </p>
+                </div>
+              )}
+              {result.animals.length > 0 ? (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {result.animals.map((a) => (
+                    <PetCard key={a.id} animal={a} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            {/* Browse All Link */}
+            <div className="flex flex-col items-center gap-3 pt-4 border-t border-forest/10">
+              <p className="font-body text-sm text-forest/70">Want to explore more options?</p>
+              <a
+                href="#pet-grid"
+                className="font-body text-[14.5px] font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text"
+              >
+                Browse all available pets ↓
+              </a>
+            </div>
+
+            {/* Reset button */}
+            <div className="flex justify-center pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setResult(null);
+                  setError(null);
+                  setExpandedBreed(null);
+                  setDescription("");
+                  setCriteria(DEFAULT_CRITERIA);
+                  setTimeAvailability(DEFAULT_TIME_AVAILABILITY);
+                }}
+                className="font-body text-sm font-medium text-forest/70 underline hover:text-forest transition-colors"
+              >
+                Try another search
+              </button>
+            </div>
+          </div>
+        ) : loading ? (
+          // LOADING STATE
+          <div className="space-y-8 py-8">
+            <div className="text-center">
+              <h2 className="font-display text-2xl italic text-forest">Finding your perfect match</h2>
+              <p className="mt-2 font-body text-sm text-forest/70">This just takes a moment...</p>
+            </div>
+            <div className="max-w-md mx-auto">
+              <AIProcessingState />
+            </div>
+          </div>
+        ) : (
+          // FORM STATE
+          <div className="space-y-6">
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <Sparkles className="text-amber" size={24} />
+                <h2 className="font-display text-2xl italic text-forest">Tell us about yourself</h2>
+              </div>
+              <p className="font-body text-[15px] text-forest/75">
+                We'll analyze your lifestyle and find breed companions that are perfect for you.
+              </p>
+            </div>
+
+            <div className="inline-flex rounded-lg border-[1.5px] border-forest/15 bg-background p-1">
+              {([
+                { value: "description", label: "Describe your lifestyle" },
+                { value: "criteria", label: "Answer questions" },
+              ] as const).map((tab) => (
+                <button
+                  key={tab.value}
+                  type="button"
+                  onClick={() => setMode(tab.value)}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 font-body text-sm font-semibold transition-colors",
+                    mode === tab.value ? "bg-amber text-forest" : "text-forest/70 hover:text-forest"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            <p className="font-body text-xs text-forest/70">
+              {mode === "description"
+                ? "Share what you're looking for in your own words — there's no wrong answer."
+                : "Organize your lifestyle across different areas of your life."}
+            </p>
+
+            {mode === "description" ? (
+              <form onSubmit={handleDescriptionSubmit} className="space-y-4">
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. I live in a small apartment, I'm a first-time owner, and I want a calm, low-energy dog that's good with kids..."
+                  rows={5}
+                  maxLength={2000}
+                  className="rounded-xl border-[1.5px] border-forest/15"
+                />
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs text-forest/70">{description.length}/2000</p>
+                  <Button type="submit" disabled={loading} className="bg-amber hover:shadow-[0_12px_24px_-6px_hsl(var(--amber)/0.3)]">
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles size={16} className="mr-2" />}
+                    {loading ? "Finding matches…" : "Get suggestions"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleCriteriaSubmit} className="space-y-6">
+                <CriteriaForm
+                  criteria={criteria}
+                  onChange={setCriteria}
+                  timeAvailability={timeAvailability}
+                  onTimeAvailabilityChange={setTimeAvailability}
+                />
+                <div className="flex items-center justify-end gap-3">
+                  <Button type="submit" disabled={loading} className="bg-amber hover:shadow-[0_12px_24px_-6px_hsl(var(--amber)/0.3)]">
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles size={16} className="mr-2" />}
+                    {loading ? "Finding matches…" : "Get suggestions"}
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {error && <p className="rounded-lg bg-coral/10 px-4 py-3 font-body text-sm text-coral-text font-medium">{error}</p>}
+          </div>
+        )}
+      </div>
+
+      {isHeroMode && (
         <button
           type="button"
           onClick={onClose}
           aria-label="Close AI suggestion panel"
-          className="text-forest/60 transition-colors hover:text-forest"
+          className="absolute top-6 right-6 text-forest/60 transition-colors hover:text-forest"
         >
           <X size={20} />
         </button>
-      </div>
-      <p className="mb-4 font-body text-sm text-forest/75">
-        Tell us what you&apos;re looking for and we&apos;ll suggest breeds — plus matching pets available for
-        adoption right now.
-      </p>
-
-      <div className="mb-1 inline-flex rounded-lg border-[1.5px] border-forest/15 bg-background p-1">
-        {(
-          [
-            { value: "description", label: "Write a description" },
-            { value: "criteria", label: "Answer a few questions" },
-          ] as const
-        ).map((tab) => (
-          <button
-            key={tab.value}
-            type="button"
-            onClick={() => setMode(tab.value)}
-            className={cn(
-              "rounded-md px-3 py-1.5 font-body text-sm font-semibold transition-colors",
-              mode === tab.value
-                ? "bg-amber text-forest"
-                : "text-forest/70 hover:text-forest"
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <p className="mb-4 font-body text-xs text-forest/70">
-        {mode === "description"
-          ? "Write a sentence or two in your own words — no right or wrong answer."
-          : "Faster, and gives more precise results — takes about a minute."}
-      </p>
-
-      {mode === "description" ? (
-        <form onSubmit={handleDescriptionSubmit} className="flex flex-col gap-3">
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g. I live in a small apartment, I'm a first-time owner, and I want a calm, low-energy dog that's good with kids..."
-            rows={4}
-            maxLength={2000}
-          />
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">{description.length}/2000</p>
-            <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              {loading ? "Finding matches…" : "Get suggestions"}
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <form onSubmit={handleCriteriaSubmit} className="flex flex-col gap-4">
-          <CriteriaForm
-            criteria={criteria}
-            onChange={setCriteria}
-            timeAvailability={timeAvailability}
-            onTimeAvailabilityChange={setTimeAvailability}
-          />
-          <div className="flex items-center justify-end">
-            <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              {loading ? "Finding matches…" : "Get suggestions"}
-            </Button>
-          </div>
-        </form>
       )}
-
-      {error ? <p className="mt-3 font-body text-sm font-medium text-coral-text">{error}</p> : null}
-
-      {result ? (
-        <div className="mt-8">
-          {result.breeds.length > 0 ? (
-            <>
-              <p className="font-body text-sm font-semibold text-forest">Breeds that match what you're after</p>
-              <p className="mb-3 font-body text-xs text-forest/70">
-                The percentage is how closely each breed fits — tap one to see why.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {result.breeds.map((b) => {
-                  const isExpanded = expandedBreed === b.breed;
-                  return (
-                    <button
-                      type="button"
-                      key={b.breed}
-                      onClick={() => setExpandedBreed(isExpanded ? null : b.breed)}
-                      className={cn(
-                        "flex items-center gap-2 rounded-full border-[1.5px] px-3 py-1.5 font-body text-sm font-semibold capitalize transition-colors",
-                        isExpanded
-                          ? "border-amber bg-amber text-forest"
-                          : "border-forest/15 bg-card text-forest hover:border-forest/35"
-                      )}
-                    >
-                      {formatBreedName(b.breed)}
-                      <span
-                        className={cn(
-                          "rounded-full px-1.5 py-0.5 text-xs",
-                          isExpanded ? "bg-forest/10" : "bg-muted"
-                        )}
-                      >
-                        {formatScore(b.overall_score)}% match
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {expandedBreed ? (
-                <BreedDetailCard breed={result.breeds.find((b) => b.breed === expandedBreed)!} />
-              ) : null}
-            </>
-          ) : (
-            <p className="font-body text-sm text-forest/70">
-              We couldn&apos;t find a strong breed match &mdash; try adjusting your answers or description.
-            </p>
-          )}
-
-          <div className="mt-8">
-            <p className="mb-3 font-body text-sm font-semibold text-forest">
-              {result.animals.length > 0
-                ? "These pets available for adoption match those breeds"
-                : "None of our available pets match those breeds right now — check back soon, or browse everyone below"}
-            </p>
-            {result.animals.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {result.animals.map((a) => (
-                  <PetCard key={a.id} animal={a} />
-                ))}
-              </div>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-      </div>
     </section>
   );
 }
@@ -261,63 +344,61 @@ function BreedDetailCard({ breed }: { breed: BreedRecommendation }) {
       : [];
 
   return (
-    <div className="mt-4 rounded-2xl border-[1.5px] border-forest/15 bg-card p-5">
-      <h3 className="font-display text-[19px] italic capitalize text-forest">{formatBreedName(breed.breed)}</h3>
-      {breed.description ? (
-        <p className="mt-2 font-body text-sm leading-relaxed text-forest/75">{breed.description}</p>
+    <div className="rounded-2xl border-[1.5px] border-amber/30 bg-gradient-to-br from-amber/5 to-background p-6 space-y-5">
+      <div>
+        <h3 className="font-display text-xl italic capitalize text-forest">{formatBreedName(breed.breed)}</h3>
+        <p className="mt-1 font-body text-sm text-forest/70 font-medium">Why this breed matches you</p>
+      </div>
+
+      {breed.explanation && typeof breed.explanation === "object" && breed.explanation.strengths ? (
+        <div className="space-y-3">
+          <p className="font-body text-sm font-semibold text-forest">What makes them perfect:</p>
+          <ul className="space-y-2">
+            {breed.explanation.strengths.map((s, i) => (
+              <li key={i} className="flex gap-2.5 font-body text-sm text-forest/75">
+                <span className="text-amber mt-0.5">✓</span>
+                <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : breed.description ? (
+        <p className="font-body text-sm leading-relaxed text-forest/75">{breed.description}</p>
       ) : null}
 
-      <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 pt-2">
         {breed.size ? <DetailStat label="Size" value={breed.size} /> : null}
         {breed.temperament ? <DetailStat label="Temperament" value={breed.temperament} /> : null}
         {breed.lifespan ? <DetailStat label="Lifespan" value={breed.lifespan} /> : null}
         {breed.noise_level ? <DetailStat label="Noise level" value={breed.noise_level} /> : null}
       </div>
 
-      {breed.health_notes ? (
-        <p className="mt-3 font-body text-xs text-forest/75">
-          <span className="font-semibold text-forest">Health notes: </span>
-          {breed.health_notes}
-        </p>
-      ) : null}
-
-      {tradeoffs.length > 0 ? (
-        <p className="mt-2 font-body text-xs text-forest/75">
-          <span className="font-semibold text-forest">Keep in mind: </span>
-          {tradeoffs.join(", ")}
-        </p>
-      ) : null}
-
-      {typeof breed.explanation === "string" ? (
-        <p className="mt-2 font-body text-xs italic text-forest/75">{breed.explanation}</p>
-      ) : null}
-
-      {breed.explanation && typeof breed.explanation === "object" ? (
-        <div className="mt-3 space-y-2 font-body text-xs text-forest/75">
-          {breed.explanation.strengths && breed.explanation.strengths.length > 0 ? (
-            <ul className="list-inside list-disc space-y-1">
-              {breed.explanation.strengths.map((s, i) => (
-                <li key={i}>{s}</li>
-              ))}
-            </ul>
-          ) : null}
-          {breed.explanation.considerations && breed.explanation.considerations.length > 0 ? (
-            <p>
-              <span className="font-semibold text-forest">Considerations: </span>
-              {breed.explanation.considerations.join(", ")}
-            </p>
-          ) : null}
+      {tradeoffs.length > 0 && (
+        <div className="rounded-lg bg-forest/5 px-4 py-3 border border-forest/10">
+          <p className="font-body text-sm text-forest/75">
+            <span className="font-semibold text-forest">Keep in mind: </span>
+            {Array.isArray(tradeoffs) ? tradeoffs.join(", ") : tradeoffs}
+          </p>
         </div>
-      ) : null}
+      )}
+
+      {breed.health_notes && (
+        <div className="rounded-lg bg-coral/5 px-4 py-3 border border-coral/20">
+          <p className="font-body text-sm text-forest/75">
+            <span className="font-semibold text-forest">Health considerations: </span>
+            {breed.health_notes}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
 function DetailStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-muted/50 px-2.5 py-2">
-      <p className="font-body font-semibold uppercase tracking-wide text-forest/75">{label}</p>
-      <p className="mt-0.5 font-body font-medium capitalize text-forest">{value}</p>
+    <div className="rounded-lg bg-forest/5 border border-forest/15 px-2.5 py-2 text-center">
+      <p className="font-body font-semibold uppercase tracking-wide text-forest/65 text-xs">{label}</p>
+      <p className="mt-0.5 font-body font-medium capitalize text-forest text-sm">{value}</p>
     </div>
   );
 }

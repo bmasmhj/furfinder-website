@@ -115,7 +115,7 @@ export default async function BlogPage({
         <section className="px-6 pb-4 pt-6">
           <Reveal className="mx-auto max-w-5xl">
             <Link href={`/blog/${featuredPost.slug}`} className="group relative block overflow-hidden rounded-[24px] border-[1.5px] border-forest/15 bg-forest">
-              <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
+              <div className="relative aspect-[4/5] w-full sm:aspect-[16/9] md:aspect-[21/9]">
                 {featuredPost.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -130,17 +130,17 @@ export default async function BlogPage({
                 )}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-forest/95 via-forest/25 to-transparent" />
 
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-10">
                   <span className="inline-flex rounded-full border-[1.5px] border-amber/50 bg-amber/15 px-3 py-1 font-body text-[11px] font-bold uppercase tracking-widest text-amber">
                     {featuredPost.category}
                   </span>
-                  <h2 className="mt-3 max-w-[26ch] font-display text-[28px] italic leading-tight text-cream md:text-[40px]">
+                  <h2 className="mt-3 line-clamp-2 max-w-[26ch] font-display text-[22px] italic leading-tight text-cream sm:text-[28px] md:text-[40px]">
                     {featuredPost.title}
                   </h2>
-                  <p className="mt-3 max-w-[60ch] font-body text-[14.5px] leading-relaxed text-cream/70 md:text-[15px]">
+                  <p className="mt-3 line-clamp-2 max-w-[60ch] font-body text-[13.5px] leading-relaxed text-cream/70 sm:text-[14.5px] md:text-[15px]">
                     {featuredPost.excerpt}
                   </p>
-                  <p className="mt-4 font-body text-[13px] text-cream/65">
+                  <p className="mt-4 font-body text-[12.5px] text-cream/65 sm:text-[13px]">
                     {featuredPost.author || "The Fur Finder Team"} · {formatDate(featuredPost.created_at, { month: "long", day: "numeric", year: "numeric" })} · {readTime(featuredPost.content)}
                   </p>
                 </div>

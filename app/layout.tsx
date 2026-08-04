@@ -94,8 +94,9 @@ with the finish review, the verdict, and DESIGN.md.
         />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
+          forcedTheme="light"
           disableTransitionOnChange
         >
           <Suspense fallback={null}>

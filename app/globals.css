@@ -83,6 +83,7 @@
 
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
   }
 
   body {
@@ -131,6 +132,37 @@
     transition: opacity var(--dur-slow) var(--ease-expo), transform var(--dur-slow) var(--ease-expo);
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 20px -5px hsl(var(--amber) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px -5px hsl(var(--amber) / 0.5);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -145,5 +177,25 @@
       opacity: 1 !important;
       transform: none !important;
     }
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.5s var(--ease-expo) forwards;
+  }
+
+  .slide-in-up {
+    animation: slideInUp 0.6s var(--ease-expo) forwards;
+  }
+
+  .glow-amber {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  .group-hover\:lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s var(--ease-expo);
   }
 }

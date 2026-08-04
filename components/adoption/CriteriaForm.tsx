@@ -59,9 +59,9 @@ function PillGroup<T extends string>({
 }) {
   return (
     <div>
-      <p className="text-sm font-semibold text-foreground">{label}</p>
-      {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
-      <div className="mt-2 flex flex-wrap gap-2">
+      <p className="font-display text-sm italic text-forest">{label}</p>
+      {description ? <p className="text-xs text-forest/70">{description}</p> : null}
+      <div className="mt-2.5 flex flex-wrap gap-2">
         {options.map((opt) => {
           const selected = opt.value === value;
           return (
@@ -70,19 +70,19 @@ function PillGroup<T extends string>({
               key={opt.value}
               onClick={() => onChange(opt.value)}
               className={cn(
-                "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 rounded-lg border-[1.5px] px-3 py-2 font-body text-sm font-medium transition-colors",
                 selected
-                  ? "border-primary text-foreground"
-                  : "border-border text-muted-foreground hover:border-primary/50"
+                  ? "border-amber bg-amber/15 text-forest"
+                  : "border-forest/15 text-forest/70 hover:border-forest/35 hover:text-forest"
               )}
             >
               <span
                 className={cn(
                   "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2",
-                  selected ? "border-primary" : "border-muted-foreground/40"
+                  selected ? "border-amber bg-amber/20" : "border-forest/30"
                 )}
               >
-                {selected ? <span className="h-2 w-2 rounded-full bg-primary" /> : null}
+                {selected ? <span className="h-2 w-2 rounded-full bg-amber" /> : null}
               </span>
               {opt.label}
             </button>
@@ -165,9 +165,19 @@ export function CriteriaForm({
     onChange({ ...criteria, [key]: value });
   }
 
+  const FormSection = ({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) => (
+    <div className="space-y-4">
+      <h3 className="flex items-center gap-2 font-display text-base italic text-forest">
+        <span className="text-lg">{icon}</span>
+        {title}
+      </h3>
+      <div className="space-y-4">{children}</div>
+    </div>
+  );
+
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5">
+    <div className="space-y-8">
+      <FormSection icon="🏠" title="Home">
         <PillGroup
           label="Where do you live?"
           value={criteria.living_space}
@@ -178,7 +188,6 @@ export function CriteriaForm({
             { value: "house_large", label: "House with lots of space" },
           ]}
         />
-
         <PillGroup
           label="Do you have a yard?"
           value={criteria.yard_access}
@@ -189,7 +198,9 @@ export function CriteriaForm({
             { value: "private_yard", label: "Private yard" },
           ]}
         />
+      </FormSection>
 
+      <FormSection icon="🏃" title="Lifestyle">
         <SliderField
           label="How much time can you spend exercising a dog each day?"
           description="Include walks, play time, and training, in minutes"
@@ -200,7 +211,6 @@ export function CriteriaForm({
           onReset={() => set("exercise_time", DEFAULT_EXERCISE_TIME)}
           unitLabel="min/day"
         />
-
         <PillGroup
           label="What kind of exercise do you enjoy?"
           value={criteria.exercise_type}
@@ -211,7 +221,6 @@ export function CriteriaForm({
             { value: "active_training", label: "Active training" },
           ]}
         />
-
         <PillGroup
           label="How much grooming can you keep up with?"
           description="Low = about once a month, Medium = weekly, High = daily"
@@ -223,35 +232,9 @@ export function CriteriaForm({
             { value: "high", label: "High" },
           ]}
         />
-      </div>
+      </FormSection>
 
-      <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5">
-        <PillGroup
-          label="What size dog do you prefer?"
-          description="This will strongly narrow down the recommendations"
-          value={criteria.size_preference}
-          onChange={(v) => set("size_preference", v)}
-          options={[
-            { value: "no_preference", label: "No preference" },
-            { value: "small", label: "Small" },
-            { value: "medium", label: "Medium" },
-            { value: "large", label: "Large" },
-            { value: "giant", label: "Giant" },
-          ]}
-        />
-
-        <PillGroup
-          label="How experienced are you with dogs?"
-          description="Be honest — this helps us find the right match"
-          value={criteria.experience_level}
-          onChange={(v) => set("experience_level", v)}
-          options={[
-            { value: "beginner", label: "First-time owner" },
-            { value: "intermediate", label: "Some experience" },
-            { value: "advanced", label: "Very experienced" },
-          ]}
-        />
-
+      <FormSection icon="❤️" title="Family">
         <PillGroup
           label="How much time is your dog likely to spend alone?"
           value={timeAvailability}
@@ -262,9 +245,8 @@ export function CriteriaForm({
             { value: "flexible", label: "Rarely alone" },
           ]}
         />
-
-        <div>
-          <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-foreground">
+        <div className="space-y-4">
+          <label className="flex cursor-pointer items-center gap-2 font-body text-sm font-medium text-forest">
             <input
               type="checkbox"
               checked={criteria.has_children}
@@ -275,12 +257,12 @@ export function CriteriaForm({
                   children_age: e.target.checked ? criteria.children_age : undefined,
                 })
               }
-              className="h-4 w-4 rounded border-input"
-              style={{ accentColor: "hsl(var(--primary))" }}
+              className="h-4 w-4 rounded border-[1.5px] border-forest/30"
+              style={{ accentColor: "hsl(var(--amber))" }}
             />
             I have children at home
           </label>
-          <p className="mt-1 text-xs text-muted-foreground">Helps us recommend breeds that are good with kids</p>
+          <p className="text-xs text-forest/70">Helps us recommend breeds that are good with kids</p>
 
           {criteria.has_children ? (
             <div className="mt-3">
@@ -297,7 +279,22 @@ export function CriteriaForm({
             </div>
           ) : null}
         </div>
+      </FormSection>
 
+      <FormSection icon="🐶" title="Preferences">
+        <PillGroup
+          label="What size dog do you prefer?"
+          description="This will strongly narrow down the recommendations"
+          value={criteria.size_preference}
+          onChange={(v) => set("size_preference", v)}
+          options={[
+            { value: "no_preference", label: "No preference" },
+            { value: "small", label: "Small" },
+            { value: "medium", label: "Medium" },
+            { value: "large", label: "Large" },
+            { value: "giant", label: "Giant" },
+          ]}
+        />
         <PillGroup
           label="How much barking can you tolerate?"
           description="Some breeds are naturally more vocal than others"
@@ -309,7 +306,18 @@ export function CriteriaForm({
             { value: "high", label: "Doesn't bother me" },
           ]}
         />
-      </div>
+        <PillGroup
+          label="How experienced are you with dogs?"
+          description="Be honest — this helps us find the right match"
+          value={criteria.experience_level}
+          onChange={(v) => set("experience_level", v)}
+          options={[
+            { value: "beginner", label: "First-time owner" },
+            { value: "intermediate", label: "Some experience" },
+            { value: "advanced", label: "Very experienced" },
+          ]}
+        />
+      </FormSection>
     </div>
   );
 }
