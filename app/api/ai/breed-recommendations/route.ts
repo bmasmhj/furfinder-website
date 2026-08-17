@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-const AI_API_URL = process.env.AI_API_URL || "https://ai.thefurfinder.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api/v1/";
 const MAX_BREEDS = 6;
 const MAX_ANIMALS = 24;
 
@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
   const mode = body.mode === "criteria" ? "criteria" : "description";
   const species = typeof body.species === "string" && body.species ? body.species : "dog";
 
-  let upstreamPath: string;
   let upstreamPayload: Record<string, unknown>;
 
   if (mode === "criteria") {
@@ -72,8 +71,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    upstreamPath = "/breed-recommendations/criteria";
-    upstreamPayload = { ...criteria, species: criteria.species || species };
+    upstreamPayload = { mode: "criteria", criteria: { ...criteria, species: criteria.species || species } };
   } else {
     const description = typeof body.description === "string" ? body.description.trim() : "";
     if (description.length < 15 || description.length > 2000) {
@@ -82,13 +80,13 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    upstreamPath = "/breed-recommendations/description";
-    upstreamPayload = { description, species };
+    upstreamPayload = { mode: "description", description, species };
   }
 
   let breeds: BreedRecommendation[] = [];
   try {
-    const aiRes = await fetch(`${AI_API_URL}${upstreamPath}`, {
+    // website -> backendV2 (`ai/breed-recommendations`, public) -> scrapper-engine AI service
+    const aiRes = await fetch(`${API_BASE_URL}ai/breed-recommendations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(upstreamPayload),

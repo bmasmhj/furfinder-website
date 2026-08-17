@@ -86,7 +86,7 @@ export function AiSuggestionPanel({ open, onClose, isHeroMode }: { open: boolean
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/v1/ai/breed-recommendations", {
+      const res = await fetch("/api/ai/breed-recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

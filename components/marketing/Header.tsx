@@ -41,6 +41,7 @@ export default function Header() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/adoption", label: "Adopt" },
+    { href: "/detect-breed", label: "Detect Breed" },
     { href: "/partners", label: "Partners" },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/blog", label: "Blog" },
