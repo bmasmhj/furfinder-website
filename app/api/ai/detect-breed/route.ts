@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   let upstreamRes: Response;
   try {
-    upstreamRes = await fetch(`${API_BASE_URL}/ai/detect-breed-public`, {
+    upstreamRes = await fetch(`${API_BASE_URL}ai/detect-breed-public`, {
       method: "POST",
       body: upstreamForm,
       signal: AbortSignal.timeout(30000),

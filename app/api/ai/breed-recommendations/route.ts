@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
   let breeds: BreedRecommendation[] = [];
   try {
     // website -> backendV2 (`ai/breed-recommendations`, public) -> scrapper-engine AI service
-    const aiRes = await fetch(`${API_BASE_URL}/ai/breed-recommendations`, {
+    const aiRes = await fetch(`${API_BASE_URL}ai/breed-recommendations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(upstreamPayload),
