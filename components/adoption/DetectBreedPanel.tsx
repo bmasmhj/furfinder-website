@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Camera, Loader2, PawPrint, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIProcessingState } from "./AIProcessingState";
+import { AIProcessingState, BREED_DETECTION_STEPS } from "./AIProcessingState";
 
 interface BreedInfo {
   name: string;
@@ -132,7 +132,7 @@ export function DetectBreedPanel() {
               <p className="mt-2 font-body text-sm text-forest/70">This just takes a moment...</p>
             </div>
             <div className="max-w-md mx-auto">
-              <AIProcessingState />
+              <AIProcessingState steps={BREED_DETECTION_STEPS} />
             </div>
           </div>
         ) : result ? (

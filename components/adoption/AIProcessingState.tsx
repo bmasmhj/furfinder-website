@@ -9,14 +9,21 @@ interface ProcessingStep {
   duration: number;
 }
 
-const PROCESSING_STEPS: ProcessingStep[] = [
+const LIFESTYLE_MATCH_STEPS: ProcessingStep[] = [
   { id: "understanding", label: "Understanding your lifestyle", duration: 1200 },
   { id: "comparing", label: "Comparing hundreds of breeds", duration: 1500 },
   { id: "matching", label: "Matching personality traits", duration: 1300 },
   { id: "finding", label: "Finding adoptable pets", duration: 1400 },
 ];
 
-export function AIProcessingState() {
+export const BREED_DETECTION_STEPS: ProcessingStep[] = [
+  { id: "uploading", label: "Reading your photo", duration: 900 },
+  { id: "detecting", label: "Spotting your pet", duration: 1200 },
+  { id: "classifying", label: "Comparing against known breeds", duration: 1500 },
+  { id: "profiling", label: "Pulling up breed traits", duration: 1100 },
+];
+
+export function AIProcessingState({ steps = LIFESTYLE_MATCH_STEPS }: { steps?: ProcessingStep[] }) {
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -24,11 +31,11 @@ export function AIProcessingState() {
     const timers: NodeJS.Timeout[] = [];
 
     const completeStep = () => {
-      const step = PROCESSING_STEPS[currentIndex];
+      const step = steps[currentIndex];
       if (step) {
         setCompletedSteps((prev) => new Set([...prev, step.id]));
         currentIndex++;
-        if (currentIndex < PROCESSING_STEPS.length) {
+        if (currentIndex < steps.length) {
           const nextTimer = setTimeout(completeStep, step.duration);
           timers.push(nextTimer);
         }
@@ -39,11 +46,11 @@ export function AIProcessingState() {
     timers.push(firstTimer);
 
     return () => timers.forEach((t) => clearTimeout(t));
-  }, []);
+  }, [steps]);
 
   return (
     <div className="space-y-4">
-      {PROCESSING_STEPS.map((step, index) => {
+      {steps.map((step, index) => {
         const isCompleted = completedSteps.has(step.id);
         const isActive = completedSteps.size === index;
 
