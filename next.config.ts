@@ -8,7 +8,23 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
-  redirects: async () => [],
+  redirects: async () => [
+    {
+      source: '/app-features',
+      destination: '/features',
+      permanent: true,
+    },
+    {
+      source: '/partner-registration',
+      destination: 'https://partners.thefurfinder.com/partner/signup',
+      permanent: true,
+    },
+    {
+      source: '/our-story',
+      destination: '/about',
+      permanent: true,
+    },
+  ],
   rewrites: async () => ({
     beforeFiles: [],
     afterFiles: [],

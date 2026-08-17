@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { faqItems, supportEmail } from "@/components/marketing/site-content";
 import { db } from "@/lib/db";
+import Reveal from "@/components/marketing/Reveal";
 
 export const metadata: Metadata = {
   title: "FAQ - The Fur Finder",
@@ -21,6 +22,29 @@ async function getFaqs() {
   }
 }
 
+function FaqAccordion({ items }: { items: { key: string; question: string; answer: string }[] }) {
+  return (
+    <div className="mx-auto flex max-w-[720px] flex-col gap-3">
+      {items.map((faq) => (
+        <details
+          key={faq.key}
+          className="group rounded-[16px] border-[1.5px] border-forest/15 bg-card transition-colors open:border-forest/35"
+        >
+          <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left font-body text-[15px] font-semibold text-forest">
+            {faq.question}
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] border-forest/15 text-forest transition-transform group-open:rotate-45 group-open:border-amber group-open:bg-amber">
+              +
+            </span>
+          </summary>
+          <div className="border-t border-forest/10 px-6 pb-5 pt-4 text-left font-body text-sm leading-[1.8] text-forest/75">
+            {faq.answer}
+          </div>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 export default async function FaqPage() {
   const databaseFaqs = await getFaqs();
 
@@ -33,81 +57,45 @@ export default async function FaqPage() {
   }, {});
 
   return (
-    <section className="border-y border-border bg-muted/50" id="faq">
-      <div className="mx-auto max-w-7xl px-6 py-20 text-center">
-        <h2 className="text-[30px] font-bold tracking-[-0.5px] text-foreground">
+    <div className="border-y border-forest/10 bg-cream text-forest" id="faq">
+      <div className="mx-auto max-w-4xl px-6 py-20 text-center md:py-24">
+        <Reveal as="h1" className="font-display text-[36px] italic tracking-[-0.01em] text-forest max-md:text-[28px]">
           Common questions
-        </h2>
-        <p className="mx-auto mt-2.5 max-w-[580px] text-[15px] leading-[1.7] text-muted-foreground">
+        </Reveal>
+        <Reveal delay={40} className="mx-auto mt-3 max-w-[54ch] font-body text-[15px] leading-relaxed text-forest/75">
           Permissions, AI limits, safety, purchases, privacy, and account management.
-        </p>
+        </Reveal>
 
-        <div className="mb-12 mt-8">
-          <h3 className="mb-6 text-left text-xl font-semibold text-foreground">
+        <div className="mb-14 mt-12">
+          <Reveal as="h2" className="mb-6 text-left font-display text-[21px] italic text-forest">
             Essential information
-          </h3>
-          <div className="mx-auto flex max-w-[720px] flex-col gap-3">
-            {faqItems.map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-[14px] border border-border bg-card transition-shadow open:border-primary/20 open:shadow-md"
-              >
-                <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-[15px] font-semibold text-foreground">
-                  {faq.question}
-                  <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-bold text-primary transition-transform group-open:rotate-45 group-open:bg-primary group-open:text-white">
-                    +
-                  </span>
-                </summary>
-                <div className="border-t border-border px-6 pb-5 pt-4 text-left text-sm leading-[1.8] text-muted-foreground">
-                  {faq.answer}
-                </div>
-              </details>
-            ))}
-          </div>
+          </Reveal>
+          <FaqAccordion items={faqItems.map((faq) => ({ key: faq.question, ...faq }))} />
         </div>
 
-        {Object.keys(groupedFaqs).length > 0 ? (
-          Object.entries(groupedFaqs).map(
-              ([category, categoryFaqs]: [string, any]) => (
-                <div key={category} className="mb-12 mt-8">
-                  <h3 className="mb-6 text-left text-xl font-semibold text-foreground">
-                    {category}
-                  </h3>
-                  <div className="mx-auto flex max-w-[720px] flex-col gap-3">
-                    {categoryFaqs.map((faq: any) => (
-                      <details
-                        key={faq.id}
-                        className="group rounded-[14px] border border-border bg-card transition-shadow open:border-primary/20 open:shadow-md"
-                      >
-                        <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-[15px] font-semibold text-foreground">
-                          {faq.question}
-                          <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-bold text-primary transition-transform group-open:rotate-45 group-open:bg-primary group-open:text-white">
-                            +
-                          </span>
-                        </summary>
-                        <div className="border-t border-border px-6 pb-5 pt-4 text-left text-sm leading-[1.8] text-muted-foreground">
-                          {faq.answer}
-                        </div>
-                      </details>
-                    ))}
-                  </div>
-                </div>
-              )
-            )
-        ) : null}
+        {Object.entries(groupedFaqs).map(([category, categoryFaqs]: [string, any]) => (
+          <div key={category} className="mb-14 mt-12">
+            <Reveal as="h2" className="mb-6 text-left font-display text-[21px] italic text-forest">
+              {category}
+            </Reveal>
+            <FaqAccordion
+              items={categoryFaqs.map((faq: any) => ({ key: faq.id, question: faq.question, answer: faq.answer }))}
+            />
+          </div>
+        ))}
 
-        <p className="mt-10 text-sm text-muted-foreground">
+        <Reveal delay={40} className="mt-10 font-body text-sm text-forest/70">
           Still need help? Visit{" "}
-          <Link href="/support" className="font-semibold text-primary hover:underline">
+          <Link href="/support" className="font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text">
             Support
           </Link>{" "}
           or email{" "}
-          <a href={`mailto:${supportEmail}`} className="font-semibold text-primary hover:underline">
+          <a href={`mailto:${supportEmail}`} className="font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text">
             {supportEmail}
           </a>
           .
-        </p>
+        </Reveal>
       </div>
-    </section>
+    </div>
   );
 }

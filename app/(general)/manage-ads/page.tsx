@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { partnershipsEmail } from "@/components/marketing/site-content";
+import Reveal from "@/components/marketing/Reveal";
+import Magnetic from "@/components/marketing/Magnetic";
 
 export const metadata: Metadata = {
   title: "Manage Ads - The Fur Finder",
@@ -10,54 +12,58 @@ export const metadata: Metadata = {
 
 export default function ManageAdsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-blue-50/40 px-6 py-24 text-center dark:to-blue-950/10 md:px-8">
-      <div className="mx-auto max-w-3xl">
-        <span className="inline-flex rounded-full bg-blue-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-400">
-          Manage Ads
-        </span>
-        <h1 className="mt-6 text-4xl font-extrabold tracking-[-0.05em] text-foreground md:text-6xl">
-          Existing campaign support
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
-          Self-service campaign management and ad purchasing are not available on this page or inside the iOS app. Existing advertisers can request creative, destination, schedule, billing, or cancellation changes from the partnerships team.
-        </p>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          Include your business name and campaign reference when emailing{" "}
-          <a className="font-semibold text-primary hover:underline" href={`mailto:${partnershipsEmail}`}>
-            {partnershipsEmail}
-          </a>
-          .
-        </p>
-        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 text-left">
-          <h2 className="text-lg font-bold text-foreground">Campaign controls</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+    <div className="bg-cream text-forest">
+      <section className="relative overflow-hidden px-6 py-20 text-center md:py-24">
+        <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[280px] w-full opacity-[0.5]" viewBox="0 0 1440 280" preserveAspectRatio="none">
+          <path d="M-40 50 C 300 5, 600 95, 900 35 S 1500 55, 1600 15" stroke="hsl(var(--forest) / 0.08)" strokeWidth="1.5" fill="none" />
+        </svg>
+        <div className="relative mx-auto max-w-2xl">
+          <Reveal as="h1" className="font-display text-[40px] italic leading-[1.1] tracking-[-0.02em] text-forest max-md:text-[30px]">
+            Existing campaign support
+          </Reveal>
+          <Reveal delay={60} className="mx-auto mt-4 max-w-xl font-body text-[16px] leading-relaxed text-forest/75">
+            Self-service campaign management and ad purchasing are not available on this page or inside the iOS app. Existing advertisers can log in to the partner platform, or request changes from the partnerships team.
+          </Reveal>
+          <Reveal delay={120} className="mt-8 flex flex-wrap justify-center gap-3">
+            <Magnetic>
+              <a
+                href="https://partners.thefurfinder.com/partner/login"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber px-7 py-3.5 font-body text-[15px] font-bold text-forest"
+              >
+                Log in to partner platform
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a
+                href={`mailto:${partnershipsEmail}?subject=Existing%20Campaign%20Support`}
+                className="inline-flex items-center gap-2 rounded-xl border-[1.5px] border-forest/15 px-7 py-3.5 font-body text-[15px] font-bold text-forest transition-colors hover:border-forest/35"
+              >
+                Email campaign support
+              </a>
+            </Magnetic>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="border-t border-forest/10 px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-3xl rounded-[20px] border-[1.5px] border-forest/15 bg-card p-7 md:p-8">
+          <h2 className="font-display text-[19px] italic text-forest">Campaign controls</h2>
+          <p className="mt-3 font-body text-sm leading-relaxed text-forest/75">
             Changes remain subject to the written campaign agreement. Updated advertiser destinations must be valid public https:// links and may be re-reviewed before publication. We can pause or remove misleading, malicious, unsafe, or non-compliant creative and links.
           </p>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+          <p className="mt-3 font-body text-sm leading-relaxed text-forest/75">
             Report a suspicious destination or advertiser through Support. Performance metrics are estimates based on available event data and are not guarantees of clicks, leads, sales, or other outcomes.
           </p>
-        </div>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href={`mailto:${partnershipsEmail}?subject=Existing%20Campaign%20Support`}
-            className="inline-flex rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e5553a]"
-          >
-            Email campaign support
-          </a>
           <Link
             href="/support"
-            className="inline-flex rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+            className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-forest underline decoration-amber decoration-2 underline-offset-4 hover:text-coral-text"
           >
             Report a destination
           </Link>
-          <Link
-            href="/"
-            className="inline-flex rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
-          >
-            Back to home
-          </Link>
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

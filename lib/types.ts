@@ -157,6 +157,8 @@ export interface OrganisationAnimal {
   pet_type: PetType
   pet_name: string
   breed: string
+  age?: string
+  gender?: string
   size: PetSize
   color: string
   markings: string
@@ -169,6 +171,30 @@ export interface OrganisationAnimal {
   status: 'available' | 'adopted' | 'transferred'
   created_at: Date
   updated_at: Date
+}
+
+// Ad Types
+export interface Ad {
+  id: string
+  org_id?: string | null
+  business_name: string
+  business_type?: string
+  contact_name?: string
+  contact_email?: string
+  contact_phone?: string
+  website?: string
+  image_uri: string
+  ad_image_uri?: string
+  logo_uri?: string
+  video_url?: string
+  link_type: string
+  link_url?: string
+  description?: string
+  placement?: string
+  status: 'pending' | 'approved' | 'rejected' | 'expired'
+  start_date?: Date
+  end_date?: Date
+  created_at: Date
 }
 
 // API Response Types

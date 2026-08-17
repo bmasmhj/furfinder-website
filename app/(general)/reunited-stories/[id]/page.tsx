@@ -69,28 +69,28 @@ function StoryUnavailable({ id }: { id: string }) {
   )}`;
 
   return (
-    <main className="min-h-screen bg-background px-6 py-24 text-center text-foreground">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-border bg-card p-8 md:p-12">
-        <h1 className="text-3xl font-extrabold tracking-tight">This story is unavailable</h1>
-        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+    <main className="bg-cream px-6 py-24 text-center text-forest">
+      <div className="mx-auto max-w-2xl rounded-[20px] border-[1.5px] border-forest/15 bg-card p-8 md:p-12">
+        <h1 className="font-display text-[28px] italic text-forest">This story is unavailable</h1>
+        <p className="mt-4 font-body text-sm leading-7 text-forest/75">
           It may have been deleted, unpublished, moderated, or the link may be incorrect. We do not display unavailable user content.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href="/reunited-stories"
-            className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white"
+            className="rounded-xl bg-amber px-5 py-3 font-body text-sm font-bold text-forest"
           >
             Browse published stories
           </Link>
           <a
             href={reportHref}
-            className="rounded-xl border border-border px-5 py-3 text-sm font-semibold hover:border-primary hover:text-primary"
+            className="rounded-xl border-[1.5px] border-forest/15 px-5 py-3 font-body text-sm font-semibold text-forest transition-colors hover:border-forest/35"
           >
             Report a content concern
           </a>
           <Link
             href="/support"
-            className="rounded-xl border border-border px-5 py-3 text-sm font-semibold hover:border-primary hover:text-primary"
+            className="rounded-xl border-[1.5px] border-forest/15 px-5 py-3 font-body text-sm font-semibold text-forest transition-colors hover:border-forest/35"
           >
             Contact support
           </Link>
@@ -123,23 +123,23 @@ export default async function ReunitedStoryDetailPage({
   )}`;
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <section className="border-b border-border bg-gradient-to-b from-orange-50 to-background px-6 py-12 dark:from-orange-950/20">
+    <main className="bg-cream text-forest">
+      <section className="border-b border-forest/10 px-6 py-12">
         <div className="mx-auto max-w-5xl">
           <Link
             href="/reunited-stories"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
+            className="inline-flex items-center gap-2 font-body text-sm font-medium text-forest/70 hover:text-forest"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to stories
           </Link>
-          <span className="mt-8 block text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">
+          <span className="mt-8 block font-body text-xs font-bold uppercase tracking-[0.16em] text-leaf-text">
             Community-submitted reunion story
           </span>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight md:text-6xl">
+          <h1 className="mt-3 font-display text-[40px] italic leading-tight text-forest md:text-[52px]">
             {story.story_title}
           </h1>
-          <div className="mt-6 flex flex-wrap gap-5 text-sm text-muted-foreground">
+          <div className="mt-6 flex flex-wrap gap-5 font-body text-sm text-forest/70">
             <span className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               {new Date(story.reunion_date).toLocaleDateString("en-AU", {
@@ -168,13 +168,14 @@ export default async function ReunitedStoryDetailPage({
         {images.length > 0 ? (
           <div className={`mb-10 grid gap-4 ${images.length > 1 ? "md:grid-cols-2" : ""}`}>
             {images.map((image) => (
-              <figure key={image.label} className="overflow-hidden rounded-2xl border border-border bg-card">
+              <figure key={image.label} className="overflow-hidden rounded-[20px] border-[1.5px] border-forest/15 bg-card">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={image.url}
                   alt={`${story.pet_name}: ${image.label}`}
                   className="aspect-[4/3] w-full object-cover"
                 />
-                <figcaption className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <figcaption className="px-4 py-3 font-body text-xs font-semibold uppercase tracking-wide text-forest/75">
                   {image.label}
                 </figcaption>
               </figure>
@@ -184,37 +185,40 @@ export default async function ReunitedStoryDetailPage({
 
         <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
           <article>
-            <div className="space-y-5 text-[15px] leading-8 text-foreground/80">
+            <div className="space-y-5 font-body text-[15px] leading-8 text-forest/85">
               {story.story_content.split(/\n{2,}/).map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
             {story.how_they_reunited ? (
-              <section className="mt-10 rounded-2xl border border-teal-500/20 bg-teal-500/5 p-6">
-                <h2 className="text-lg font-bold">How they reunited</h2>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{story.how_they_reunited}</p>
+              <section className="mt-10 rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6">
+                <h2 className="font-display text-[18px] italic text-forest">How they reunited</h2>
+                <p className="mt-3 font-body text-sm leading-7 text-forest/75">{story.how_they_reunited}</p>
               </section>
             ) : null}
           </article>
 
           <aside className="space-y-5">
-            <section className="rounded-2xl border border-border bg-card p-6">
-              <h2 className="font-bold">Story details</h2>
-              <dl className="mt-4 space-y-3 text-sm">
-                <div><dt className="text-muted-foreground">Pet</dt><dd className="font-medium">{story.pet_name}</dd></div>
-                <div><dt className="text-muted-foreground">Type</dt><dd className="font-medium">{story.pet_type}</dd></div>
-                <div><dt className="text-muted-foreground">Submitted by</dt><dd className="font-medium">{story.owner_name}</dd></div>
+            <section className="rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6">
+              <h2 className="font-display text-[17px] italic text-forest">Story details</h2>
+              <dl className="mt-4 space-y-3 font-body text-sm">
+                <div><dt className="text-forest/75">Pet</dt><dd className="font-medium text-forest">{story.pet_name}</dd></div>
+                <div><dt className="text-forest/75">Type</dt><dd className="font-medium text-forest">{story.pet_type}</dd></div>
+                <div><dt className="text-forest/75">Submitted by</dt><dd className="font-medium text-forest">{story.owner_name}</dd></div>
                 {story.location_found ? (
-                  <div><dt className="text-muted-foreground">Found near</dt><dd className="font-medium">{story.location_found}</dd></div>
+                  <div><dt className="text-forest/75">Found near</dt><dd className="font-medium text-forest">{story.location_found}</dd></div>
                 ) : null}
               </dl>
             </section>
-            <section className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm leading-7 text-amber-950 dark:text-amber-100">
+            <section className="rounded-[20px] border-[1.5px] border-forest/15 bg-card p-6 font-body text-sm leading-7 text-forest/75">
+              <p className="mb-1.5 font-body text-[12px] font-semibold uppercase tracking-[0.12em] text-forest/75">
+                Please note
+              </p>
               Community stories describe individual experiences. They are not guarantees that a feature or matching suggestion will produce the same outcome.
             </section>
             <a
               href={reportHref}
-              className="flex items-center justify-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-semibold hover:border-primary hover:text-primary"
+              className="flex items-center justify-center gap-2 rounded-xl border-[1.5px] border-forest/15 px-5 py-3 font-body text-sm font-semibold text-forest transition-colors hover:border-forest/35"
             >
               <Flag className="h-4 w-4" />
               Report this content

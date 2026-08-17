@@ -44,3 +44,7 @@ yarn-error.*
 attached_assets/
 .next/
 .env.development
+
+.skills
+.claude
+.agents

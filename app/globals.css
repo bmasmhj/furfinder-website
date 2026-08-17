@@ -4,60 +4,76 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 240 24% 14%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 24% 14%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 24% 14%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 20 100% 50%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --primary: 20 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 240 24% 14%;
-    --ring: 20 100% 50%;
-    --radius: 0.5rem;
+    /* Field-guide palette — Deep Forest / Warm Cream / Amber / Leaf / Coral */
+    --background: 42 45% 96%;
+    --foreground: 157 51% 16%;
+    --card: 42 60% 99%;
+    --card-foreground: 157 51% 16%;
+    --popover: 42 60% 99%;
+    --popover-foreground: 157 51% 16%;
+    --muted: 40 24% 91%;
+    --muted-foreground: 30 10% 38%;
+    --accent: 36 100% 65%;
+    --accent-foreground: 157 51% 14%;
+    --destructive: 0 87% 69%;
+    --destructive-foreground: 0 50% 11%;
+    --border: 40 22% 86%;
+    --input: 40 22% 86%;
+    --primary: 36 100% 65%;
+    --primary-foreground: 157 51% 14%;
+    --secondary: 123 43% 59%;
+    --secondary-foreground: 138 47% 11%;
+    --ring: 36 90% 55%;
+    --radius: 0.75rem;
 
-    /* Brand tokens */
-    --coral: 20 100% 58%;
-    --teal: 177 62% 45%;
-    --surface: 0 0% 98%;
-    --surface-secondary: 210 20% 98%;
+    /* Named brand tokens */
+    --forest: 157 51% 16%;
+    --forest-deep: 158 55% 10%;
+    --cream: 42 45% 96%;
+    --amber: 36 100% 65%;
+    --leaf: 123 43% 59%;
+    --coral: 0 87% 69%;
+    /* Darkened variants for text-on-cream use — the vivid brand tones fail AA as foreground text */
+    --leaf-text: 122 43% 34%;
+    --coral-text: 0 87% 45%;
+
+    /* Motion */
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.3, 1.15, 0.64, 1);
+    --dur-fast: 200ms;
+    --dur-base: 500ms;
+    --dur-slow: 900ms;
   }
 
   .dark {
-    --background: 222 84% 5%;
-    --foreground: 210 40% 96%;
-    --card: 224 50% 8%;
-    --card-foreground: 210 40% 96%;
-    --popover: 224 50% 8%;
-    --popover-foreground: 210 40% 96%;
-    --muted: 217 33% 15%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 20 100% 50%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --primary: 20 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 15%;
-    --secondary-foreground: 210 40% 96%;
-    --ring: 20 100% 50%;
+    --background: 158 32% 7%;
+    --foreground: 42 40% 94%;
+    --card: 158 28% 10%;
+    --card-foreground: 42 40% 94%;
+    --popover: 158 28% 10%;
+    --popover-foreground: 42 40% 94%;
+    --muted: 157 20% 15%;
+    --muted-foreground: 40 14% 68%;
+    --accent: 36 100% 65%;
+    --accent-foreground: 157 51% 14%;
+    --destructive: 0 87% 69%;
+    --destructive-foreground: 0 50% 11%;
+    --border: 157 18% 19%;
+    --input: 157 18% 19%;
+    --primary: 36 100% 65%;
+    --primary-foreground: 157 51% 14%;
+    --secondary: 123 40% 45%;
+    --secondary-foreground: 138 47% 95%;
+    --ring: 36 90% 60%;
 
-    /* Brand tokens dark */
-    --coral: 20 100% 58%;
-    --teal: 177 62% 45%;
-    --surface: 0 0% 5%;
-    --surface-secondary: 0 0% 7%;
+    --forest: 42 40% 94%;
+    --forest-deep: 158 55% 5%;
+    --cream: 158 28% 10%;
+    --amber: 36 100% 65%;
+    --leaf: 123 40% 52%;
+    --coral: 0 80% 68%;
+    --leaf-text: 123 40% 62%;
+    --coral-text: 0 80% 72%;
   }
 
   * {
@@ -67,11 +83,12 @@
 
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
     margin: 0;
@@ -82,13 +99,18 @@
     text-decoration: none;
   }
 
+  ::selection {
+    background: hsl(var(--amber) / 0.35);
+    color: hsl(var(--forest));
+  }
+
   /* Progress bar */
   #nprogress .bar {
-    background: hsl(var(--primary)) !important;
+    background: hsl(var(--amber)) !important;
     height: 3px !important;
   }
   #nprogress .peg {
-    box-shadow: 0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary)) !important;
+    box-shadow: 0 0 10px hsl(var(--amber)), 0 0 5px hsl(var(--amber)) !important;
   }
 
   /* FAQ details/summary reset */
@@ -97,5 +119,83 @@
   }
   summary {
     list-style: none;
+  }
+
+  /* Scroll-reveal primitive: opt-in via data attribute, upgraded by JS */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  [data-reveal="in"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity var(--dur-slow) var(--ease-expo), transform var(--dur-slow) var(--ease-expo);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 20px -5px hsl(var(--amber) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px -5px hsl(var(--amber) / 0.5);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    [data-reveal], [data-reveal="in"] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.5s var(--ease-expo) forwards;
+  }
+
+  .slide-in-up {
+    animation: slideInUp 0.6s var(--ease-expo) forwards;
+  }
+
+  .glow-amber {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  .group-hover\:lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s var(--ease-expo);
   }
 }
