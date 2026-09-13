@@ -84,7 +84,7 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="https://app.thefurfinder.com"
+              href="https://app.thefurfinder.com?skiponboarding=true"
               className="rounded-xl bg-forest px-5 py-2.5 font-body text-[14px] font-semibold text-cream transition-transform hover:-translate-y-0.5"
             >
               Try on Web

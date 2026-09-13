@@ -31,7 +31,7 @@ export default function MobileStickyCTA() {
         Report a Lost Pet
       </Link>
       <a
-        href="https://app.thefurfinder.com"
+        href="https://app.thefurfinder.com?skiponboarding=true"
         className="flex items-center justify-center gap-2 rounded-2xl border-[1.5px] border-forest/25 px-4 py-3.5 text-[15px] font-bold text-forest active:scale-[0.98]"
       >
         <Search className="h-[18px] w-[18px]" strokeWidth={2.25} />

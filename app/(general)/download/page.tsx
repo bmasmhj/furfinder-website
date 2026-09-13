@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "Download The Fur Finder for iOS, request Android beta access, or open the web experience.",
 };
 
-const webAppUrl = "https://app.thefurfinder.com";
+const webAppUrl = "https://app.thefurfinder.com?skiponboarding=true";
 
 const highlights = [
   { icon: Search, label: "Suggested Matches", desc: "Review and verify possible matches" },

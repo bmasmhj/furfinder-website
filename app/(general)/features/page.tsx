@@ -167,7 +167,7 @@ export default async function FeaturesPage() {
         <Reveal delay={120} className="mt-8 flex flex-wrap justify-center gap-3">
           <Magnetic>
             <a
-              href="https://app.thefurfinder.com"
+              href="https://app.thefurfinder.com?skiponboarding=true"
               className="inline-flex items-center gap-2 rounded-xl bg-amber px-7 py-3.5 font-body text-[15px] font-bold text-forest"
             >
               Report a Lost Pet

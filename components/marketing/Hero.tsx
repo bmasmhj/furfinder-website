@@ -41,7 +41,7 @@ export default function HeroSection() {
           <Reveal delay={140} className="flex flex-wrap items-center gap-3.5">
             <Magnetic>
               <a
-                href="https://app.thefurfinder.com"
+                href="https://app.thefurfinder.com?skiponboarding=true"
                 className="inline-flex items-center gap-2 rounded-xl bg-amber px-7 py-4 font-body text-[15.5px] font-bold text-forest shadow-[0_14px_28px_-14px_hsl(var(--amber)/0.75)] transition-shadow hover:shadow-[0_18px_34px_-14px_hsl(var(--amber)/0.85)]"
               >
                 Report a Lost Pet
@@ -49,7 +49,7 @@ export default function HeroSection() {
             </Magnetic>
             <Magnetic>
               <a
-                href="https://app.thefurfinder.com"
+                href="https://app.thefurfinder.com?skiponboarding=true"
                 className="inline-flex items-center gap-2 rounded-xl border-[1.5px] border-forest/25 px-7 py-4 font-body text-[15.5px] font-bold text-forest transition-colors hover:border-forest hover:bg-forest/[0.04]"
               >
                 Browse Found Pets
